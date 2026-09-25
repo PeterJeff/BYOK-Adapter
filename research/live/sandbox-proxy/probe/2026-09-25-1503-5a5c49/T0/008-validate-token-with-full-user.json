@@ -1,0 +1,42 @@
+{
+ "test": "T0",
+ "seq": 8,
+ "label": "validate_token_with_full_user",
+ "kind": "user",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/user/validate_token_with_full_user",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:34.292Z",
+ "ms": 47,
+ "ttftMs": 47,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": "asksage-envelope 400: Token is invalid"
+ }
+}

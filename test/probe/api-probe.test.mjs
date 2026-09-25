@@ -9,6 +9,7 @@ import { normalize, estimate, rawUsage, outputOf } from '../../phase0/probe/lib/
 import { pickModels } from '../../phase0/probe/lib/models.mjs';
 import { parseArgs, preEstimate } from '../../phase0/probe/api-probe.mjs';
 import { closest } from '../../phase0/probe/lib/tests.mjs';
+import { createClient } from '../../phase0/probe/lib/client.mjs';
 
 const KEY = 'a'.repeat(30) + 'SECRET' + 'b'.repeat(28);
 const b64 = (/** @type {object} */ o) => Buffer.from(JSON.stringify(o)).toString('base64url');
@@ -116,4 +117,27 @@ test('parseArgs requires an alias; preEstimate caps assumed output', () => {
   assert.throws(() => parseArgs(['--api', 'api.x.example']), /--alias/);
   assert.equal(parseArgs(['--api', 'https://API.x.example/server', '--alias', 'x']).api, 'api.x.example');
   assert.equal(Math.round(preEstimate({ max_tokens: 999999 }, { prompt: 1e-9, completion: 1 })), 4096);
+});
+
+test('createClient: key-only (no email) authenticates M/CC/R/G directly and never throws obtaining a JWT', async () => {
+  /** @type {{ url: string, headers: Record<string, string> }[]} */
+  const seen = [];
+  const fetchImpl = async (/** @type {string} */ url, /** @type {any} */ init) => {
+    seen.push({ url, headers: init.headers });
+    return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  const client = createClient({ apiBase: 'https://api.x.example', apiKey: KEY, fetchImpl: /** @type {any} */ (fetchImpl) });
+
+  // token() must resolve to null, not throw, when there is a key but no email.
+  await assert.doesNotReject(() => client.token());
+  assert.equal(client.hasJwt(), false);
+
+  // An M-kind (key-auth) call still carries the real API key.
+  await client.call({ label: 'm-call', kind: 'M', path: '/server/anthropic/v1/messages', body: { model: 'm' } });
+  assert.equal(seen[0].headers['x-api-key'], KEY);
+
+  // A server-kind (jwt-auth) call goes out with no credential rather than throwing.
+  await client.call({ label: 'server-call', kind: 'server', path: '/server/count-monthly-tokens', method: 'GET' });
+  assert.equal(seen[1].headers['x-access-tokens'], undefined);
+  assert.equal(seen[1].headers.authorization, undefined);
 });

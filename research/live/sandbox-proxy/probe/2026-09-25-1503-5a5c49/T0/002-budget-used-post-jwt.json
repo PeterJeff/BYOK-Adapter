@@ -1,0 +1,43 @@
+{
+ "test": "T0",
+ "seq": 2,
+ "label": "budget used POST {} (jwt)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:33.728Z",
+ "ms": 49,
+ "ttftMs": 49,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [1]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [1]",
+  "status": 400
+ }
+}

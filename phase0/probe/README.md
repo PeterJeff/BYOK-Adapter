@@ -6,15 +6,19 @@ Runs the Phase 0b tests in PLAN.md §9 against one tenant and records redacted f
 
 **It spends Ask Sage tokens.** It prints the models it picked and a pessimistic, full-price estimate first. It sends nothing billable without `--yes` or a typed `yes`, and it stops before any request that would push its running estimate past `--max-spend` (default 60,000). With the default models on the public catalogs the whole default set estimates at about 10k.
 
+**Only run the paid tests from a machine with a real tenant key.** Hosted/cloud Claude Code sessions (GitLab, cloud containers, CI) don't have one and shouldn't be asked for one — from there, run `--dry-run` and `--tests T0` only (free). The full battery is for a human running Claude Code locally (Desktop or CLI) with `ASKSAGE_API_KEY`/`ASKSAGE_EMAIL` for a test tenant.
+
 ```sh
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --dry-run        # plan and cost only; no key needed
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --tests T0,T19   # free checks + counter lag first
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --yes            # the default set
 ```
 
-Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, or from `--key-file <file>` and `--email`. The email is only used to exchange the key for an access token (`/user/get-token-with-api-key`). The key is never printed or written. Every fixture passes through `lib/redact.mjs`, which removes the key, the access token, emails, user and org identifiers and the tenant hosts. The result is then scanned, and a file that still contains any of them is not written. Check the fixtures before committing them anyway.
+Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, or from `--key-file <file>` and `--email`. The key is never printed or written. Every fixture passes through `lib/redact.mjs`, which removes the key, the access token, emails, user and org identifiers and the tenant hosts. The result is then scanned, and a file that still contains any of them is not written. Check the fixtures before committing them anyway.
 
-**No key in the environment?** The probe does not prompt for one. It sends requests with no client-supplied credential instead, on the assumption that something in front of `--api` (a corporate gateway, a proxy, a sidecar) authenticates them itself. Pass `--no-auth-headers` to choose that mode explicitly even when a key is available, for example to see how such a gateway actually behaves. In this mode auth-dependent checks (T0's token exchange, per-request billing) have nothing to measure and are recorded as errors rather than skipped outright — that's expected, not a bug.
+**Key but no email (key-only mode).** The email is only used to exchange the key for an access token (`/user/get-token-with-api-key`, `kind: 'user'`/`'server'`). M, CC, R and G calls authenticate directly with the raw key and don't need it, so with `ASKSAGE_API_KEY` set and no `ASKSAGE_EMAIL`/`--email`, the caching/billing/reasoning tests still run for real: T1–T9, T11, T15–T18, T20. What can't work without the email-derived token: T0's budget/user-object checks, T19 (needs the budget counters), and T21 (needs `/server/get-dataset-results` and the native `N` flavor) — those show as auth errors, which is expected, not a bug. The probe never prompts for a missing email; it just proceeds key-only and says so.
+
+**No key in the environment at all?** The probe does not prompt for one either. It sends requests with no client-supplied credential instead, on the assumption that something in front of `--api` (a corporate gateway, a proxy, a sidecar) authenticates them itself. Pass `--no-auth-headers` to choose that mode explicitly even when a key is available, for example to see how such a gateway actually behaves. In this mode every auth-dependent check has nothing to measure and is recorded as an error.
 
 | Option | Effect |
 |---|---|

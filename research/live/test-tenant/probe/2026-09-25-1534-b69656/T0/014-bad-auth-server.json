@@ -1,0 +1,38 @@
+{
+ "test": "T0",
+ "seq": 14,
+ "label": "bad-auth server",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "GET",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-25T15:34:27.585Z",
+ "ms": 269,
+ "ttftMs": 269,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "x-access-tokens"
+  ],
+  "headers": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": 425,
+  "status": 200
+ }
+}

@@ -1,0 +1,58 @@
+{
+ "test": "T0",
+ "seq": 11,
+ "label": "bad-auth CC",
+ "kind": "CC",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-25T15:34:24.537Z",
+ "ms": 708,
+ "ttftMs": 708,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "max_completion_tokens": 1,
+   "messages": [
+    {
+     "role": "user",
+     "content": "x"
+    }
+   ]
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "openai-error",
+  "status": "invalid_request_error",
+  "message": "Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens."
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "message": "Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.",
+   "type": "invalid_request_error",
+   "code": "invalid_request_error",
+   "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+   "ref": "ERR-A2FCE76F"
+  }
+ }
+}
