@@ -9,6 +9,8 @@
 - Caching gained mixed TTLs, lookback-window handling, tool-set tracking and a Responses-first option for GPT-5.x.
 - Budget mode is now an experiment, not a default recommendation, and a crude spend cap moved into Phase 1.
 
+**Repo note (v3.1, 2026-09-25): implementation constraint.** The target machine has VS Code and nothing else: no npm, no package manager, no build tools. The extension is therefore written in **plain JavaScript** (CommonJS, `// @ts-check` with JSDoc types), has no build step, uses only Node built-ins and the `vscode` API, and is loaded manually (unpacked folder, or a `.vsix` produced by the repo's zero-dependency packer run with VS Code's bundled Node). Where this document says `.ts`, read `.js`. See `CLAUDE.md` for the working rules.
+
 This document is the input for a later build mission in Claude Code. Nothing has been tested against the live Ask Sage API with credentials. Items marked **LIVE-TEST** must be confirmed in Phase 0 before code depends on them. Test IDs (T0–T21, E1–E5) are defined in §9.
 
 ## 0. Research index (`research/`)
@@ -27,6 +29,8 @@ Some research artifacts are kept outside version control. Paths are relative to 
 | `datasets-and-semantic-search.md` | Ask Sage datasets as a vector store, the embeddings endpoint, VS Code tool APIs, and ranked design options |
 | `ui-bundles/` | Extracted tables and public API responses from the chat web app (raw bundles excluded) |
 | `sources/caching/` | Snapshots of the docs, release notes and Copilot source files the caching analysis cites |
+
+The `research/` folder is not in this repository yet. Cloud sessions can only see what is committed, so the digests, specs and rate table need to be added (redacted where needed) before a session can follow §13's "read `research/*.md` first".
 
 The raw specs win whenever a digest disagrees with them. Claims about pricing come from the web app's code, not from billing records, until Phase 0 reconciles them (§3.6).
 
@@ -266,13 +270,13 @@ Everything else stays per-request.
 
 ```
 src/
-  extension.ts
-  config/      tenants.ts (tenant alias → host, plus custom host), settings.ts (scoped per §6)
-  auth/        credentials.ts (SecretStorage), accessToken.ts (JWT for x-access-tokens, refresh), userInfo.ts
+  extension.js
+  config/      tenants.js (tenant alias → host, plus custom host), settings.js (scoped per §6)
+  auth/        credentials.js (SecretStorage), accessToken.js (JWT for x-access-tokens, refresh), userInfo.js
   catalog/     per-tenant bundled tables + /v1/models + force_models filter + per-model flavor overrides + capabilities (tool limit, image input)
   rates/       per-tenant bundled snapshots, override file, optional web-app refresher, cost formula
   normalize/   per-flavor usage normalization (§3.2)
-  transport/   anthropicMessages.ts, openaiChat.ts, openaiResponses.ts, gemini.ts, nativeQuery.ts, sse.ts, sepStream.ts
+  transport/   anthropicMessages.js, openaiChat.js, openaiResponses.js, gemini.js, nativeQuery.js, sse.js, sepStream.js
   convert/     messages per flavor, tools (schema sanitizing, deterministic ordering), reasoning round-trip
   state/       bounded reasoning side cache (§5)
   cache/       breakpoint placement (M) incl. TTLs, minimums and lookback, prompt_cache_key, health check
@@ -281,10 +285,11 @@ src/
   policy/      workspace policy (§6)
   tools/       (Phase 5) asksageCodebaseSearch, asksageDatasetSearch via vscode.lm.registerTool
   ui/          status bar, notices, reports webview
-  errors.ts, log.ts
+  errors.js, log.js
 ```
 
 Principles:
+- plain JavaScript, CommonJS, `// @ts-check` + JSDoc; no build step, no npm, Node built-ins only
 - zero runtime dependencies
 - stable API, with proposed fields and Copilot internals feature-detected and degrading silently
 - per-request state, except the bounded reasoning cache in `state/`
@@ -312,7 +317,7 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 ## 9. Phases
 
 ### Phase 0a: environment smoke test (target machine, no API)
-A ~50-line provider that echoes the prompt, side-loaded as a `.vsix` on the machine where the extension will actually be used. It costs nothing and is the go/no-go gate.
+A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as a `.vsix` (built with `scripts/pack-vsix.mjs`) or as an unpacked folder on the machine where the extension will actually be used. It costs nothing and is the go/no-go gate.
 - **E1:** extension-contributed models appear in the chat model picker under the account's Copilot plan and org policy.
 - **E2:** agent mode will use an extension-contributed model and pass it tools.
 - **E3:** `.vsix` side-loading is permitted (`extensions.allowed` and related policy).
@@ -322,7 +327,7 @@ A ~50-line provider that echoes the prompt, side-loaded as a `.vsix` on the mach
 **Exit:** all five pass, or the plan is revised.
 
 ### Phase 0b: API probes (test tenant)
-A plain `.mjs` probe script with no dependencies, runnable through VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`), using a test key, synthetic prompts only, and cheap models. It records redacted raw responses (§6) to `research/live/<tenant>/`, together with the budget before and after each test (polled with a delay, per T19).
+A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable through VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`), using a test key, synthetic prompts only, and cheap models. It records redacted raw responses (§6) to `research/live/<tenant>/`, together with the budget before and after each test (polled with a delay, per T19).
 
 | Test | What it checks |
 |---|---|
@@ -379,9 +384,9 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 ---
 
 ## 10. Testing and build
-- `node:test` unit tests (no npm) against the recorded Phase 0 fixtures.
+- `node:test` unit tests (no npm) against the recorded Phase 0 fixtures, run with `scripts/run-tests.mjs` so they work under VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`) as well as a plain `node`.
 - Pure logic kept free of `vscode` imports: converters, usage normalizer, parsers, cost formula, breakpoint placement, reasoning cache, reconciliation.
-- A zero-dependency build: a `.vsix` built elsewhere, or plain `// @ts-check` JS.
+- No build: plain `// @ts-check` JavaScript (CommonJS) loaded directly by VS Code. The `.vsix` is produced by `scripts/pack-vsix.mjs`, a zero-dependency packer run with VS Code's bundled Node; loading the unpacked folder also works.
 - No code copied from `asksageclient`, which is proprietary.
 - Ask Sage ships almost daily, so rates, flavors and fixtures are re-checked before each release. Copilot internals (`_conversationId`, the `usage` DataPart, virtual tools) are re-checked against each VS Code release.
 
@@ -423,6 +428,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 > Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md`. The specs in `research/sources/` and the rates in `research/model-token-conversion.json` are the starting data.
 >
 > Constraints:
+> - plain JavaScript (CommonJS, `// @ts-check` + JSDoc), no build step, no npm; only Node built-ins and the `vscode` API
 > - zero runtime dependencies
 > - stable VS Code API only (proposed fields and Copilot internals feature-detected)
 > - the key only in SecretStorage, never logged; endpoint settings application- or machine-scoped
