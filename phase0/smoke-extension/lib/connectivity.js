@@ -1,9 +1,15 @@
 // @ts-check
 'use strict';
 
-// E5: can the extension host reach the tenant host? Sends one unauthenticated
-// POST, which Ask Sage answers with HTTP 200 {"response":"Token is invalid ..."}.
-// No credentials are sent, so the probe cannot spend tokens.
+// E5: can the extension host reach the tenant host? Sends one unauthenticated POST to
+// get-models. No credentials are sent, so the probe cannot spend tokens.
+//
+// get-models is not a reliable "auth works" signal: despite the docs describing it as an
+// authenticated endpoint, on some instances it answers with the real model catalog (HTTP 200,
+// a `data`/`response` array) even with no credential at all, rather than the
+// {"response":"Token is invalid ..."} envelope other authenticated endpoints return. Either
+// shape proves the host was reached; `classifyBody` reports which one so a report doesn't
+// read a catalog response as "unreachable" or as evidence the endpoint enforced auth.
 
 const PROBE_PATH = '/server/get-models';
 const SNIPPET_CHARS = 300;
@@ -44,6 +50,7 @@ function classifyBody(text) {
   try {
     const j = JSON.parse(text);
     if (j && typeof j.response === 'string' && /token is invalid/i.test(j.response)) return 'asksage-auth-rejected';
+    if (j && (Array.isArray(j.data) || Array.isArray(j.response))) return 'asksage-catalog-no-auth-required';
     return 'json';
   } catch {
     return /<html/i.test(text) ? 'html' : 'other';
