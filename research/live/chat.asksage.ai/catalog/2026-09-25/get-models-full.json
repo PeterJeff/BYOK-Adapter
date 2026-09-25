@@ -1,0 +1,3076 @@
+[
+ {
+  "aliases": [
+   "aws-claude-sonnet-4-5-20250929",
+   "claude-4-5-sonnet",
+   "claude-sonnet-4-5-20250929",
+   "claude-sonnet-4-5@20250929",
+   "default",
+   "sonnet",
+   "sonnet-45"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude 4.5 Sonnet",
+  "id": "aws-bedrock-claude-45-sonnet-gov",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 190000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.99,
+   "prompt": 0.198
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "aws-claude-fable-5-1",
+   "claude-fable-5-1",
+   "claude-fable-5-1-default",
+   "claude-fable-5-1@default",
+   "fable-5-1"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Fable 5.1",
+  "id": "aws-bedrock-claude-fable-5-1-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 2.5,
+   "prompt": 0.5
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "aws-claude-opus-5-5",
+   "bedrock-claude-opus-5-5",
+   "claude-opus-5-5-gov",
+   "claude-opus-5.5-gov",
+   "opus-5-5-gov",
+   "opus-5.5-gov"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 5.5",
+  "id": "aws-bedrock-claude-opus-5-5-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.1,
+   "prompt": 0.22
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "AWS Nova Lite",
+  "id": "aws-bedrock-nova-lite-gov",
+  "limits": {
+   "max_context": 300000,
+   "max_output": 290000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.0144,
+   "prompt": 0.0036
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "AWS Nova Pro",
+  "id": "aws-bedrock-nova-pro-gov",
+  "limits": {
+   "max_context": 300000,
+   "max_output": 290000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.16,
+   "prompt": 0.04
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "AWS Nova Micro",
+  "id": "aws-bedrock-nova-micro-gov",
+  "limits": {
+   "max_context": 128000,
+   "max_output": 118000
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.0084,
+   "prompt": 0.0021
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "AWS Titan",
+  "id": "aws-bedrock-titan",
+  "limits": {
+   "max_context": 8000,
+   "max_output": 1500
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 12.5,
+   "prompt": 25
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Meta Llama 3",
+  "id": "llma3",
+  "limits": {
+   "max_context": 8000,
+   "max_output": 5500
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": null,
+  "vendor": "Meta"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 12b-vl (TS)",
+  "id": "aws-bedrock-nemotron-12b-vl-ts",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.036,
+   "prompt": 0.012
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 9b (TS)",
+  "id": "aws-bedrock-nemotron-9b-ts",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.014,
+   "prompt": 0.0035
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron Nano 30b (TS)",
+  "id": "aws-bedrock-nemotron-30b-ts",
+  "limits": {
+   "max_context": 262144,
+   "max_output": 252144
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.0145,
+   "prompt": 0.0035
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 3 Super-120b (TS)",
+  "id": "aws-bedrock-nemotron-super-3-120b-ts",
+  "limits": {
+   "max_context": 256000,
+   "max_output": 246000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.039,
+   "prompt": 0.009
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT OSS-120b (TS)",
+  "id": "aws-bedrock-gpt-oss-120b-ts",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.036,
+   "prompt": 0.009
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT OSS-20b (TS)",
+  "id": "aws-bedrock-gpt-oss-20b-ts",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.018,
+   "prompt": 0.004
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "grok-4-6",
+   "grok-4.6",
+   "grok-4.6-gov",
+   "us-gov.xai.grok-4.6",
+   "xai-grok-4.6",
+   "xai.grok-4.6"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Grok 4.6",
+  "id": "aws-bedrock-grok-4-6-gov",
+  "limits": {
+   "max_context": 500000,
+   "max_output": 490000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.33,
+   "prompt": 0.11
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Meta Llama 3 8B",
+  "id": "llma3-8b",
+  "limits": {
+   "max_context": 8000,
+   "max_output": 5500
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.03,
+   "prompt": 0.015
+  },
+  "vendor": "Meta"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Imagen 3",
+  "id": "google-imagen-3",
+  "limits": {
+   "max_context": 2000,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": null,
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Imagen 4",
+  "id": "google-imagen-4",
+  "limits": {
+   "max_context": 2000,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": null,
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "gemini-2.5-pro",
+   "gemini-2.5-pro-preview-05-06",
+   "gemini-3-pro",
+   "gemini-3-pro-preview",
+   "models/gemini-2.5-pro",
+   "models/gemini-3-pro",
+   "models/gemini-3-pro-preview",
+   "pro",
+   "publishers/google/models/gemini-2.5-pro",
+   "publishers/google/models/gemini-3-pro"
+  ],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 2.5 Pro",
+  "id": "google-gemini-2.5-pro",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 924500
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.75,
+   "prompt": 0.125
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "default",
+   "flash",
+   "gemini-2.5-flash",
+   "gemini-2.5-flash-preview-04-17",
+   "gemini-3-flash",
+   "gemini-3-flash-preview",
+   "models/gemini-2.5-flash",
+   "models/gemini-3-flash",
+   "models/gemini-3-flash-preview",
+   "publishers/google/models/gemini-2.5-flash",
+   "publishers/google/models/gemini-3-flash"
+  ],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 2.5 Flash",
+  "id": "google-gemini-2.5-flash",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 924500
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.125,
+   "prompt": 0.015
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 2.5 Flash Image",
+  "id": "google-gemini-2.5-flash-image",
+  "limits": {
+   "max_context": 32768,
+   "max_output": 32000
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": {
+   "completion": 1.5,
+   "prompt": 0.015
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3 Pro Image",
+  "id": "google-gemini-3-pro-image",
+  "limits": {
+   "max_context": 32768,
+   "max_output": 32000
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": {
+   "completion": 6,
+   "prompt": 0.1
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.1 Flash Image",
+  "id": "google-gemini-3-1-flash-image",
+  "limits": {
+   "max_context": 32768,
+   "max_output": 32000
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": {
+   "completion": 3,
+   "prompt": 0.025
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.1 Pro",
+  "id": "google-gemini-3.1-pro-com",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.75,
+   "prompt": 0.125
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "deprecated",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3 Flash",
+  "id": "google-gemini-3-flash-com",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.125,
+   "prompt": 0.015
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-20",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.1 Flash Lite",
+  "id": "google-gemini-3.1-flash-lite-com",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.075,
+   "prompt": 0.0125
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "gemini-3.1-flash-lite-gov",
+   "models/gemini-3.1-flash-lite-gov",
+   "publishers/google/models/gemini-3.1-flash-lite-gov"
+  ],
+  "capabilities": [
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-20",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.1 Flash Lite",
+  "id": "google-gemini-3.1-flash-lite-gov",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.0825,
+   "prompt": 0.01375
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-20",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.5 flash",
+  "id": "google-gemini-3.5-flash-com",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.45,
+   "prompt": 0.075
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "gemini-3.5-flash-gov",
+   "models/gemini-3.5-flash-gov",
+   "publishers/google/models/gemini-3.5-flash-gov"
+  ],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-20",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.5 Flash",
+  "id": "google-gemini-3.5-flash-gov",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.495,
+   "prompt": 0.0825
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "gemini-3.7-flash",
+   "gemini-3.7-flash-preview",
+   "models/gemini-3.7-flash",
+   "publishers/google/models/gemini-3.7-flash"
+  ],
+  "capabilities": [
+   "audio_input",
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-08-13",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Gemini 3.7 Flash",
+  "id": "google-gemini-3.7-flash",
+  "limits": {
+   "max_context": 1048576,
+   "max_output": 1038576
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.20625,
+   "prompt": 0.04125
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "vertex-claude-45-sonnet"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Sonnet 4.5",
+  "id": "google-claude-45-sonnet",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 135000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.825,
+   "prompt": 0.165
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-4-5-haiku",
+   "claude-haiku-4-5-20251001",
+   "claude-haiku-4-5@20251001",
+   "haiku",
+   "vertex-claude-45-haiku"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Haiku 4.5",
+  "id": "google-claude-45-haiku",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 135000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.275,
+   "prompt": 0.055
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-4-5-20251101",
+   "claude-opus-4-5@20251101",
+   "opus-45",
+   "vertex-claude-45-opus"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 4.5",
+  "id": "google-claude-45-opus",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 135000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.375,
+   "prompt": 0.275
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-4-6-default",
+   "claude-opus-4-6@default",
+   "opus-46",
+   "vertex-claude-46-opus"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 4.6",
+  "id": "google-claude-46-opus",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.375,
+   "prompt": 0.275
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-sonnet-4-6-default",
+   "claude-sonnet-4-6@default",
+   "sonnet-46",
+   "vertex-claude-46-sonnet"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Sonnet 4.6",
+  "id": "google-claude-46-sonnet",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 1.2875,
+   "prompt": 0.33
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-4-7-default",
+   "claude-opus-4-7@default",
+   "opus-47",
+   "vertex-claude-47-opus"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 4.7",
+  "id": "google-claude-47-opus",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.375,
+   "prompt": 0.275
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-4-8-default",
+   "claude-opus-4-8@default",
+   "opus-48",
+   "vertex-claude-48-opus"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-28",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 4.8",
+  "id": "google-claude-48-opus",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.375,
+   "prompt": 0.275
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-5",
+   "claude-opus-5-default",
+   "claude-opus-5@default",
+   "google-claude-5-opus",
+   "opus-5",
+   "vertex-claude-5-opus"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 5",
+  "id": "google-claude-opus-5",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.375,
+   "prompt": 0.275
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-opus-5-5",
+   "claude-opus-5-5-default",
+   "claude-opus-5-5@default",
+   "claude-opus-5.5",
+   "opus",
+   "opus-5-5",
+   "opus-5.5",
+   "vertex-claude-opus-5-5"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 5.5",
+  "id": "google-claude-opus-5-5",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.1,
+   "prompt": 0.22
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-fable-5",
+   "claude-fable-5-default",
+   "claude-fable-5@default",
+   "fable",
+   "fable-5",
+   "vertex-claude-fable-5"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-06-09",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Fable 5",
+  "id": "google-claude-fable-5",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 2.5,
+   "prompt": 0.5
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Veo 3.1 Generate",
+  "id": "google-veo-3.1-generate",
+  "limits": {
+   "max_context": 4097,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": null,
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Veo 3.1 Fast",
+  "id": "google-veo-3.1-fast",
+  "limits": {
+   "max_context": 4097,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": null,
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "video_input",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Google Veo 3.1 Lite",
+  "id": "google-veo-3.1-lite",
+  "limits": {
+   "max_context": 4097,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": null,
+  "vendor": "Google"
+ },
+ {
+  "aliases": [
+   "claude-sonnet-5",
+   "claude-sonnet-5-default",
+   "claude-sonnet-5@default",
+   "sonnet-5",
+   "vertex-claude-sonnet-5"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Sonnet 5",
+  "id": "google-claude-sonnet-5",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 800000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.55,
+   "prompt": 0.11
+  },
+  "vendor": "Google"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 4.1",
+  "id": "gpt-4.1-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": null,
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 4.1-mini",
+  "id": "gpt-4.1-mini-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": null,
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT o3-mini-gov",
+  "id": "gpt-o3-mini-gov",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 120000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": null,
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.1",
+  "id": "gpt-5.1-gov",
+  "limits": {
+   "max_context": 400000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": null,
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Sol (Gov)",
+  "id": "gpt-5.6-sol-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 3.094,
+   "prompt": 0.6875
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Terra (Gov)",
+  "id": "gpt-5.6-terra-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.2375,
+   "prompt": 0.275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Luna (Gov)",
+  "id": "gpt-5.6-luna-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.124,
+   "prompt": 0.0275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Groq 70B",
+  "id": "groq-70b",
+  "limits": {
+   "max_context": 8192,
+   "max_output": 7000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.0445,
+   "prompt": 0.0445
+  },
+  "vendor": "Groq"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Groq Llama 3.3",
+  "id": "groq-llama33",
+  "limits": {
+   "max_context": 6000,
+   "max_output": 110000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.0395,
+   "prompt": 0.0295
+  },
+  "vendor": "Groq"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Groq Llama 4 Scout",
+  "id": "groq-llama4-scout",
+  "limits": {
+   "max_context": 10000000,
+   "max_output": 110000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.017,
+   "prompt": 0.0055
+  },
+  "vendor": "Groq"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Groq DeepSeek",
+  "id": "groq-deepseek",
+  "limits": {
+   "max_context": 6000,
+   "max_output": 4000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.0395,
+   "prompt": 0.0295
+  },
+  "vendor": "Groq"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI o1",
+  "id": "gpt-o1",
+  "limits": {
+   "max_context": 128000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 3.3,
+   "prompt": 0.825
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "o1-mini",
+   "o3-mini"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT o3-mini",
+  "id": "gpt-o3-mini",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 120000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.242,
+   "prompt": 0.0605
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "o1",
+   "o1-preview",
+   "o3"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI o3",
+  "id": "gpt-o3",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 120000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.44,
+   "prompt": 0.11
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "codex-mini",
+   "o4-mini"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": false,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT o4-mini",
+  "id": "gpt-o4-mini",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 120000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.242,
+   "prompt": 0.0605
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-4",
+   "gpt-4-0613",
+   "gpt-4-turbo",
+   "gpt-4-turbo-2024-04-09",
+   "gpt-4o",
+   "gpt4"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 4.1",
+  "id": "gpt-4.1",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.44,
+   "prompt": 0.11
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 4.1-mini",
+  "id": "gpt-4.1-mini",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.088,
+   "prompt": 0.022
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 4.1-nano",
+  "id": "gpt-4.1-nano",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.022,
+   "prompt": 0.0055
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.3-codex",
+   "gpt5"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5",
+  "id": "gpt-5",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.55,
+   "prompt": 0.069
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5-mini",
+  "id": "gpt-5-mini",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.11,
+   "prompt": 0.014
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5-nano",
+  "id": "gpt-5-nano",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.022,
+   "prompt": 0.003
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.1-codex"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.1",
+  "id": "gpt-5.1",
+  "limits": {
+   "max_context": 400000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.55,
+   "prompt": 0.069
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.2-codex"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.2",
+  "id": "gpt-5.2",
+  "limits": {
+   "max_context": 400000,
+   "max_output": 50000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.775,
+   "prompt": 0.0965
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.4-codex"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.4",
+  "id": "gpt-5.4",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 220000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.65,
+   "prompt": 0.275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-03-20",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.4-nano",
+  "id": "gpt-5.4-nano",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 220000
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.06875,
+   "prompt": 0.011
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.4-sec",
+  "id": "gpt-5.4-sec",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 220000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.65,
+   "prompt": 0.275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.5-codex"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-04-27",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.5",
+  "id": "gpt-5.5",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.65,
+   "prompt": 0.275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "DeepSeek v3.2",
+  "id": "deepseek-v3.2-com",
+  "limits": {
+   "max_context": 163840,
+   "max_output": 153840
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.0925,
+   "prompt": 0.032
+  },
+  "vendor": "DeepSeek"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Haiku 4.5",
+  "id": "claude-haiku-4-5-com",
+  "limits": {
+   "max_context": 200000,
+   "max_output": 190000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.2,
+   "prompt": 0.04
+  },
+  "vendor": "Anthropic"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Sonnet 4.6",
+  "id": "claude-sonnet-4-6-com",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 1.2875,
+   "prompt": 0.33
+  },
+  "vendor": "Anthropic"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Anthropic Claude Opus 4.7",
+  "id": "claude-opus-4-7-com",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 2.325,
+   "prompt": 0.6
+  },
+  "vendor": "Anthropic"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT Image 2",
+  "id": "gpt-image-2-com",
+  "limits": {
+   "max_context": 1024,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": {
+   "completion": 0,
+   "prompt": 0.25
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Kimi K2.6",
+  "id": "kimi-2.6-com",
+  "limits": {
+   "max_context": 256000,
+   "max_output": 246000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.2,
+   "prompt": 0.0475
+  },
+  "vendor": "Moonshot"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-07-27",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Kimi K2.7 Code",
+  "id": "kimi-2.7-code-com",
+  "limits": {
+   "max_context": 262144,
+   "max_output": 252144
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.2,
+   "prompt": 0.0475
+  },
+  "vendor": "Moonshot"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "DeepSeek V4 Flash",
+  "id": "deepseek-v4-flash",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.206,
+   "prompt": 0.0515
+  },
+  "vendor": "DeepSeek"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": false,
+  "date_added": "2026-05-28",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "DeepSeek V4 Pro",
+  "id": "deepseek-v4-pro",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.174,
+   "prompt": 0.087
+  },
+  "vendor": "DeepSeek"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Mistral Large 3",
+  "id": "mistral-large-3",
+  "limits": {
+   "max_context": 128000,
+   "max_output": 100000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.0925,
+   "prompt": 0.032
+  },
+  "vendor": "Mistral"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Black Forest Labs FLUX.2 Pro",
+  "id": "flux-2-pro",
+  "limits": {
+   "max_context": 1024,
+   "max_output": 1024
+  },
+  "paid_only": true,
+  "tier": null,
+  "token_conversion_rate": {
+   "completion": 0,
+   "prompt": 0.25
+  },
+  "vendor": "Black Forest Labs"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "xAI Grok 4.20 (Reasoning)",
+  "id": "grok-4-20-reasoning",
+  "limits": {
+   "max_context": 262144,
+   "max_output": 252144
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.33,
+   "prompt": 0.11
+  },
+  "vendor": "xAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "xAI Grok 4.20 (Non-reasoning)",
+  "id": "grok-4-20-non-reasoning",
+  "limits": {
+   "max_context": 262144,
+   "max_output": 252144
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.33,
+   "prompt": 0.11
+  },
+  "vendor": "xAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "xAI Grok 4.1 Fast (Reasoning)",
+  "id": "grok-4-1-fast-reasoning",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.0275,
+   "prompt": 0.011
+  },
+  "vendor": "xAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-04-04",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "xAI Grok 4.1 Fast (Non-reasoning)",
+  "id": "grok-4-1-fast-non-reasoning",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.0275,
+   "prompt": 0.011
+  },
+  "vendor": "xAI"
+ },
+ {
+  "aliases": [
+   "gpt-5.6",
+   "gpt-5.6-codex"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Sol",
+  "id": "gpt-5.6-sol",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 2.475,
+   "prompt": 0.55
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Terra",
+  "id": "gpt-5.6-terra",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.99,
+   "prompt": 0.22
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.6 Luna",
+  "id": "gpt-5.6-luna",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.099,
+   "prompt": 0.022
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [
+   "gpt-6"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT-6 Astra",
+  "id": "gpt-6-astra",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 900000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 4.125,
+   "prompt": 1.1
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT-6 Sol",
+  "id": "gpt-6-sol",
+  "limits": {
+   "max_context": 1050000,
+   "max_output": 945000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.2375,
+   "prompt": 0.275
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT-6 Luna",
+  "id": "gpt-6-luna",
+  "limits": {
+   "max_context": 1050000,
+   "max_output": 945000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.0495,
+   "prompt": 0.011
+  },
+  "vendor": "OpenAI"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 12b-vl",
+  "id": "aws-bedrock-nemotron-12b-vl-gov",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.036,
+   "prompt": 0.012
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 9b",
+  "id": "aws-bedrock-nemotron-9b-gov",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.014,
+   "prompt": 0.0035
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron Nano 30b",
+  "id": "aws-bedrock-nemotron-30b-gov",
+  "limits": {
+   "max_context": 262144,
+   "max_output": 252144
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.0145,
+   "prompt": 0.0035
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "NVIDIA Nemotron 3 Super-120b",
+  "id": "aws-bedrock-nemotron-super-3-120b-gov",
+  "limits": {
+   "max_context": 256000,
+   "max_output": 246000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.039,
+   "prompt": 0.009
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT OSS-120b",
+  "id": "aws-bedrock-gpt-oss-120b-gov",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.036,
+   "prompt": 0.009
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT OSS-20b",
+  "id": "aws-bedrock-gpt-oss-20b-gov",
+  "limits": {
+   "max_context": 131072,
+   "max_output": 121072
+  },
+  "paid_only": true,
+  "tier": "fast",
+  "token_conversion_rate": {
+   "completion": 0.018,
+   "prompt": 0.004
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "grok-4-3",
+   "grok-4.3",
+   "grok-4.3-gov",
+   "xai-grok-4.3",
+   "xai.grok-4.3"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Grok 4.3",
+  "id": "aws-bedrock-grok-4-3-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.15,
+   "prompt": 0.075
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "gemma-4-e2b",
+   "google.gemma-4-e2b"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Gemma 4 E2B",
+  "id": "aws-bedrock-gemma-4-e2b-gov",
+  "limits": {
+   "max_context": 128000,
+   "max_output": 120000
+  },
+  "paid_only": true,
+  "tier": "economy",
+  "token_conversion_rate": {
+   "completion": 0.005,
+   "prompt": 0.0025
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "gemma-4-31b",
+   "google.gemma-4-31b"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Gemma 4 31B",
+  "id": "aws-bedrock-gemma-4-31b-gov",
+  "limits": {
+   "max_context": 256000,
+   "max_output": 245000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.024,
+   "prompt": 0.0085
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "gemma-4-26b",
+   "gemma-4-26b-a4b",
+   "google.gemma-4-26b-a4b"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "Gemma 4 26B-A4B",
+  "id": "aws-bedrock-gemma-4-26b-a4b-gov",
+  "limits": {
+   "max_context": 256000,
+   "max_output": 245000
+  },
+  "paid_only": true,
+  "tier": "standard",
+  "token_conversion_rate": {
+   "completion": 0.024,
+   "prompt": 0.008
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "aws-bedrock-gpt-5-4-gov"
+  ],
+  "capabilities": [
+   "text",
+   "vision_input"
+  ],
+  "cui_capable": true,
+  "date_added": "2026-05-31",
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "OpenAI GPT 5.4",
+  "id": "gpt-5.4-gov",
+  "limits": {
+   "max_context": 272000,
+   "max_output": 220000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.2375,
+   "prompt": 0.275
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "openai.gpt-5.6-luna"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT-5.6 Luna",
+  "id": "aws-bedrock-gpt-5-6-luna-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 0.1188,
+   "prompt": 0.0264
+  },
+  "vendor": "AWS Bedrock"
+ },
+ {
+  "aliases": [
+   "openai.gpt-5.6-terra"
+  ],
+  "capabilities": [
+   "text"
+  ],
+  "cui_capable": true,
+  "date_added": null,
+  "deprecation": {
+   "message": null,
+   "replacement_id": null,
+   "state": "active",
+   "sunset_at": null
+  },
+  "display_name": "GPT-5.6 Terra",
+  "id": "aws-bedrock-gpt-5-6-terra-gov",
+  "limits": {
+   "max_context": 1000000,
+   "max_output": 990000
+  },
+  "paid_only": true,
+  "tier": "flagship",
+  "token_conversion_rate": {
+   "completion": 1.188,
+   "prompt": 0.264
+  },
+  "vendor": "AWS Bedrock"
+ }
+]

@@ -1,0 +1,12 @@
+{
+ "chatHost": "chat.asksage.ai",
+ "apiHost": "api.asksage.ai",
+ "apiVia": "chat.* -> api.* (bundle default is https://api.asksage.ai/server)",
+ "fetchedAt": "2026-09-25T07:18:28.687Z",
+ "bundleInfo": {
+  "path": "/assets/index-DcmfUYyN.js",
+  "sha256": "1853efb2a2bb2cb52d895f642d4f4ff5a911b3d22051537da86c6b1a521f6bc4",
+  "bytes": 12187710
+ },
+ "tool": "phase0/probe/catalog-audit.mjs"
+}

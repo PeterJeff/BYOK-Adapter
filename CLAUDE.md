@@ -24,7 +24,8 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - `scripts/pack-vsix.mjs`: zero-dependency `.vsix` packer (`scripts/lib/zip.mjs` is the zip writer).
 - `scripts/run-tests.mjs`: runs every `test/**/*.test.{js,mjs}` with `node:test`.
 - `test/helpers/vscode-stub.js`: minimal `vscode` module for driving extension code under `node:test`.
-- `research/`: not committed yet (see PLAN.md §0). Phase 0 recordings go to `research/live/<tenant-alias>/`.
+- `phase0/probe/catalog-audit.mjs`: public, unauthenticated model-catalog audit for an instance (pure checks in `phase0/probe/lib/catalog.mjs`).
+- `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
 
 ## Commands
 
