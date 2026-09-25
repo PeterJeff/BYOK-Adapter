@@ -39,3 +39,7 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - Keep pure logic (converters, normalizers, parsers, cost formula, cache placement) free of `vscode` imports so it is unit-testable; inject what it needs.
 - Every **LIVE-TEST** assumption in PLAN.md must be confirmed by a recorded fixture for the tenant before code depends on it.
 - Type-checking is optional in a dev environment that has `tsc` and `@types/vscode` (for example `tsc --allowJs --checkJs --noEmit --strict`); never make it a requirement.
+
+## Where Phase 0b's paid probes may run
+
+Hosted/cloud Claude Code sessions (this remote container, CI) never have a real `ASKSAGE_API_KEY`/`ASKSAGE_EMAIL` and must not spend Ask Sage tokens. From such a session, `api-probe.mjs` may only run `--tests T0` (free) plus `--dry-run`; do not ask for a key or attempt the paid tests (T1–T9, T11, T15–T18, T20). Confirming a **LIVE-TEST** assumption with a real fixture is work for a human running Claude Code locally (Desktop or CLI) with their own tenant credentials — hand that off rather than retrying it here. See `research/live/sandbox-proxy/README.md` for what a credential-less run from a hosted session looks like and why it doesn't count as confirmation.
