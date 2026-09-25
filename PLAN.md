@@ -11,6 +11,10 @@
 
 **Repo note (v3.1, 2026-09-25): implementation constraint.** The target machine has VS Code and nothing else: no npm, no package manager, no build tools. The extension is therefore written in **plain JavaScript** (CommonJS, `// @ts-check` with JSDoc types), has no build step, uses only Node built-ins and the `vscode` API, and is loaded manually (unpacked folder, or a `.vsix` produced by the repo's zero-dependency packer run with VS Code's bundled Node). Where this document says `.ts`, read `.js`. See `CLAUDE.md` for the working rules.
 
+**Revision note (v3.2, 2026-09-25): two premises corrected.**
+- **No Copilot sign-in, ever.** The target machine (and the dev machine) will never be signed in to GitHub Copilot. Per VS Code's documentation, since 1.122 extension-provided and BYOK models work in chat, agent mode and MCP with no GitHub account and no Copilot plan (inline completions and anything embeddings-based still need GitHub). This project exists to use that route. Phase 0a therefore tests the **signed-out** state on VS Code 1.122 or later; v3's "under the account's Copilot plan and org policy" was wrong for this user.
+- **Rates come from the API at runtime, not from a hand-maintained table** (§3.1). One measured billing point disagrees with the API's multipliers, so §3.1 also requires calibration against measured billing.
+
 This document is the input for a later build mission in Claude Code. Nothing has been tested against the live Ask Sage API with credentials. Items marked **LIVE-TEST** must be confirmed in Phase 0 before code depends on them. Test IDs (T0–T21, E1–E5) are defined in §9.
 
 ## 0. Research index (`research/`)
@@ -77,15 +81,20 @@ The extension's job:
 | Ask Sage extras (datasets, personas, live search, plugins) | – | – | – | – | **yes** |
 
 ### 2.1 Cache pricing
-Rates are "model tokens per 1 Ask Sage token", so bigger is cheaper.
-- A cache read costs **0.1×** the prompt price, a 5-minute write **1.25×**, a 1-hour write **2×**. This applies to all Claude models and to GPT-5.4, 5.5, 5.6 and 6.
-- A few model variants carry non-standard read multipliers (0.025× and 0.25× appear in the table). The table is authoritative, not these defaults.
-- **Models with no cache rate:** GPT-4.1, GPT-5, 5.1 and 5.2, the o-series, all Gemini, and several partner-hosted models. Assume full price on every re-sent token (**LIVE-TEST**).
+Cache prices are **multiples of the same model's prompt price**, so they do not depend on the absolute rate scale (§3.1).
+- **Provenance.** They were read from the chat web app's hardcoded rate table (bundle fetched 2026-09-22). `get-models` serves no cache rates, and they were never checked against billing (T1–T4 do that). The table shows a cache read at **0.1×** the prompt price, a 5-minute write at **1.25×** and a 1-hour write at **2×**: Anthropic's own published multipliers.
+- **Where the table applies them (26 of 104 rows).** 15 Claude rows (14 at 0.1× read; `aws-bedrock-claude-fable-5-1-gov` at 0.025×, per its changelog), **10 OpenAI rows** (GPT-5.4, 5.4-sec, 5.5, 5.6 and 6, at the same Anthropic ratios) and one xAI row (`aws-bedrock-grok-4-6-gov`, read 0.25× only, no write rates). So it is not Anthropic-only. But Anthropic's ratios are only known to be right for Anthropic: for OpenAI the write multipliers (1.25×, 2×) look like a table artifact, since OpenAI documents caching as automatic with no separate write charge. Treat OpenAI writes as unverified until T3.
+- The table is not authoritative for billing; the extension does not embed it (§3.1).
+- **Models with no cache rate in the table:** GPT-4.1, GPT-5, 5.1 and 5.2, the AWS-hosted GPT-5.x `-gov` models, the o-series, all Gemini (none of ~15 rows), and several partner-hosted models. Assume full price on every re-sent token (**LIVE-TEST**).
+- **Should the extension or tests get cache ratios live?** Partly. No API serves them, and deriving them at runtime from budget counters is messy: counters lag about 2 s (T19), other traffic pollutes them, they are integers (a 14-token request billed 4 against an estimate of 1.9 to 2.4), and every probe costs tokens. So:
+  - **Code:** a small **rule per family** (Claude 0.1 / 1.25 / 2; other families no cache discount) as constants, not a per-model table.
+  - **Tests (Phase 0, per tenant):** T1–T4 and T15 measure the multipliers live and the recorded fixtures back the constants. A ratio to the same model's prompt price cancels the absolute-rate uncertainty of §3.1, so it can be measured cleanly.
+  - **Runtime:** cache token counts come from each response's `usage`; the ledger's measured/estimated ratio (§3.6) and the Check Cache Health command (§4.3) are the live checks. They report a wrong constant; they do not silently replace it.
 - Whether the GPT rows carry a **write** rate, and how it is applied when OpenAI reports no writes, is **LIVE-TEST** (T3). If writes are billed but unreported, GPT estimates run low.
 
 The model picker must show cache capability, because it changes which models are sensible for agent mode.
 
-For scale: a 100k-token context over 20 agent rounds on Opus 4.8 costs about **715k Ask Sage tokens uncached versus about 130k cached**, roughly a 5.5× difference (inferred from the rate table).
+For scale: a 100k-token context over 20 agent rounds on Opus 4.8 costs about **715k Ask Sage tokens uncached versus about 130k cached**, roughly a 5.5× difference (inferred from the web app's 2026-09-22 rate table; the ratio holds whatever the absolute scale, if Claude's cache multipliers do).
 
 ### 2.2 Default flavor per model family
 Overridable per model in settings.
@@ -113,20 +122,20 @@ Tenants can route the same model name to different upstream hosts and regions. H
 ## 3. Cost, budget and usage design
 
 ### 3.1 Token conversion rates
-- **Where they come from.** They are hardcoded in the chat web app's JavaScript (`chat.<tenant>/assets/index-*.js`). **Correction (2026-09-25):** `POST /server/get-models?format=full` does serve `token_conversion_rate` (prompt and completion only) for most models, plus `cui_capable`, `aliases` and `limits`; cache, thinking and long-context rates still come only from the web app. See `research/model-catalog-findings.md`.
-- **Which rows are shown.** The web app filters them in the browser by the deployment's default model list plus the user's `force_models`.
-- **Formula** (per request, with every rate in model tokens per Ask Sage token, applied to *normalized* counts from §3.2):
-  `AS = uncachedIn/prompt + cacheRead/cacheRead + write5m/cacheWrite5Min + write1h/cacheWrite1Hr + visibleOutput/completion + thinking/thinking`
+- **Source (decision 2026-09-25: no hand-maintained rate table).** `POST /server/get-models?format=full` serves `token_conversion_rate` `{prompt, completion}` for most models (95 of 105 on 2026-09-25), plus `cui_capable`, `aliases` and `limits`. The extension reads it per tenant at activation and periodically, and keeps the last good copy with a timestamp in global storage. The web app's own rate table (hardcoded in `chat.<tenant>/assets/index-*.js`, in the inverse unit "model tokens per Ask Sage token") is **not** embedded or scraped by the extension. See `research/model-catalog-findings.md`.
+- **Unit.** The API value is a multiplier: `Ask Sage tokens = model tokens × rate` (the public spec: "Multipliers applied to raw provider tokens for billing").
+- **Which rows are shown.** Intersect with the deployment's model list and the user's `force_models` (§2.3).
+- **Formula** (per request, on *normalized* counts from §3.2, where `p` and `c` are the model's API multipliers and `k` the model's calibration factor below):
+  `AS = k × (uncachedIn×p + cacheRead×p×readMult + write5m×p×write5mMult + write1h×p×write1hMult + visibleOutput×c + thinking×c)`
+  with the cache multipliers from §2.1's per-family rule (Claude 0.1 / 1.25 / 2; no discount elsewhere until measured).
+- **Open risk: the API multipliers are not confirmed to be what is billed.** On 2026-09-25 they differed from the web app's table (scraped 2026-09-22) on all 91 models present in both: 71 by a uniform factor (API = 0.769 × the table's multiplier), the rest by 1.15× to 2.0×, in both directions. They equal the web app's "legacy" second table for only 31 of 85 models. The one billing measurement so far (T19, `google-claude-45-haiku` through M, 5,273 in / 4 out, test tenant) moved the counter by **381**: the API multipliers predict 291 (billed 1.31× higher), the web app table predicts 378 (within 1%). A 14-token request billed 4 against 1.9 (API) or 2.4 (table). One model and two requests prove nothing yet, but they mean API multipliers cannot be trusted until measured. **LIVE-TEST:** T1–T4 and T19 record measured/estimated per model; run them on several models across families.
+- **Calibration instead of a table.** The ledger's rolling median of measured/estimated per model and flavor (§3.6) becomes `k`, applied once it has stabilised (say ≥5 resolvable requests within ±5%). Until then estimates carry a "rate unverified" flag and the pre-flight guard (§3.5) uses the pessimistic bound of `k`. This handles a uniform markup like the 1.31× above without any per-model data entry. Counter granularity (integers, ~2 s lag) means small requests are excluded from calibration.
 - **Long context.** Above `longContextThreshold` (272k for GPT-5.4 and 5.6, 200k for some Claude models), the long-context rates apply. For Claude, the threshold is tested against **total input including cache reads and writes**, and the premium applies to the **whole request**. No long-context cache rate exists, so the formula prices cached tokens in a long-context request at the long-context prompt rate (pessimistic) until reconciliation says otherwise. Compacting before the threshold is a cost rule.
-- **Ignore the second table.** An older, stale second rate table exists in the web app's code.
+- **What the API does not serve:** cache, thinking and long-context rates, and long-context thresholds. Cache: §2.1's per-family rule. Thinking: priced at the completion rate (the web app's table has thinking = completion on every row). Long context: thresholds and premiums are constants per family (**LIVE-TEST**, T13), and the calibration ratio flags a mismatch.
+- **Unknown model.** A model with no `token_conversion_rate` (10 of 105 on 2026-09-25: image and video models, `llma3`, four Azure Gov models) is priced at the highest rate among API models of the same `tier`, and flagged "unpriced" in the picker.
+- **Dropped from v3:** the bundled per-tenant snapshot, the override file and its editor, and the optional web-app rate refresher (open decision resolved). If the calibration approach proves too coarse, a per-model override can come back.
 
-**How the extension gets the rates, in priority order:**
-1. **A bundled snapshot** per tenant: `rates/<tenant>/<date>.json`, generated from `model-token-conversion.json`, recording the source bundle hash.
-2. **A user override file.** `asksage-rates.json` in the extension's global storage, editable through a command. The override wins per model.
-3. **Optional: a "Refresh rates from the web app" command.** It downloads the tenant's public web app script and re-extracts the table, then shows a diff for approval before anything is applied. Fragile by nature (scraping); on parser failure it reports and keeps the current table. Off by default.
-4. **Unknown model.** Use a pessimistic default (the Flagship-tier average) and flag the model as "unpriced" in the picker.
-
-Also ask Ask Sage support for an official rates endpoint.
+Also ask Ask Sage support which rate set is billed, and for an endpoint that serves cache, thinking and long-context rates.
 
 ### 3.2 Usage normalization (new)
 The APIs count tokens differently. A pure `normalize/` module converts every flavor's usage into one shape before the formula runs. Each rule gets unit tests against recorded fixtures.
@@ -275,7 +284,7 @@ src/
   config/      tenants.js (tenant alias → host, plus custom host), settings.js (scoped per §6)
   auth/        credentials.js (SecretStorage), accessToken.js (JWT for x-access-tokens, refresh), userInfo.js
   catalog/     per-tenant bundled tables + /v1/models + force_models filter + per-model flavor overrides + capabilities (tool limit, image input)
-  rates/       per-tenant bundled snapshots, override file, optional web-app refresher, cost formula
+  rates/       live rates from get-models (per tenant, last-good copy in global storage), per-family cache rules, cost formula, per-model calibration factor
   normalize/   per-flavor usage normalization (§3.2)
   transport/   anthropicMessages.js, openaiChat.js, openaiResponses.js, gemini.js, nativeQuery.js, sse.js, sepStream.js
   convert/     messages per flavor, tools (schema sanitizing, deterministic ordering), reasoning round-trip
@@ -319,7 +328,7 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 
 ### Phase 0a: environment smoke test (target machine, no API)
 A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as a `.vsix` (built with `scripts/pack-vsix.mjs`) or as an unpacked folder on the machine where the extension will actually be used. It costs nothing and is the go/no-go gate.
-- **E1:** extension-contributed models appear in the chat model picker under the account's Copilot plan and org policy.
+- **E1:** extension-contributed models appear in the chat model picker **with no GitHub or Copilot sign-in** (the state on the target machine), on VS Code 1.122 or later. Also record whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting applies to a signed-out machine (unverified in the research).
 - **E2:** agent mode will use an extension-contributed model and pass it tools.
 - **E3:** `.vsix` side-loading is permitted (`extensions.allowed` and related policy).
 - **E4:** thinking parts and private-MIME `LanguageModelDataPart`s emitted by the provider come back in the history of later requests (§5).
@@ -374,7 +383,7 @@ Tool conversion; cache breakpoints (M) with TTL, minimum and lookback handling; 
 Pre-flight estimate, warnings and hard stop, the budget-mode experiment (measured against normal mode before it is recommended), burn-rate forecast, request-tokens command, cache-health and fallback alarms, and the reconciliation display.
 
 ### Phase 4: remaining flavors and overrides
-R (`store:false`, encrypted reasoning; promoted to GPT-5.x default if T3 passes), G, multi-flavor picker entries, workspace policy, the rate override file editor, and the optional web-app rate refresher.
+R (`store:false`, encrypted reasoning; promoted to GPT-5.x default if T3 passes), G, multi-flavor picker entries and workspace policy.
 
 ### Phase 5: search tools
 Subject to the §8 gate: `#asksageCodebase` (local embeddings index, purge command) and `#asksageDocs` (dataset query); N as an opt-in "Ask Sage (datasets)" model variant.
@@ -397,7 +406,8 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 
 | Area | v2 | v3 |
 |---|---|---|
-| Phase 0 | API probes only | Environment smoke test first (E1–E5); target-tenant subset (0c) |
+| Phase 0 | API probes only | Environment smoke test first (E1–E5), run **signed out of Copilot** on VS Code ≥1.122 (v3.2); target-tenant subset (0c) |
+| Rates | bundled table (v2), then bundled snapshot + override + refresher (v3) | live from `get-models`, per-family cache rules, per-model calibration against measured billing (v3.2) |
 | Tenant | implicit | first-class dimension for catalog, rates, defaults, fixtures and ledger |
 | Cost formula | raw counts | per-flavor normalization; Claude thinking handling; whole-request long-context rule |
 | State | per-request only | bounded reasoning side cache with a history-parts first choice |
@@ -418,7 +428,8 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 - VS Code version and policy on the target machine (answered by Phase 0a).
 - Ask Sage's terms for third-party clients.
 - Whether the extension is for one user or shared.
-- Whether the optional web-app rate refresher is acceptable.
+- Which rate set Ask Sage bills (the API's `token_conversion_rate` or the web app's table): settled by measurement (§3.1) and, if possible, by Ask Sage support. (The web-app rate refresher question is closed: dropped.)
+- Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in (answered by E1).
 
 ---
 
@@ -426,7 +437,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 
 > Build the Ask Sage VS Code language-model provider in `PLAN.md` phase by phase, starting with the Phase 0a smoke-test provider, then the Phase 0b probe script.
 >
-> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md`. The specs in `research/sources/` and the rates in `research/model-token-conversion.json` are the starting data.
+> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md`. The specs in `research/sources/` are the starting data. Rates come from the API at runtime, not from a table (§3.1); `model-token-conversion.json` is a 2026-09-22 snapshot of the web app's table, useful only as a cross-check.
 >
 > Constraints:
 > - plain JavaScript (CommonJS, `// @ts-check` + JSDoc), no build step, no npm; only Node built-ins and the `vscode` API

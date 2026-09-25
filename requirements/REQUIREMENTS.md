@@ -14,7 +14,8 @@ Update this file in the same commit that changes status: when a phase's acceptan
 |---|---|---|
 | Plain JavaScript, CommonJS, `// @ts-check` + JSDoc, no TypeScript, no build step | ✅ | All of `phase0/`, `scripts/`, `test/` are `.js`/`.mjs` with no `tsconfig.json` or transpile step |
 | No npm dependencies, no lockfile, nothing vendored from `asksageclient` | ✅ | No `package.json` `dependencies`/`devDependencies` anywhere in the repo; `phase0/smoke-extension/package.json` declares none |
-| Standalone scripts are `.mjs`, run under VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`), Node 22, Windows-path safe | 🔶 | `scripts/pack-vsix.mjs`, `scripts/run-tests.mjs`, `phase0/probe/*.mjs` are written to this contract; not yet exercised through an actual VS Code executable (only plain Node in this environment) |
+| Standalone scripts are `.mjs`, run under VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`), Node 22+, Windows-path safe | ✅ | 2026-09-25, Windows 11, VS Code 1.139.0 (bundled Node 24.20.0, Electron 43.6.0): `scripts/run-tests.mjs` (64/64 pass), `scripts/pack-vsix.mjs` (8-entry `.vsix` for the smoke extension, `--list` OK) and `phase0/probe/api-probe.mjs --dry-run` all ran through `Code.exe` with `ELECTRON_RUN_AS_NODE=1`. Live (network) probe runs under that Node are not yet done. Note: VS Code's Node is 24, not the "Node 22" the docs assumed; the contract is "22 or newer" |
+| No dependence on a Copilot / GitHub sign-in (target machine is never signed in) | 🔶 | Stated in `CLAUDE.md` and `PLAN.md` v3.2. Per VS Code's docs (research: 1.122 release notes), extension-provided and BYOK models work signed out from VS Code 1.122; this machine has 1.139. Not yet observed here: that is E1 |
 | Manual loading only (`.vsix`, unpacked folder, `--extensionDevelopmentPath`) | ✅ | `scripts/pack-vsix.mjs` builds a zero-dependency `.vsix`; `phase0/smoke-extension/README.md` documents all three load paths |
 | Stable VS Code API only; proposed APIs / Copilot internals feature-detected and degrade silently | 🔶 | `phase0/smoke-extension` targets only the stable `LanguageModelChatProvider` API; whether Copilot internals it probes (thinking parts, `usage` data part) actually round-trip is E4, not yet run (see §3) |
 
@@ -38,6 +39,8 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 | §2.1 | Whether GPT rows carry a cache **write** rate, and how it's applied when OpenAI reports no writes | T3 | ⛔ not run |
 | §3.3 | Monthly limit comes from `POST /user/validate_token_with_full_user` → `max_tokens` (plus `max_train_tokens`, org-pool settings, `force_models`, `custom_intro_prompt`) via API-key JWT | T0 | ✅ confirmed — `research/live/test-tenant/probe/2026-09-25-1534-b69656/T0/008-validate-token-with-full-user.json`: `max_tokens: 200000` |
 | §3.3 | `POST /server/count-monthly-tokens` traffic can be tagged with `{app_name}` | T0 | ✅ confirmed **negative** — tagged and untagged calls returned the identical count (411); `app_name` doesn't filter/attribute usage. See `research/live/test-tenant/README.md` |
+| §3.1 | `get-models` `token_conversion_rate` is the multiplier Ask Sage bills (`AS = model tokens × rate`) | T1–T4, T19 on several models across families | 🔶 **one measurement disagrees.** T19, `google-claude-45-haiku` via M, 5,273 in / 4 out: counter moved 381; API multipliers predict 291 (billed 1.31× higher), the web app's 2026-09-22 table predicts 378 (within 1%). Small request: billed 4 vs 1.9 (API) / 2.4 (table). The API also differs from that table on all 91 shared models (71 by a uniform ×0.769, the rest ×1.15–2.0) and matches the web app's "legacy" list on only 31 of 85. One model, two requests: unresolved. Design consequence (PLAN §3.1): API rates + per-model calibration against measured billing, no hand-maintained table |
+| §2.1 | Cache multipliers (Claude: read 0.1×, 5-min write 1.25×, 1-hour write 2× of the model's own prompt price) are what Ask Sage bills | T1, T15 (ratio to the same model's prompt price, so the §3.1 scale question cancels) | ⛔ not run. Values come from the web app's table (Anthropic's published ratios, also applied there to 10 OpenAI rows), never from billing or an API |
 | §3.5 | Billing behavior of a cancelled stream | T9 | ⛔ not run |
 | §5 | The stable VS Code API hands thinking parts / private-MIME `LanguageModelDataPart`s back to a third-party provider in later requests | E4 | 🔶 built (`phase0/smoke-extension`), not yet run on the target machine |
 | §8 | Which balance (inference or training) embeddings charge | T20 | ⛔ not run |
@@ -49,7 +52,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Test | Question | Status |
 |---|---|---|
-| E1 | Extension-contributed models appear in the chat model picker | 🔶 built, not run on target machine |
+| E1 | Extension-contributed models appear in the chat model picker **signed out** (no GitHub/Copilot; VS Code ≥1.122). Also: does any org policy/MDM bind a signed-out machine | 🔶 built, not run (test bed available: this machine, VS Code 1.139, signed out). Docs corrected 2026-09-25 — they previously assumed a signed-in Copilot plan |
 | E2 | Agent mode uses the model and passes it tools | 🔶 built, not run on target machine |
 | E3 | `.vsix` side-loading is permitted | 🔶 built, not run on target machine |
 | E4 | Thinking parts / private-MIME data parts round-trip through history | 🔶 built, not run on target machine |
@@ -102,4 +105,6 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 | VS Code version and policy on the target machine | ⛔ unresolved (answered by Phase 0a, not yet run) |
 | Ask Sage's terms for third-party clients | ⛔ unresolved |
 | Whether the extension is for one user or shared | ⛔ unresolved |
-| Whether the optional web-app rate refresher is acceptable | ⛔ unresolved |
+| Whether the optional web-app rate refresher is acceptable | ✅ closed 2026-09-25: dropped. Rates come from the API at runtime, with calibration (PLAN §3.1) |
+| Which rate set Ask Sage bills (API multipliers vs the web app's table) | ⛔ unresolved: first measurement favors the web app's table (§3 above); needs T1–T4/T19 on more models, or Ask Sage support |
+| Does a Copilot Business/Enterprise BYOK policy or MDM bind a machine that is not signed in | ⛔ unresolved (answered by E1) |
