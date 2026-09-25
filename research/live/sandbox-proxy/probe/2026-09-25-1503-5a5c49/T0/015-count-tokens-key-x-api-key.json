@@ -1,0 +1,54 @@
+{
+ "test": "T0",
+ "seq": 15,
+ "label": "count_tokens (key x-api-key)",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages/count_tokens",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:35.033Z",
+ "ms": 138,
+ "ttftMs": 138,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [1]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [1]",
+  "status": 400
+ }
+}

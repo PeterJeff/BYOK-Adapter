@@ -1,0 +1,45 @@
+{
+ "test": "T0",
+ "seq": 3,
+ "label": "budget used POST app_name=byok-adapter-probe (jwt)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:33.777Z",
+ "ms": 138,
+ "ttftMs": 138,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "app_name": "byok-adapter-probe"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [1]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [1]",
+  "status": 400
+ }
+}

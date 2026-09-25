@@ -1,0 +1,41 @@
+{
+ "test": "T0",
+ "seq": 6,
+ "label": "budget used GET (raw key as x-access-tokens)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "GET",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:34.102Z",
+ "ms": 49,
+ "ttftMs": 49,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept"
+  ],
+  "headers": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [1]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [1]",
+  "status": 400
+ }
+}

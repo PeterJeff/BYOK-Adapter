@@ -1,0 +1,82 @@
+{
+ "test": "T0",
+ "seq": 13,
+ "label": "bad-auth G",
+ "kind": "G",
+ "model": null,
+ "resolvedModel": "gemini-3.1-flash-lite",
+ "method": "POST",
+ "path": "/server/google/v1beta/models/google-gemini-3.1-flash-lite-gov:generateContent",
+ "stream": false,
+ "startedAt": "2026-09-25T15:34:26.361Z",
+ "ms": 1224,
+ "ttftMs": 1224,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "x-goog-api-key",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-goog-api-key"
+  ],
+  "headers": {},
+  "body": {
+   "contents": [
+    {
+     "role": "user",
+     "parts": [
+      {
+       "text": "x"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "promptTokenCount": 1,
+  "candidatesTokenCount": 44,
+  "totalTokenCount": 45
+ },
+ "normalized": {
+  "inputUncached": 1,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 44,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": null,
+ "body": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "It looks like you sent a single letter, \"x\". \n\nDid you mean to ask a question, start a math problem, or were you just testing the chat? Let me know how I can help you!"
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP"
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 1,
+   "candidatesTokenCount": 44,
+   "totalTokenCount": 45
+  },
+  "modelVersion": "gemini-3.1-flash-lite",
+  "responseId": "gpS2apXAOci10ekPx66kkAs"
+ }
+}

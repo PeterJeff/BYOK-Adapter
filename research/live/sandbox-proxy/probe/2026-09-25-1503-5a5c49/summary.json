@@ -1,0 +1,259 @@
+{
+ "alias": "sandbox-proxy",
+ "runId": "1503-5a5c49",
+ "startedAt": "2026-09-25T15:03:32.725Z",
+ "finishedAt": "2026-09-25T15:07:38.666Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T0",
+   "T19"
+  ],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": null,
+   "left": null
+  },
+  "after": {
+   "used": null,
+   "left": null
+  }
+ },
+ "spentEstimate": 0,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T0",
+   "title": "Auth and budget endpoints (free)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "bad auth is HTTP 200 + error envelope on every flavor",
+     "result": "pass",
+     "detail": "{\"bad-auth M\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth CC\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth R\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth G\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":4"
+    }
+   ],
+   "observations": {
+    "accessToken": null,
+    "budgetEndpoints": {
+     "used GET (jwt)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "used POST {} (jwt)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "used POST app_name=byok-adapter-probe (jwt)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "left-with-org (jwt)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "teach used GET (jwt)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "used GET (raw key as x-access-tokens)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     },
+     "used GET (raw key as bearer)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     }
+    },
+    "fullUser": {
+     "error": "asksage-envelope 400: Token is invalid"
+    },
+    "authenticatedCatalog": {
+     "count": 105,
+     "publicCount": 105,
+     "onlyAuthenticated": [],
+     "onlyPublic": []
+    },
+    "badAuth": {
+     "bad-auth M": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth CC": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth R": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth G": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth server": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     }
+    },
+    "countTokens": {
+     "key": "asksage-envelope 400: Token is invalid [1]",
+     "jwt": "asksage-envelope 400: Token is invalid [1]"
+    },
+    "tokenizer": {
+     "model": "google-claude-45-haiku",
+     "tokens": null,
+     "asksage": null,
+     "ratio": null,
+     "getModelsPromptRate": 0.055
+    }
+   },
+   "exchanges": 18
+  },
+  {
+   "id": "T19",
+   "title": "Budget counter lag and granularity",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "counter moves after one request",
+     "result": "fail",
+     "detail": "no change within 180 s; per-request reconciliation impossible, use batch mode (§3.6)"
+    }
+   ],
+   "observations": {
+    "lag": {
+     "before": {
+      "used": null,
+      "left": null
+     },
+     "readings": [
+      {
+       "s": 2,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 5,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 10,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 20,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 40,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 60,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 90,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 120,
+       "used": null,
+       "left": null
+      },
+      {
+       "s": 180,
+       "used": null,
+       "left": null
+      }
+     ],
+     "firstMoveS": null,
+     "usedDelta": null,
+     "leftDelta": null,
+     "estimate": null,
+     "usage": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "asksage-envelope 400: Token is invalid [1]"
+     }
+    },
+    "counterTypes": {
+     "usedIsInteger": false,
+     "leftIsInteger": false
+    },
+    "granularity": {
+     "estimate": null,
+     "usedDelta": null,
+     "leftDelta": null
+    }
+   },
+   "exchanges": 2
+  }
+ ],
+ "measurements": [],
+ "usageFields": {},
+ "servedModels": [],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}
