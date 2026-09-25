@@ -1,0 +1,11 @@
+{
+ "REACT_APP_deployment_type": "commercial",
+ "REACT_APP_classification_level": "cui",
+ "REACT_APP_allowed_classifications": "",
+ "REACT_APP_allowed_models": "",
+ "REACT_APP_customer_tenant": "false",
+ "REACT_APP_has_government_banner": "false",
+ "REACT_APP_hide_cui_chip": "",
+ "REACT_APP_asksage_chat_service": "https://api.asksage.com/server",
+ "REACT_APP_asksage_user_service": "https://user-server-nginx.asksage.com"
+}

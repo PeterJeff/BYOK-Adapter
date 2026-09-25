@@ -1,0 +1,12 @@
+{
+ "chatHost": "chat.asksage.com",
+ "apiHost": "api.asksage.com",
+ "apiVia": "vars.js REACT_APP_asksage_chat_service",
+ "fetchedAt": "2026-09-25T07:18:30.688Z",
+ "bundleInfo": {
+  "path": "/assets/index-1SBSfNgZ.js",
+  "sha256": "be26bd934142046053a338fb6f4315f6c9c87545b6056ff5e16529a11c59ffc2",
+  "bytes": 12187673
+ },
+ "tool": "phase0/probe/catalog-audit.mjs"
+}

@@ -1,0 +1,93 @@
+{
+  "name": "asksage-smoke",
+  "displayName": "Ask Sage Smoke Test (Phase 0a)",
+  "description": "Echo language-model provider that checks whether an extension-contributed model works on this machine (E1-E5). Calls no API.",
+  "version": "0.1.0",
+  "publisher": "byok-adapter",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languageModelChatProviders": [
+      {
+        "vendor": "asksage-smoke",
+        "displayName": "Ask Sage (smoke test)",
+        "managementCommand": "asksageSmoke.showReport"
+      }
+    ],
+    "commands": [
+      {
+        "command": "asksageSmoke.showReport",
+        "title": "Show Report",
+        "category": "Ask Sage Smoke"
+      },
+      {
+        "command": "asksageSmoke.testConnectivity",
+        "title": "Test Connectivity (E5)",
+        "category": "Ask Sage Smoke"
+      },
+      {
+        "command": "asksageSmoke.selfTest",
+        "title": "Self-Test through vscode.lm",
+        "category": "Ask Sage Smoke"
+      },
+      {
+        "command": "asksageSmoke.reset",
+        "title": "Clear Findings",
+        "category": "Ask Sage Smoke"
+      }
+    ],
+    "configuration": {
+      "title": "Ask Sage Smoke Test",
+      "properties": {
+        "asksageSmoke.host": {
+          "type": "string",
+          "default": "api.asksage.ai",
+          "scope": "application",
+          "markdownDescription": "Tenant API host used by **Test Connectivity (E5)**. Application scope, so a workspace cannot change it."
+        },
+        "asksageSmoke.emitParts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "thinking",
+              "data",
+              "usage"
+            ]
+          },
+          "default": [
+            "thinking",
+            "data",
+            "usage"
+          ],
+          "scope": "application",
+          "markdownDescription": "Extra response parts the echo model emits for the E4 round-trip test: a thinking part (proposed API), a private-MIME data part, and a Copilot `usage` data part. Remove one if it breaks chat rendering."
+        },
+        "asksageSmoke.chunkDelayMs": {
+          "type": "number",
+          "default": 20,
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Delay between streamed chunks, in milliseconds."
+        }
+      }
+    }
+  }
+}
