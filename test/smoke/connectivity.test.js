@@ -21,6 +21,14 @@ test('classifyBody recognises the Ask Sage auth rejection', () => {
   assert.equal(conn.classifyBody('nope'), 'other');
 });
 
+test('classifyBody recognises a real catalog served with no credential', () => {
+  // Despite the docs, get-models has been observed returning the live model catalog with no
+  // credential at all, rather than rejecting the request. Both shapes prove the host was
+  // reached; this one must not read as "unreachable" or as evidence auth was enforced.
+  assert.equal(conn.classifyBody('{"data":[{"id":"m1"}],"object":"list","response":["m1"],"status":200}'), 'asksage-catalog-no-auth-required');
+  assert.equal(conn.classifyBody('{"response":["m1","m2"],"status":200}'), 'asksage-catalog-no-auth-required');
+});
+
 test('describeError walks the cause chain', () => {
   const inner = Object.assign(new Error('self-signed certificate in certificate chain'), { code: 'SELF_SIGNED_CERT_IN_CHAIN' });
   const outer = new TypeError('fetch failed', { cause: inner });
