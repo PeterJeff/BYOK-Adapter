@@ -1,0 +1,2118 @@
+{
+ "fetchedAt": "2026-09-25T17:41:55.551Z",
+ "bundle": "/assets/index-DcmfUYyN.js",
+ "apiVsTable": {
+  "rows": [
+   {
+    "id": "aws-bedrock-claude-45-sonnet-gov",
+    "prompt": 0.277,
+    "completion": 0.4661
+   },
+   {
+    "id": "aws-bedrock-claude-fable-5-1-gov",
+    "prompt": 0.769,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-claude-opus-5-5-gov",
+    "prompt": 0.7693,
+    "completion": 0.7689
+   },
+   {
+    "id": "aws-bedrock-nova-lite-gov",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "aws-bedrock-nova-pro-gov",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-nova-micro-gov",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-titan",
+    "prompt": 0.7693,
+    "completion": 0.7693
+   },
+   {
+    "id": "llma3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-ts",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-ts",
+    "prompt": 0.7693,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-ts",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-ts",
+    "prompt": 0.7692,
+    "completion": 0.7691
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-ts",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-ts",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-grok-4-6-gov",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "llma3-8b",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-imagen-3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-imagen-4",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-gemini-2.5-pro",
+    "prompt": 0.7693,
+    "completion": 0.7695
+   },
+   {
+    "id": "google-gemini-2.5-flash",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "google-gemini-2.5-flash-image",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-gemini-3-pro-image",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-gemini-3-1-flash-image",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-gemini-3.1-pro-com",
+    "prompt": 0.7693,
+    "completion": 0.7695
+   },
+   {
+    "id": "google-gemini-3-flash-com",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-com",
+    "prompt": 0.7693,
+    "completion": 0.7695
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-gov",
+    "prompt": 0.769,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-gemini-3.5-flash-com",
+    "prompt": 0.7695,
+    "completion": 0.7691
+   },
+   {
+    "id": "google-gemini-3.5-flash-gov",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-gemini-3.7-flash",
+    "prompt": 0.7693,
+    "completion": 0.7693
+   },
+   {
+    "id": "google-claude-45-sonnet",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-45-haiku",
+    "prompt": 0.7695,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-45-opus",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-46-opus",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-46-sonnet",
+    "prompt": 1.5385,
+    "completion": 1.2005
+   },
+   {
+    "id": "google-claude-47-opus",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-48-opus",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-opus-5",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "google-claude-opus-5-5",
+    "prompt": 0.7693,
+    "completion": 0.7689
+   },
+   {
+    "id": "google-claude-fable-5",
+    "prompt": 0.769,
+    "completion": 0.7693
+   },
+   {
+    "id": "google-veo-3.1-generate",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-fast",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-lite",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-claude-sonnet-5",
+    "prompt": 0.7692,
+    "completion": 0.7695
+   },
+   {
+    "id": "gpt-4.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-4.1-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-o3-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.6-sol-gov",
+    "prompt": 1.9229,
+    "completion": 1.4424
+   },
+   {
+    "id": "gpt-5.6-terra-gov",
+    "prompt": 1.9231,
+    "completion": 1.4429
+   },
+   {
+    "id": "gpt-5.6-luna-gov",
+    "prompt": 1.9231,
+    "completion": 1.4458
+   },
+   {
+    "id": "groq-70b",
+    "prompt": 0.7694,
+    "completion": 0.7694
+   },
+   {
+    "id": "groq-llama33",
+    "prompt": 0.7694,
+    "completion": 0.7691
+   },
+   {
+    "id": "groq-llama4-scout",
+    "prompt": 0.7695,
+    "completion": 0.7686
+   },
+   {
+    "id": "groq-deepseek",
+    "prompt": 0.7694,
+    "completion": 0.7691
+   },
+   {
+    "id": "gpt-o1",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "gpt-o3-mini",
+    "prompt": 0.769,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-o3",
+    "prompt": 0.7692,
+    "completion": 0.7691
+   },
+   {
+    "id": "gpt-o4-mini",
+    "prompt": 0.769,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-4.1",
+    "prompt": 0.7692,
+    "completion": 0.7691
+   },
+   {
+    "id": "gpt-4.1-mini",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "gpt-4.1-nano",
+    "prompt": 0.7695,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-5",
+    "prompt": 0.7694,
+    "completion": 0.7695
+   },
+   {
+    "id": "gpt-5-mini",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "gpt-5-nano",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-5.1",
+    "prompt": 0.7694,
+    "completion": 0.7695
+   },
+   {
+    "id": "gpt-5.2",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-5.4",
+    "prompt": 1.5384,
+    "completion": 1.5385
+   },
+   {
+    "id": "gpt-5.4-nano",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "gpt-5.4-sec",
+    "prompt": 1.5384,
+    "completion": 1.5385
+   },
+   {
+    "id": "gpt-5.5",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "deepseek-v3.2-com",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "claude-haiku-4-5-com",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "claude-sonnet-4-6-com",
+    "prompt": 1.5385,
+    "completion": 1.2005
+   },
+   {
+    "id": "claude-opus-4-7-com",
+    "prompt": 1.5384,
+    "completion": 1.1923
+   },
+   {
+    "id": "gpt-image-2-com",
+    "prompt": 0.7693,
+    "completion": null
+   },
+   {
+    "id": "kimi-2.6-com",
+    "prompt": 0.769,
+    "completion": 0.7692
+   },
+   {
+    "id": "kimi-2.7-code-com",
+    "prompt": 0.769,
+    "completion": 0.7692
+   },
+   {
+    "id": "deepseek-v4-flash",
+    "prompt": 0.7694,
+    "completion": 0.7692
+   },
+   {
+    "id": "deepseek-v4-pro",
+    "prompt": 0.7693,
+    "completion": 0.7693
+   },
+   {
+    "id": "mistral-large-3",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "flux-2-pro",
+    "prompt": 0.7693,
+    "completion": null
+   },
+   {
+    "id": "grok-4-20-reasoning",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "grok-4-20-non-reasoning",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "grok-4-1-fast-reasoning",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "grok-4-1-fast-non-reasoning",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "gpt-5.6-sol",
+    "prompt": 1.5384,
+    "completion": 1.1538
+   },
+   {
+    "id": "gpt-5.6-terra",
+    "prompt": 1.5385,
+    "completion": 1.1543
+   },
+   {
+    "id": "gpt-5.6-luna",
+    "prompt": 1.5385,
+    "completion": 1.1543
+   },
+   {
+    "id": "gpt-6-astra",
+    "prompt": 1.5389,
+    "completion": 1.1538
+   },
+   {
+    "id": "gpt-6-sol",
+    "prompt": 1.5384,
+    "completion": 1.1538
+   },
+   {
+    "id": "gpt-6-luna",
+    "prompt": 1.5389,
+    "completion": 1.1538
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-gov",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-gov",
+    "prompt": 0.7693,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-gov",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-gov",
+    "prompt": 0.7692,
+    "completion": 0.7691
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-gov",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-gov",
+    "prompt": 0.7692,
+    "completion": 0.7693
+   },
+   {
+    "id": "aws-bedrock-grok-4-3-gov",
+    "prompt": 0.7695,
+    "completion": 0.7692
+   },
+   {
+    "id": "aws-bedrock-gemma-4-e2b-gov",
+    "prompt": 0.7693,
+    "completion": 0.769
+   },
+   {
+    "id": "aws-bedrock-gemma-4-31b-gov",
+    "prompt": 0.7693,
+    "completion": 0.7692
+   },
+   {
+    "id": "aws-bedrock-gemma-4-26b-a4b-gov",
+    "prompt": 0.7692,
+    "completion": 0.7692
+   },
+   {
+    "id": "gpt-5.4-gov",
+    "prompt": 1.5384,
+    "completion": 1.1538
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-luna-gov",
+    "prompt": 2.0307,
+    "completion": 1.523
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-terra-gov",
+    "prompt": 2.0307,
+    "completion": 1.523
+   }
+  ],
+  "apiOnly": 0,
+  "listOnly": 3
+ },
+ "apiVsLegacy": {
+  "rows": [
+   {
+    "id": "aws-bedrock-claude-45-sonnet-gov",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "aws-bedrock-claude-fable-5-1-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-claude-opus-5-5-gov",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "aws-bedrock-nova-lite-gov",
+    "prompt": 1.0008,
+    "completion": 0.9936
+   },
+   {
+    "id": "aws-bedrock-nova-pro-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nova-micro-gov",
+    "prompt": 0.9996,
+    "completion": 0.9996
+   },
+   {
+    "id": "llma3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-ts",
+    "prompt": 0.6,
+    "completion": 0.9
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-ts",
+    "prompt": 0.2345,
+    "completion": 0.462
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-ts",
+    "prompt": 0.0875,
+    "completion": 0.1813
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-ts",
+    "prompt": 0.09,
+    "completion": 0.195
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-ts",
+    "prompt": 0.09,
+    "completion": 0.18
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-ts",
+    "prompt": 0.132,
+    "completion": 0.297
+   },
+   {
+    "id": "aws-bedrock-grok-4-6-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "llma3-8b",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-imagen-3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-imagen-4",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-gemini-2.5-pro",
+    "prompt": 1,
+    "completion": 0.9998
+   },
+   {
+    "id": "google-gemini-2.5-flash",
+    "prompt": 0.99,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-2.5-flash-image",
+    "prompt": 0.99,
+    "completion": 12
+   },
+   {
+    "id": "google-gemini-3-pro-image",
+    "prompt": 1,
+    "completion": 0.996
+   },
+   {
+    "id": "google-gemini-3-1-flash-image",
+    "prompt": 1,
+    "completion": 0.999
+   },
+   {
+    "id": "google-gemini-3.1-pro-com",
+    "prompt": 1,
+    "completion": 0.9998
+   },
+   {
+    "id": "google-gemini-3-flash-com",
+    "prompt": 0.99,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-com",
+    "prompt": 1,
+    "completion": 0.9998
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-gov",
+    "prompt": 1,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-gemini-3.5-flash-com",
+    "prompt": 0.9998,
+    "completion": 0.999
+   },
+   {
+    "id": "google-gemini-3.5-flash-gov",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-gemini-3.7-flash",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-45-sonnet",
+    "prompt": 1,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-45-haiku",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-45-opus",
+    "prompt": 0.9999,
+    "completion": 0.9996
+   },
+   {
+    "id": "google-claude-46-opus",
+    "prompt": 0.5,
+    "completion": 0.6669
+   },
+   {
+    "id": "google-claude-46-sonnet",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-47-opus",
+    "prompt": 0.5,
+    "completion": 0.6669
+   },
+   {
+    "id": "google-claude-48-opus",
+    "prompt": 0.5,
+    "completion": 0.6669
+   },
+   {
+    "id": "google-claude-opus-5",
+    "prompt": 0.5,
+    "completion": 0.6669
+   },
+   {
+    "id": "google-claude-opus-5-5",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-veo-3.1-generate",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-fast",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-lite",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-claude-sonnet-5",
+    "prompt": 0.3333,
+    "completion": 0.4272
+   },
+   {
+    "id": "gpt-4.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-4.1-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-o3-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.6-sol-gov",
+    "prompt": 2.5,
+    "completion": 1.8753
+   },
+   {
+    "id": "gpt-5.6-terra-gov",
+    "prompt": 2.5,
+    "completion": 1.8751
+   },
+   {
+    "id": "gpt-5.6-luna-gov",
+    "prompt": 2.5,
+    "completion": 1.8788
+   },
+   {
+    "id": "groq-70b",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "groq-llama33",
+    "prompt": 0.9735,
+    "completion": 0.9875
+   },
+   {
+    "id": "groq-llama4-scout",
+    "prompt": 0.9955,
+    "completion": 0.986
+   },
+   {
+    "id": "groq-deepseek",
+    "prompt": 0.9735,
+    "completion": 0.9875
+   },
+   {
+    "id": "gpt-o1",
+    "prompt": 0.9983,
+    "completion": 0.99
+   },
+   {
+    "id": "gpt-o3-mini",
+    "prompt": 0.605,
+    "completion": 0.968
+   },
+   {
+    "id": "gpt-o3",
+    "prompt": 0.22,
+    "completion": 0.22
+   },
+   {
+    "id": "gpt-o4-mini",
+    "prompt": 1.089,
+    "completion": 1.089
+   },
+   {
+    "id": "gpt-4.1",
+    "prompt": 1.1,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-4.1-mini",
+    "prompt": 1.1,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-4.1-nano",
+    "prompt": 1.1,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-5",
+    "prompt": 1.104,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-5-mini",
+    "prompt": 1.12,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-5-nano",
+    "prompt": 1.2,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-5.1",
+    "prompt": 0.9998,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-5.2",
+    "prompt": 1.1088,
+    "completion": 1.1083
+   },
+   {
+    "id": "gpt-5.4",
+    "prompt": 3.1598,
+    "completion": 2.3595
+   },
+   {
+    "id": "gpt-5.4-nano",
+    "prompt": 1.1,
+    "completion": 0.8594
+   },
+   {
+    "id": "gpt-5.4-sec",
+    "prompt": 3.1598,
+    "completion": 2.3595
+   },
+   {
+    "id": "gpt-5.5",
+    "prompt": 6.3195,
+    "completion": 4.719
+   },
+   {
+    "id": "deepseek-v3.2-com",
+    "prompt": 1,
+    "completion": 0.9999
+   },
+   {
+    "id": "claude-haiku-4-5-com",
+    "prompt": 0.7272,
+    "completion": 0.7273
+   },
+   {
+    "id": "claude-sonnet-4-6-com",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "claude-opus-4-7-com",
+    "prompt": 1.0908,
+    "completion": 1.1276
+   },
+   {
+    "id": "gpt-image-2-com",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "kimi-2.6-com",
+    "prompt": 1.4393,
+    "completion": 1.454
+   },
+   {
+    "id": "kimi-2.7-code-com",
+    "prompt": 1.4393,
+    "completion": 1.454
+   },
+   {
+    "id": "deepseek-v4-flash",
+    "prompt": 1.6094,
+    "completion": 2.2269
+   },
+   {
+    "id": "deepseek-v4-pro",
+    "prompt": 0.9996,
+    "completion": 1.0005
+   },
+   {
+    "id": "mistral-large-3",
+    "prompt": 0.08,
+    "completion": 0.0777
+   },
+   {
+    "id": "flux-2-pro",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "grok-4-20-reasoning",
+    "prompt": 0.7333,
+    "completion": 0.4399
+   },
+   {
+    "id": "grok-4-20-non-reasoning",
+    "prompt": 0.7333,
+    "completion": 0.4399
+   },
+   {
+    "id": "grok-4-1-fast-reasoning",
+    "prompt": 1.1,
+    "completion": 1.1
+   },
+   {
+    "id": "grok-4-1-fast-non-reasoning",
+    "prompt": 1.1,
+    "completion": 1.1
+   },
+   {
+    "id": "gpt-5.6-sol",
+    "prompt": 2,
+    "completion": 1.5001
+   },
+   {
+    "id": "gpt-5.6-terra",
+    "prompt": 2,
+    "completion": 1.5
+   },
+   {
+    "id": "gpt-5.6-luna",
+    "prompt": 2,
+    "completion": 1.5
+   },
+   {
+    "id": "gpt-6-astra",
+    "prompt": 2,
+    "completion": 1.4998
+   },
+   {
+    "id": "gpt-6-sol",
+    "prompt": 2,
+    "completion": 1.5
+   },
+   {
+    "id": "gpt-6-luna",
+    "prompt": 2,
+    "completion": 1.5
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-gov",
+    "prompt": 0.6,
+    "completion": 0.9
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-gov",
+    "prompt": 0.2345,
+    "completion": 0.462
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-gov",
+    "prompt": 0.0875,
+    "completion": 0.1813
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-gov",
+    "prompt": 0.09,
+    "completion": 0.195
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-gov",
+    "prompt": 0.09,
+    "completion": 0.18
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-gov",
+    "prompt": 0.132,
+    "completion": 0.297
+   },
+   {
+    "id": "aws-bedrock-grok-4-3-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gemma-4-e2b-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gemma-4-31b-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gemma-4-26b-a4b-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.4-gov",
+    "prompt": 3.1598,
+    "completion": 1.7696
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-luna-gov",
+    "prompt": 2.64,
+    "completion": 1.98
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-terra-gov",
+    "prompt": 2.64,
+    "completion": 1.98
+   }
+  ],
+  "apiOnly": 2,
+  "listOnly": 27
+ },
+ "tokenizerVsTable": {
+  "rows": [
+   {
+    "id": "aws-bedrock-claude-45-sonnet-gov",
+    "prompt": 1.0003,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-claude-fable-5-1-gov",
+    "prompt": 0.9997,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-claude-opus-5-5-gov",
+    "prompt": 1.0002,
+    "completion": 0.9996
+   },
+   {
+    "id": "aws-bedrock-nova-lite-gov",
+    "prompt": 0.9934,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nova-pro-gov",
+    "prompt": 0.9995,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-nova-micro-gov",
+    "prompt": 0.991,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-titan",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "llma3",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-ts",
+    "prompt": 0.999,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-ts",
+    "prompt": 0.9883,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-ts",
+    "prompt": 0.9883,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-ts",
+    "prompt": 0.9998,
+    "completion": 0.9998
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-ts",
+    "prompt": 0.9998,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-ts",
+    "prompt": 0.9965,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-grok-4-6-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "llma3-8b",
+    "prompt": 1.0004,
+    "completion": 1
+   },
+   {
+    "id": "google-imagen-3",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-imagen-4",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-2.5-pro",
+    "prompt": 1.0001,
+    "completion": 1.0004
+   },
+   {
+    "id": "google-gemini-2.5-flash",
+    "prompt": 1.0004,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-2.5-flash-image",
+    "prompt": 1.0004,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3-pro-image",
+    "prompt": 1.0003,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3-1-flash-image",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3.1-pro-com",
+    "prompt": 1.0001,
+    "completion": 1.0004
+   },
+   {
+    "id": "google-gemini-3-flash-com",
+    "prompt": 1.0004,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-com",
+    "prompt": 0.9989,
+    "completion": 1.0003
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-gov",
+    "prompt": 0.9995,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3.5-flash-com",
+    "prompt": 1.0004,
+    "completion": 0.9998
+   },
+   {
+    "id": "google-gemini-3.5-flash-gov",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "google-gemini-3.7-flash",
+    "prompt": 0.9999,
+    "completion": 1.0001
+   },
+   {
+    "id": "google-claude-45-sonnet",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-45-haiku",
+    "prompt": 1.0006,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-45-opus",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-46-opus",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-46-sonnet",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-47-opus",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-48-opus",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-opus-5",
+    "prompt": 0.9999,
+    "completion": 0.9999
+   },
+   {
+    "id": "google-claude-opus-5-5",
+    "prompt": 1.0002,
+    "completion": 0.9996
+   },
+   {
+    "id": "google-claude-fable-5",
+    "prompt": 0.9997,
+    "completion": 1
+   },
+   {
+    "id": "google-veo-3.1-generate",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-veo-3.1-fast",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-veo-3.1-lite",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "google-claude-sonnet-5",
+    "prompt": 1.5002,
+    "completion": 1.5004
+   },
+   {
+    "id": "gpt-4.1-gov",
+    "prompt": 0.9995,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-4.1-mini-gov",
+    "prompt": 1.0007,
+    "completion": 1
+   },
+   {
+    "id": "gpt-o3-mini-gov",
+    "prompt": 0.9996,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-5.1-gov",
+    "prompt": 1.0001,
+    "completion": 1.0003
+   },
+   {
+    "id": "gpt-5.6-sol-gov",
+    "prompt": 1.2508,
+    "completion": 1.25
+   },
+   {
+    "id": "gpt-5.6-terra-gov",
+    "prompt": 2.4999,
+    "completion": 1.8758
+   },
+   {
+    "id": "gpt-5.6-luna-gov",
+    "prompt": 1.271,
+    "completion": 1.2505
+   },
+   {
+    "id": "groq-70b",
+    "prompt": 0.9994,
+    "completion": 1.0002
+   },
+   {
+    "id": "groq-llama33",
+    "prompt": 0.9997,
+    "completion": 0.9998
+   },
+   {
+    "id": "groq-llama4-scout",
+    "prompt": 0.9968,
+    "completion": 0.9991
+   },
+   {
+    "id": "groq-deepseek",
+    "prompt": 0.9997,
+    "completion": 0.9998
+   },
+   {
+    "id": "gpt-o1",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "gpt-o3-mini",
+    "prompt": 0.9996,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-o3",
+    "prompt": 1,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-o4-mini",
+    "prompt": 0.9996,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-4.1",
+    "prompt": 1,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-4.1-mini",
+    "prompt": 0.9994,
+    "completion": 1
+   },
+   {
+    "id": "gpt-4.1-nano",
+    "prompt": 0.9968,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-5",
+    "prompt": 1.0001,
+    "completion": 1.0003
+   },
+   {
+    "id": "gpt-5-mini",
+    "prompt": 0.9987,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5-nano",
+    "prompt": 0.9868,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-5.1",
+    "prompt": 1.0001,
+    "completion": 1.0003
+   },
+   {
+    "id": "gpt-5.2",
+    "prompt": 1.0002,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.4",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.4-nano",
+    "prompt": 0.9966,
+    "completion": 1.0001
+   },
+   {
+    "id": "gpt-5.4-sec",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.5",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "deepseek-v3.2-com",
+    "prompt": 1.0003,
+    "completion": 1
+   },
+   {
+    "id": "claude-haiku-4-5-com",
+    "prompt": 0.9995,
+    "completion": 1
+   },
+   {
+    "id": "claude-sonnet-4-6-com",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "claude-opus-4-7-com",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "gpt-image-2-com",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "kimi-2.6-com",
+    "prompt": 0.9994,
+    "completion": 1
+   },
+   {
+    "id": "kimi-2.7-code-com",
+    "prompt": 0.9994,
+    "completion": 1
+   },
+   {
+    "id": "deepseek-v4-flash",
+    "prompt": 0.9996,
+    "completion": 1
+   },
+   {
+    "id": "deepseek-v4-pro",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "mistral-large-3",
+    "prompt": 1.0003,
+    "completion": 1
+   },
+   {
+    "id": "flux-2-pro",
+    "prompt": 1.0001,
+    "completion": 1
+   },
+   {
+    "id": "grok-4-20-reasoning",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "grok-4-20-non-reasoning",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "grok-4-1-fast-reasoning",
+    "prompt": 0.9992,
+    "completion": 0.9999
+   },
+   {
+    "id": "grok-4-1-fast-non-reasoning",
+    "prompt": 0.9992,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-5.6-sol",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.6-terra",
+    "prompt": 0.9995,
+    "completion": 1.0004
+   },
+   {
+    "id": "gpt-5.6-luna",
+    "prompt": 0.9966,
+    "completion": 1.0004
+   },
+   {
+    "id": "gpt-6-astra",
+    "prompt": 1.0003,
+    "completion": 0.9999
+   },
+   {
+    "id": "gpt-6-sol",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "gpt-6-luna",
+    "prompt": 0.9968,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-gov",
+    "prompt": 0.999,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-gov",
+    "prompt": 0.9883,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-gov",
+    "prompt": 0.9883,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-gov",
+    "prompt": 0.9998,
+    "completion": 0.9998
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-gov",
+    "prompt": 0.9998,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-gov",
+    "prompt": 0.9965,
+    "completion": 1.0001
+   },
+   {
+    "id": "aws-bedrock-grok-4-3-gov",
+    "prompt": 1.0004,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gemma-4-e2b-gov",
+    "prompt": 0.9849,
+    "completion": 0.9997
+   },
+   {
+    "id": "aws-bedrock-gemma-4-31b-gov",
+    "prompt": 1,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gemma-4-26b-a4b-gov",
+    "prompt": 1.0002,
+    "completion": 1
+   },
+   {
+    "id": "gpt-5.4-gov",
+    "prompt": 0.9999,
+    "completion": 1
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-luna-gov",
+    "prompt": 1.3189,
+    "completion": 1.3199
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-terra-gov",
+    "prompt": 1.3198,
+    "completion": 1.3199
+   }
+  ],
+  "missing": 0
+ },
+ "tokenizerVsApi": {
+  "rows": [
+   {
+    "id": "aws-bedrock-claude-45-sonnet-gov",
+    "prompt": 3.611,
+    "completion": 2.1457
+   },
+   {
+    "id": "aws-bedrock-claude-fable-5-1-gov",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-claude-opus-5-5-gov",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nova-lite-gov",
+    "prompt": 1.2913,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nova-pro-gov",
+    "prompt": 1.2993,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nova-micro-gov",
+    "prompt": 1.2883,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-titan",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "llma3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-ts",
+    "prompt": 1.2987,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-ts",
+    "prompt": 1.2846,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-ts",
+    "prompt": 1.2846,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-ts",
+    "prompt": 1.2998,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-ts",
+    "prompt": 1.2998,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-ts",
+    "prompt": 1.2955,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-grok-4-6-gov",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "llma3-8b",
+    "prompt": 1.3006,
+    "completion": 1.3
+   },
+   {
+    "id": "google-imagen-3",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-imagen-4",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-gemini-2.5-pro",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-2.5-flash",
+    "prompt": 1.3006,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-2.5-flash-image",
+    "prompt": 1.3006,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3-pro-image",
+    "prompt": 1.3005,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3-1-flash-image",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.1-pro-com",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3-flash-com",
+    "prompt": 1.3006,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-com",
+    "prompt": 1.2986,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.1-flash-lite-gov",
+    "prompt": 1.2997,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.5-flash-com",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.5-flash-gov",
+    "prompt": 1.3002,
+    "completion": 1.3
+   },
+   {
+    "id": "google-gemini-3.7-flash",
+    "prompt": 1.2997,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-45-sonnet",
+    "prompt": 1.3002,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-45-haiku",
+    "prompt": 1.3004,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-45-opus",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-46-opus",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-46-sonnet",
+    "prompt": 0.6501,
+    "completion": 0.833
+   },
+   {
+    "id": "google-claude-47-opus",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-48-opus",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-opus-5",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-opus-5-5",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-claude-fable-5",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "google-veo-3.1-generate",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-fast",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-veo-3.1-lite",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "google-claude-sonnet-5",
+    "prompt": 1.9502,
+    "completion": 1.95
+   },
+   {
+    "id": "gpt-4.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-4.1-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-o3-mini-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.1-gov",
+    "prompt": null,
+    "completion": null
+   },
+   {
+    "id": "gpt-5.6-sol-gov",
+    "prompt": 0.6505,
+    "completion": 0.8666
+   },
+   {
+    "id": "gpt-5.6-terra-gov",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.6-luna-gov",
+    "prompt": 0.6609,
+    "completion": 0.8649
+   },
+   {
+    "id": "groq-70b",
+    "prompt": 1.299,
+    "completion": 1.3
+   },
+   {
+    "id": "groq-llama33",
+    "prompt": 1.2994,
+    "completion": 1.3
+   },
+   {
+    "id": "groq-llama4-scout",
+    "prompt": 1.2955,
+    "completion": 1.3
+   },
+   {
+    "id": "groq-deepseek",
+    "prompt": 1.2994,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-o1",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-o3-mini",
+    "prompt": 1.2999,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-o3",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-o4-mini",
+    "prompt": 1.2999,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-4.1",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-4.1-mini",
+    "prompt": 1.299,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-4.1-nano",
+    "prompt": 1.2955,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5-mini",
+    "prompt": 1.2983,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5-nano",
+    "prompt": 1.2828,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.1",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.2",
+    "prompt": 1.3003,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.4",
+    "prompt": 0.65,
+    "completion": 0.65
+   },
+   {
+    "id": "gpt-5.4-nano",
+    "prompt": 1.2955,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.4-sec",
+    "prompt": 0.65,
+    "completion": 0.65
+   },
+   {
+    "id": "gpt-5.5",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "deepseek-v3.2-com",
+    "prompt": 1.3003,
+    "completion": 1.3
+   },
+   {
+    "id": "claude-haiku-4-5-com",
+    "prompt": 1.2993,
+    "completion": 1.3
+   },
+   {
+    "id": "claude-sonnet-4-6-com",
+    "prompt": 0.6501,
+    "completion": 0.833
+   },
+   {
+    "id": "claude-opus-4-7-com",
+    "prompt": 0.65,
+    "completion": 0.8387
+   },
+   {
+    "id": "gpt-image-2-com",
+    "prompt": 1.3,
+    "completion": null
+   },
+   {
+    "id": "kimi-2.6-com",
+    "prompt": 1.2995,
+    "completion": 1.3
+   },
+   {
+    "id": "kimi-2.7-code-com",
+    "prompt": 1.2995,
+    "completion": 1.3
+   },
+   {
+    "id": "deepseek-v4-flash",
+    "prompt": 1.2992,
+    "completion": 1.3
+   },
+   {
+    "id": "deepseek-v4-pro",
+    "prompt": 1.2999,
+    "completion": 1.3
+   },
+   {
+    "id": "mistral-large-3",
+    "prompt": 1.3003,
+    "completion": 1.3
+   },
+   {
+    "id": "flux-2-pro",
+    "prompt": 1.3001,
+    "completion": null
+   },
+   {
+    "id": "grok-4-20-reasoning",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "grok-4-20-non-reasoning",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "grok-4-1-fast-reasoning",
+    "prompt": 1.299,
+    "completion": 1.3
+   },
+   {
+    "id": "grok-4-1-fast-non-reasoning",
+    "prompt": 1.299,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.6-sol",
+    "prompt": 0.65,
+    "completion": 0.8667
+   },
+   {
+    "id": "gpt-5.6-terra",
+    "prompt": 0.6497,
+    "completion": 0.8667
+   },
+   {
+    "id": "gpt-5.6-luna",
+    "prompt": 0.6478,
+    "completion": 0.8667
+   },
+   {
+    "id": "gpt-6-astra",
+    "prompt": 0.65,
+    "completion": 0.8667
+   },
+   {
+    "id": "gpt-6-sol",
+    "prompt": 0.65,
+    "completion": 0.8667
+   },
+   {
+    "id": "gpt-6-luna",
+    "prompt": 0.6478,
+    "completion": 0.8667
+   },
+   {
+    "id": "aws-bedrock-nemotron-12b-vl-gov",
+    "prompt": 1.2987,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-9b-gov",
+    "prompt": 1.2846,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-30b-gov",
+    "prompt": 1.2846,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-nemotron-super-3-120b-gov",
+    "prompt": 1.2998,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-120b-gov",
+    "prompt": 1.2998,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gpt-oss-20b-gov",
+    "prompt": 1.2955,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-grok-4-3-gov",
+    "prompt": 1.3001,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gemma-4-e2b-gov",
+    "prompt": 1.2803,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gemma-4-31b-gov",
+    "prompt": 1.3,
+    "completion": 1.3
+   },
+   {
+    "id": "aws-bedrock-gemma-4-26b-a4b-gov",
+    "prompt": 1.3003,
+    "completion": 1.3
+   },
+   {
+    "id": "gpt-5.4-gov",
+    "prompt": 0.65,
+    "completion": 0.8667
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-luna-gov",
+    "prompt": 0.6495,
+    "completion": 0.8667
+   },
+   {
+    "id": "aws-bedrock-gpt-5-6-terra-gov",
+    "prompt": 0.6499,
+    "completion": 0.8667
+   }
+  ],
+  "missing": 0
+ },
+ "tokErrors": [],
+ "cacheRows": 30
+}

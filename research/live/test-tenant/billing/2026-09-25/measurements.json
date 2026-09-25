@@ -1,0 +1,5190 @@
+[
+ {
+  "time": "2026-09-25T17:11:38Z",
+  "experiment": "prompt-heavy",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4362,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4362,
+   "completion_tokens": 4,
+   "total_tokens": 315
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 313.21,
+   "residual": 1.79,
+   "apiRates": 241.01,
+   "webTable": 313.22,
+   "buckets": {
+    "uncached": 4362,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:12:22Z",
+  "experiment": "rate-prompt",
+  "flavor": "M",
+  "requested": "google-claude-sonnet-5",
+  "served": "claude-sonnet-5",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 5292,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-sonnet-5",
+   "prompt_tokens": 5292,
+   "completion_tokens": 0,
+   "total_tokens": 1137
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 1134.63,
+   "residual": 2.37,
+   "apiRates": 582.12,
+   "webTable": 756.76,
+   "buckets": {
+    "uncached": 5292,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:12:35Z",
+  "experiment": "rate-output",
+  "flavor": "M",
+  "requested": "google-claude-sonnet-5",
+  "served": null,
+  "http": 400,
+  "error": "Output blocked by content filtering policy",
+  "stream": false,
+  "usage": null,
+  "log": {
+   "model": "google-claude-sonnet-5",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:12:43Z",
+  "experiment": "rate-prompt",
+  "flavor": "M",
+  "requested": "google-claude-46-sonnet",
+  "served": "claude-sonnet-4-6",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4369,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-46-sonnet",
+   "prompt_tokens": 4369,
+   "completion_tokens": 0,
+   "total_tokens": 938
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 936.73,
+   "residual": 1.27,
+   "apiRates": 1441.77,
+   "webTable": 937.15,
+   "buckets": {
+    "uncached": 4369,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:12:53Z",
+  "experiment": "rate-output",
+  "flavor": "M",
+  "requested": "google-claude-46-sonnet",
+  "served": null,
+  "http": 400,
+  "error": "Output blocked by content filtering policy",
+  "stream": false,
+  "usage": null,
+  "log": {
+   "model": "google-claude-46-sonnet",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:03Z",
+  "experiment": "rate-prompt",
+  "flavor": "M",
+  "requested": "aws-bedrock-claude-45-sonnet-gov",
+  "served": "claude-sonnet-4-5-20250929",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4391,
+   "output_tokens": 1,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "aws-bedrock-claude-45-sonnet-gov",
+   "prompt_tokens": 4391,
+   "completion_tokens": 1,
+   "total_tokens": 3144
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 3139.47,
+   "residual": 4.53,
+   "apiRates": 870.41,
+   "webTable": 3140.79,
+   "buckets": {
+    "uncached": 4391,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:15Z",
+  "experiment": "rate-output",
+  "flavor": "M",
+  "requested": "aws-bedrock-claude-45-sonnet-gov",
+  "served": "claude-sonnet-4-5-20250929",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 27,
+   "output_tokens": 952,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "aws-bedrock-claude-45-sonnet-gov",
+   "prompt_tokens": 27,
+   "completion_tokens": 952,
+   "total_tokens": 2043
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 2041.54,
+   "residual": 1.46,
+   "apiRates": 947.83,
+   "webTable": 2041.39,
+   "buckets": {
+    "uncached": 27,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 952
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:22Z",
+  "experiment": "rate-prompt",
+  "flavor": "M",
+  "requested": "claude-haiku-4-5-com",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4385,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4385,
+   "completion_tokens": 4,
+   "total_tokens": 318
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 314.86,
+   "residual": 3.14,
+   "apiRates": 176.2,
+   "webTable": 229.07,
+   "buckets": {
+    "uncached": 4385,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:31Z",
+  "experiment": "rate-output",
+  "flavor": "M",
+  "requested": "claude-haiku-4-5-com",
+  "served": null,
+  "http": 400,
+  "error": "Output blocked by content filtering policy",
+  "stream": false,
+  "usage": null,
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:38Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4312,
+   "total_tokens": 4316,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 6,
+    "engine_ttft_ms": 81,
+    "engine_ttlt_ms": 110,
+    "pre_inference_ms": 262,
+    "service_tbt_ms": 3,
+    "service_ttft_ms": 526,
+    "service_ttlt_ms": 536,
+    "user_visible_ttft_ms": 263
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 4312,
+   "completion_tokens": 4,
+   "total_tokens": 64
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 61.88,
+   "residual": 2.12,
+   "apiRates": 47.71,
+   "webTable": 62.02,
+   "buckets": {
+    "uncached": 4312,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:13:55Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 838,
+   "prompt_tokens": 26,
+   "total_tokens": 864,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 10,
+    "engine_ttft_ms": 29,
+    "engine_ttlt_ms": 8356,
+    "pre_inference_ms": 159,
+    "service_tbt_ms": 11,
+    "service_ttft_ms": 238,
+    "service_ttlt_ms": 9056,
+    "user_visible_ttft_ms": 79
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 26,
+   "completion_tokens": 838,
+   "total_tokens": 77
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 75.27,
+   "residual": 1.73,
+   "apiRates": 57.9,
+   "webTable": 75.26,
+   "buckets": {
+    "uncached": 26,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 838
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:02Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 4313,
+   "total_tokens": 4314,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 48,
+    "engine_ttlt_ms": 52,
+    "pre_inference_ms": 262,
+    "service_tbt_ms": 3,
+    "service_ttft_ms": 414,
+    "service_ttlt_ms": 417,
+    "user_visible_ttft_ms": 153
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 4313,
+   "completion_tokens": 1,
+   "total_tokens": 33
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 30.67,
+   "residual": 2.33,
+   "apiRates": 23.74,
+   "webTable": 30.86,
+   "buckets": {
+    "uncached": 4313,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:13Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 825,
+   "prompt_tokens": 27,
+   "total_tokens": 852,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 4,
+    "engine_ttft_ms": 20,
+    "engine_ttlt_ms": 3576,
+    "pre_inference_ms": 179,
+    "service_tbt_ms": 5,
+    "service_ttft_ms": 249,
+    "service_ttlt_ms": 4132,
+    "user_visible_ttft_ms": 70
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 27,
+   "completion_tokens": 825,
+   "total_tokens": 26
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 23.79,
+   "residual": 2.21,
+   "apiRates": 18.3,
+   "webTable": 23.78,
+   "buckets": {
+    "uncached": 27,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 825
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:20Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4312,
+   "total_tokens": 4316,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4309,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 18,
+    "engine_ttft_ms": 131,
+    "engine_ttlt_ms": 220,
+    "pre_inference_ms": 216,
+    "service_tbt_ms": 21,
+    "service_ttft_ms": 533,
+    "service_ttlt_ms": 617,
+    "user_visible_ttft_ms": 317
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4312,
+   "completion_tokens": 4,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 77.23,
+   "residual": 3.77,
+   "apiRates": 95.26,
+   "webTable": 62,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4309,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:32Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 855,
+   "prompt_tokens": 26,
+   "total_tokens": 881,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 11,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 6,
+    "engine_ttft_ms": 90,
+    "engine_ttlt_ms": 4914,
+    "pre_inference_ms": 299,
+    "service_tbt_ms": 6,
+    "service_ttft_ms": 615,
+    "service_ttlt_ms": 5451,
+    "user_visible_ttft_ms": 316
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 26,
+   "completion_tokens": 855,
+   "total_tokens": 76
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 73.73,
+   "residual": 2.27,
+   "apiRates": 85.22,
+   "webTable": 73.7,
+   "buckets": {
+    "uncached": 26,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 855
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:40Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "gpt-6-luna",
+  "served": "gpt-6-luna-2026-09-22",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4306,
+   "total_tokens": 4310,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4303,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 6,
+    "engine_ttft_ms": 91,
+    "engine_ttlt_ms": 121,
+    "pre_inference_ms": 215,
+    "service_tbt_ms": 13,
+    "service_ttft_ms": 446,
+    "service_ttlt_ms": 496,
+    "user_visible_ttft_ms": 231
+   }
+  },
+  "log": {
+   "model": "gpt-6-luna",
+   "prompt_tokens": 4306,
+   "completion_tokens": 4,
+   "total_tokens": 42
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 38.41,
+   "residual": 3.59,
+   "apiRates": 47.56,
+   "webTable": 30.95,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4303,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:50Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "gpt-6-luna",
+  "served": "gpt-6-luna-2026-09-22",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 867,
+   "prompt_tokens": 26,
+   "total_tokens": 893,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 23,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 3,
+    "engine_ttft_ms": 55,
+    "engine_ttlt_ms": 2958,
+    "pre_inference_ms": 120,
+    "service_tbt_ms": 3,
+    "service_ttft_ms": 426,
+    "service_ttlt_ms": 3268,
+    "user_visible_ttft_ms": 306
+   }
+  },
+  "log": {
+   "model": "gpt-6-luna",
+   "prompt_tokens": 26,
+   "completion_tokens": 867,
+   "total_tokens": 39
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 37.38,
+   "residual": 1.62,
+   "apiRates": 43.2,
+   "webTable": 37.38,
+   "buckets": {
+    "uncached": 26,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 867
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:14:58Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "aws-bedrock-gpt-5-6-luna-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "prompt_tokens": 4302,
+   "completion_tokens": 5,
+   "total_tokens": 4307
+  },
+  "log": {
+   "model": "aws-bedrock-gpt-5-6-luna-gov",
+   "prompt_tokens": 4302,
+   "completion_tokens": 5,
+   "total_tokens": 76
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 74.16,
+   "residual": 1.84,
+   "apiRates": 114.17,
+   "webTable": 56.32,
+   "buckets": {
+    "uncached": 4302,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:07Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "aws-bedrock-gpt-5-6-luna-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "prompt_tokens": 26,
+   "completion_tokens": 859,
+   "total_tokens": 885
+  },
+  "log": {
+   "model": "aws-bedrock-gpt-5-6-luna-gov",
+   "prompt_tokens": 26,
+   "completion_tokens": 859,
+   "total_tokens": 91
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 88.89,
+   "residual": 2.11,
+   "apiRates": 102.74,
+   "webTable": 67.34,
+   "buckets": {
+    "uncached": 26,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 859
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:14Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna-gov",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4330,
+   "total_tokens": 4334,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4327,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 6,
+    "engine_ttft_ms": 79,
+    "engine_ttlt_ms": 108,
+    "pre_inference_ms": 76,
+    "service_tbt_ms": 12,
+    "service_ttft_ms": 365,
+    "service_ttlt_ms": 412,
+    "user_visible_ttft_ms": 289
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna-gov",
+   "prompt_tokens": 4330,
+   "completion_tokens": 4,
+   "total_tokens": 102
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 98.79,
+   "residual": 3.21,
+   "apiRates": 119.57,
+   "webTable": 62.26,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4327,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:23Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna-gov",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 858,
+   "prompt_tokens": 26,
+   "total_tokens": 884,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 14,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 60,
+    "engine_ttlt_ms": 1803,
+    "pre_inference_ms": 79,
+    "service_tbt_ms": 2,
+    "service_ttft_ms": 278,
+    "service_ttlt_ms": 2014,
+    "user_visible_ttft_ms": 198
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna-gov",
+   "prompt_tokens": 26,
+   "completion_tokens": 858,
+   "total_tokens": 94
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 92.49,
+   "residual": 1.51,
+   "apiRates": 107.11,
+   "webTable": 73.96,
+   "buckets": {
+    "uncached": 26,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 858
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:29Z",
+  "experiment": "rate-prompt",
+  "flavor": "CC",
+  "requested": "grok-4-1-fast-non-reasoning",
+  "served": null,
+  "http": 400,
+  "error": "Unsupported model: grok-4-1-fast-non-reasoning",
+  "stream": false,
+  "usage": null,
+  "log": {
+   "model": "grok-4-1-fast-non-reasoning",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:36Z",
+  "experiment": "rate-output",
+  "flavor": "CC",
+  "requested": "grok-4-1-fast-non-reasoning",
+  "served": null,
+  "http": 400,
+  "error": "Unsupported model: grok-4-1-fast-non-reasoning",
+  "stream": false,
+  "usage": null,
+  "log": {
+   "model": "grok-4-1-fast-non-reasoning",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:43Z",
+  "experiment": "rate-prompt",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": "gemini-3.1-flash-lite",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4366,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4367
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 4366,
+   "completion_tokens": 1,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 78.09,
+   "residual": 2.91,
+   "apiRates": 60.12,
+   "webTable": 78.17,
+   "buckets": {
+    "uncached": 4366,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:15:52Z",
+  "experiment": "rate-output",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": "gemini-3.1-flash-lite",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 20,
+   "candidatesTokenCount": 947,
+   "totalTokenCount": 967
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 20,
+   "completion_tokens": 947,
+   "total_tokens": 104
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 101.92,
+   "residual": 2.08,
+   "apiRates": 78.4,
+   "webTable": 101.92,
+   "buckets": {
+    "uncached": 20,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 947
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:16:00Z",
+  "experiment": "rate-prompt",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4346,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4374
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 4346,
+   "completion_tokens": 1,
+   "total_tokens": 88
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 84.74,
+   "residual": 3.26,
+   "apiRates": 65.32,
+   "webTable": 84.91,
+   "buckets": {
+    "uncached": 4346,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:16:14Z",
+  "experiment": "rate-output",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 20,
+   "candidatesTokenCount": 947,
+   "totalTokenCount": 1135
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 20,
+   "completion_tokens": 947,
+   "total_tokens": 156
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 154.28,
+   "residual": 1.72,
+   "apiRates": 118.68,
+   "webTable": 154.27,
+   "buckets": {
+    "uncached": 20,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 947
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:18:55Z",
+  "experiment": "M-5m-mh-1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 4355
+   },
+   "cache_creation_input_tokens": 4355,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4366,
+   "completion_tokens": 4,
+   "total_tokens": 394
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 391.32,
+   "residual": 2.68,
+   "apiRates": 241.23,
+   "webTable": 313.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 4355,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:02Z",
+  "experiment": "M-5m-mh-2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4355,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4366,
+   "completion_tokens": 4,
+   "total_tokens": 36
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.34,
+   "residual": 2.66,
+   "apiRates": 241.23,
+   "webTable": 313.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4355,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:09Z",
+  "experiment": "M-5m-mh-3",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4355,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4366,
+   "completion_tokens": 4,
+   "total_tokens": 36
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.34,
+   "residual": 2.66,
+   "apiRates": 241.23,
+   "webTable": 313.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4355,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:16Z",
+  "experiment": "M-5m-ms46-1",
+  "flavor": "M",
+  "requested": "google-claude-46-sonnet",
+  "served": "claude-sonnet-4-6",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 4360
+   },
+   "cache_creation_input_tokens": 4360,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-46-sonnet",
+   "prompt_tokens": 4371,
+   "completion_tokens": 0,
+   "total_tokens": 1173
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 1170.86,
+   "residual": 2.14,
+   "apiRates": 1442.43,
+   "webTable": 937.58,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 4360,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:23Z",
+  "experiment": "M-5m-ms46-2",
+  "flavor": "M",
+  "requested": "google-claude-46-sonnet",
+  "served": "claude-sonnet-4-6",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4360,
+   "inference_geo": null,
+   "input_tokens": 28,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-46-sonnet",
+   "prompt_tokens": 4388,
+   "completion_tokens": 0,
+   "total_tokens": 101
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 99.48,
+   "residual": 1.52,
+   "apiRates": 1448.04,
+   "webTable": 941.23,
+   "buckets": {
+    "uncached": 28,
+    "cacheRead": 4360,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:30Z",
+  "experiment": "M-5m-ms46-3",
+  "flavor": "M",
+  "requested": "google-claude-46-sonnet",
+  "served": "claude-sonnet-4-6",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4360,
+   "inference_geo": null,
+   "input_tokens": 28,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-46-sonnet",
+   "prompt_tokens": 4388,
+   "completion_tokens": 0,
+   "total_tokens": 101
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 99.48,
+   "residual": 1.52,
+   "apiRates": 1448.04,
+   "webTable": 941.23,
+   "buckets": {
+    "uncached": 28,
+    "cacheRead": 4360,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:39Z",
+  "experiment": "M-5m-mbs45-1",
+  "flavor": "M",
+  "requested": "aws-bedrock-claude-45-sonnet-gov",
+  "served": "claude-sonnet-4-5-20250929",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 4381
+   },
+   "cache_creation_input_tokens": 4381,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 1,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "aws-bedrock-claude-45-sonnet-gov",
+   "prompt_tokens": 4392,
+   "completion_tokens": 1,
+   "total_tokens": 3928
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 3922.73,
+   "residual": 5.27,
+   "apiRates": 870.61,
+   "webTable": 3141.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 4381,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:49Z",
+  "experiment": "M-5m-mbs45-2",
+  "flavor": "M",
+  "requested": "aws-bedrock-claude-45-sonnet-gov",
+  "served": "claude-sonnet-4-5-20250929",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4381,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 1,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "aws-bedrock-claude-45-sonnet-gov",
+   "prompt_tokens": 4392,
+   "completion_tokens": 1,
+   "total_tokens": 325
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 323,
+   "residual": 2,
+   "apiRates": 870.61,
+   "webTable": 3141.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4381,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:19:58Z",
+  "experiment": "M-5m-mbs45-3",
+  "flavor": "M",
+  "requested": "aws-bedrock-claude-45-sonnet-gov",
+  "served": "claude-sonnet-4-5-20250929",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4381,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 1,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "aws-bedrock-claude-45-sonnet-gov",
+   "prompt_tokens": 4392,
+   "completion_tokens": 1,
+   "total_tokens": 325
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 323,
+   "residual": 2,
+   "apiRates": 870.61,
+   "webTable": 3141.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4381,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:05Z",
+  "experiment": "M-1h-1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 4381,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 4381,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4392,
+   "completion_tokens": 4,
+   "total_tokens": 631
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 628.5,
+   "residual": 2.5,
+   "apiRates": 242.66,
+   "webTable": 315.37,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 4381,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:11Z",
+  "experiment": "M-1h-2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4381,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4392,
+   "completion_tokens": 4,
+   "total_tokens": 37
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.53,
+   "residual": 3.47,
+   "apiRates": 242.66,
+   "webTable": 315.37,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4381,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:18Z",
+  "experiment": "M-1hbeta-1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 4383,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 4383,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4394,
+   "completion_tokens": 4,
+   "total_tokens": 632
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 628.79,
+   "residual": 3.21,
+   "apiRates": 242.77,
+   "webTable": 315.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 4383,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:24Z",
+  "experiment": "M-1hbeta-2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4383,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4394,
+   "completion_tokens": 4,
+   "total_tokens": 37
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.54,
+   "residual": 3.46,
+   "apiRates": 242.77,
+   "webTable": 315.51,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 4383,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:31Z",
+  "experiment": "M-nocc-1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4386,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4386,
+   "completion_tokens": 4,
+   "total_tokens": 318
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 314.93,
+   "residual": 3.07,
+   "apiRates": 242.33,
+   "webTable": 314.94,
+   "buckets": {
+    "uncached": 4386,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:38Z",
+  "experiment": "M-nocc-2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4386,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4386,
+   "completion_tokens": 4,
+   "total_tokens": 318
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 314.93,
+   "residual": 3.07,
+   "apiRates": 242.33,
+   "webTable": 314.94,
+   "buckets": {
+    "uncached": 4386,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:45Z",
+  "experiment": "CC-gpt-5.6-luna-1",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4298,
+   "total_tokens": 4302,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4295,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 23,
+    "engine_ttft_ms": 146,
+    "engine_ttlt_ms": 259,
+    "pre_inference_ms": 322,
+    "service_tbt_ms": 13,
+    "service_ttft_ms": 848,
+    "service_ttlt_ms": 900,
+    "user_visible_ttft_ms": 526
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4298,
+   "completion_tokens": 4,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 76.98,
+   "residual": 4.02,
+   "apiRates": 94.95,
+   "webTable": 61.8,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4295,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:52Z",
+  "experiment": "CC-gpt-5.6-luna-2",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4298,
+   "total_tokens": 4302,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4295,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 19,
+    "engine_ttft_ms": 143,
+    "engine_ttlt_ms": 239,
+    "pre_inference_ms": 309,
+    "service_tbt_ms": 23,
+    "service_ttft_ms": 603,
+    "service_ttlt_ms": 695,
+    "user_visible_ttft_ms": 293
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4298,
+   "completion_tokens": 4,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 76.98,
+   "residual": 4.02,
+   "apiRates": 94.95,
+   "webTable": 61.8,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4295,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:20:59Z",
+  "experiment": "CC-gpt-5.6-luna-3",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4298,
+   "total_tokens": 4302,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 9,
+    "cached_tokens": 4286
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 18,
+    "engine_ttft_ms": 99,
+    "engine_ttlt_ms": 189,
+    "pre_inference_ms": 158,
+    "service_tbt_ms": 22,
+    "service_ttft_ms": 386,
+    "service_ttlt_ms": 472,
+    "user_visible_ttft_ms": 228
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4298,
+   "completion_tokens": 4,
+   "total_tokens": 11
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 6.66,
+   "residual": 4.34,
+   "apiRates": 94.95,
+   "webTable": 61.8,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 4286,
+    "cacheWrite5m": 9,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:06Z",
+  "experiment": "CC-gpt-5.4-nano-1",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4342,
+   "total_tokens": 4346,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 151,
+    "engine_ttlt_ms": 193,
+    "pre_inference_ms": 189,
+    "service_tbt_ms": 10,
+    "service_ttft_ms": 400,
+    "service_ttlt_ms": 438,
+    "user_visible_ttft_ms": 211
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 4342,
+   "completion_tokens": 4,
+   "total_tokens": 64
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 62.31,
+   "residual": 1.69,
+   "apiRates": 48.04,
+   "webTable": 62.45,
+   "buckets": {
+    "uncached": 4342,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:14Z",
+  "experiment": "CC-gpt-5.4-nano-2",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4342,
+   "total_tokens": 4346,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 45,
+    "engine_ttlt_ms": 85,
+    "pre_inference_ms": 451,
+    "service_tbt_ms": 23,
+    "service_ttft_ms": 865,
+    "service_ttlt_ms": 958,
+    "user_visible_ttft_ms": 413
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 4342,
+   "completion_tokens": 4,
+   "total_tokens": 12
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 9.71,
+   "residual": 2.29,
+   "apiRates": 48.04,
+   "webTable": 62.45,
+   "buckets": {
+    "uncached": 246,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:21Z",
+  "experiment": "CC-gpt-5.4-nano-3",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 19,
+   "prompt_tokens": 4342,
+   "total_tokens": 4361,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 9,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 10,
+    "engine_ttft_ms": 37,
+    "engine_ttlt_ms": 231,
+    "pre_inference_ms": 273,
+    "service_tbt_ms": 10,
+    "service_ttft_ms": 381,
+    "service_ttlt_ms": 571,
+    "user_visible_ttft_ms": 108
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 4342,
+   "completion_tokens": 19,
+   "total_tokens": 13
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 11.05,
+   "residual": 1.95,
+   "apiRates": 49.07,
+   "webTable": 63.79,
+   "buckets": {
+    "uncached": 246,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 19
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:29Z",
+  "experiment": "CC-gpt-5.6-luna-gov-1",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna-gov",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4305,
+   "total_tokens": 4309,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4302,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 91,
+    "engine_ttlt_ms": 131,
+    "pre_inference_ms": 85,
+    "service_tbt_ms": 10,
+    "service_ttft_ms": 392,
+    "service_ttlt_ms": 430,
+    "user_visible_ttft_ms": 306
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna-gov",
+   "prompt_tokens": 4305,
+   "completion_tokens": 4,
+   "total_tokens": 102
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 98.22,
+   "residual": 3.78,
+   "apiRates": 118.88,
+   "webTable": 61.9,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4302,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:36Z",
+  "experiment": "CC-gpt-5.6-luna-gov-2",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna-gov",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4305,
+   "total_tokens": 4309,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 9,
+    "cached_tokens": 4293
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 7,
+    "engine_ttft_ms": 111,
+    "engine_ttlt_ms": 144,
+    "pre_inference_ms": 94,
+    "service_tbt_ms": 5,
+    "service_ttft_ms": 415,
+    "service_ttlt_ms": 436,
+    "user_visible_ttft_ms": 321
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna-gov",
+   "prompt_tokens": 4305,
+   "completion_tokens": 4,
+   "total_tokens": 13
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 8.49,
+   "residual": 4.51,
+   "apiRates": 118.88,
+   "webTable": 61.9,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 4293,
+    "cacheWrite5m": 9,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:44Z",
+  "experiment": "CC-gpt-5.6-luna-gov-3",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna-gov",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4305,
+   "total_tokens": 4309,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 9,
+    "cached_tokens": 4293
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 4,
+    "engine_ttft_ms": 67,
+    "engine_ttlt_ms": 89,
+    "pre_inference_ms": 91,
+    "service_tbt_ms": 5,
+    "service_ttft_ms": 332,
+    "service_ttlt_ms": 354,
+    "user_visible_ttft_ms": 241
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna-gov",
+   "prompt_tokens": 4305,
+   "completion_tokens": 4,
+   "total_tokens": 13
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 8.49,
+   "residual": 4.51,
+   "apiRates": 118.88,
+   "webTable": 61.9,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 4293,
+    "cacheWrite5m": 9,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:51Z",
+  "experiment": "CC-aws-bedrock-gpt-5-6-luna-gov-1",
+  "flavor": "CC",
+  "requested": "aws-bedrock-gpt-5-6-luna-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 4314
+  },
+  "log": {
+   "model": "aws-bedrock-gpt-5-6-luna-gov",
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 76
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 74.28,
+   "residual": 1.72,
+   "apiRates": 114.35,
+   "webTable": 56.41,
+   "buckets": {
+    "uncached": 4309,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:21:58Z",
+  "experiment": "CC-aws-bedrock-gpt-5-6-luna-gov-2",
+  "flavor": "CC",
+  "requested": "aws-bedrock-gpt-5-6-luna-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 4314
+  },
+  "log": {
+   "model": "aws-bedrock-gpt-5-6-luna-gov",
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 76
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 74.28,
+   "residual": 1.72,
+   "apiRates": 114.35,
+   "webTable": 56.41,
+   "buckets": {
+    "uncached": 4309,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:05Z",
+  "experiment": "CC-aws-bedrock-gpt-5-6-luna-gov-3",
+  "flavor": "CC",
+  "requested": "aws-bedrock-gpt-5-6-luna-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 4314
+  },
+  "log": {
+   "model": "aws-bedrock-gpt-5-6-luna-gov",
+   "prompt_tokens": 4309,
+   "completion_tokens": 5,
+   "total_tokens": 76
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 74.28,
+   "residual": 1.72,
+   "apiRates": 114.35,
+   "webTable": 56.41,
+   "buckets": {
+    "uncached": 4309,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:12Z",
+  "experiment": "CC-gpt-4.1-nano-1",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 4294,
+   "total_tokens": 4295,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 83,
+    "engine_ttlt_ms": 88,
+    "pre_inference_ms": 216,
+    "service_tbt_ms": 1,
+    "service_ttft_ms": 470,
+    "service_ttlt_ms": 471,
+    "user_visible_ttft_ms": 254
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 4294,
+   "completion_tokens": 1,
+   "total_tokens": 33
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 30.54,
+   "residual": 2.46,
+   "apiRates": 23.64,
+   "webTable": 30.72,
+   "buckets": {
+    "uncached": 4294,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:19Z",
+  "experiment": "CC-gpt-4.1-nano-2",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 4294,
+   "total_tokens": 4295,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 3,
+    "engine_ttft_ms": 46,
+    "engine_ttlt_ms": 52,
+    "pre_inference_ms": 204,
+    "service_tbt_ms": 4,
+    "service_ttft_ms": 376,
+    "service_ttlt_ms": 380,
+    "user_visible_ttft_ms": 172
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 4294,
+   "completion_tokens": 1,
+   "total_tokens": 8
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 4.35,
+   "residual": 3.65,
+   "apiRates": 23.64,
+   "webTable": 30.72,
+   "buckets": {
+    "uncached": 198,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:26Z",
+  "experiment": "CC-gpt-4.1-nano-3",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 4294,
+   "total_tokens": 4295,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 24,
+    "engine_ttlt_ms": 29,
+    "pre_inference_ms": 373,
+    "service_tbt_ms": 13,
+    "service_ttft_ms": 591,
+    "service_ttlt_ms": 604,
+    "user_visible_ttft_ms": 218
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 4294,
+   "completion_tokens": 1,
+   "total_tokens": 8
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 4.35,
+   "residual": 3.65,
+   "apiRates": 23.64,
+   "webTable": 30.72,
+   "buckets": {
+    "uncached": 198,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:33Z",
+  "experiment": "CCclaude-cc-1",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 4365
+   },
+   "cache_creation_input_tokens": 4365,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:39Z",
+  "experiment": "CCclaude-cc-2",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4365,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:47Z",
+  "experiment": "R-luna-1",
+  "flavor": "R",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "input_tokens": 4346,
+   "input_tokens_details": {
+    "cache_write_tokens": 4343,
+    "cached_tokens": 0
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 4351
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4346,
+   "completion_tokens": 5,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 77.93,
+   "residual": 3.07,
+   "apiRates": 96.11,
+   "webTable": 62.58,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4343,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:22:54Z",
+  "experiment": "R-luna-2",
+  "flavor": "R",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "input_tokens": 4346,
+   "input_tokens_details": {
+    "cache_write_tokens": 9,
+    "cached_tokens": 4334
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 4351
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4346,
+   "completion_tokens": 5,
+   "total_tokens": 11
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 6.82,
+   "residual": 4.18,
+   "apiRates": 96.11,
+   "webTable": 62.58,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 4334,
+    "cacheWrite5m": 9,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:02Z",
+  "experiment": "G-google-gemini-2.5-flash-1",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4342,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4366
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 4342,
+   "completion_tokens": 1,
+   "total_tokens": 88
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 84.66,
+   "residual": 3.34,
+   "apiRates": 65.26,
+   "webTable": 84.83,
+   "buckets": {
+    "uncached": 4342,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:08Z",
+  "experiment": "G-google-gemini-2.5-flash-2",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4342,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4360
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 4342,
+   "completion_tokens": 1,
+   "total_tokens": 88
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 84.66,
+   "residual": 3.34,
+   "apiRates": 65.26,
+   "webTable": 84.83,
+   "buckets": {
+    "uncached": 4342,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:15Z",
+  "experiment": "G-google-gemini-2.5-flash-3",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4342,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4361
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 4342,
+   "completion_tokens": 1,
+   "total_tokens": 88
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 84.66,
+   "residual": 3.34,
+   "apiRates": 65.26,
+   "webTable": 84.83,
+   "buckets": {
+    "uncached": 4342,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:22Z",
+  "experiment": "G-google-gemini-3.1-flash-lite-gov-1",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": "gemini-3.1-flash-lite",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4346,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4347
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 4346,
+   "completion_tokens": 1,
+   "total_tokens": 80
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 77.73,
+   "residual": 2.27,
+   "apiRates": 59.84,
+   "webTable": 77.81,
+   "buckets": {
+    "uncached": 4346,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:29Z",
+  "experiment": "G-google-gemini-3.1-flash-lite-gov-2",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": "gemini-3.1-flash-lite",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4346,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4347
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 4346,
+   "completion_tokens": 1,
+   "total_tokens": 80
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 77.73,
+   "residual": 2.27,
+   "apiRates": 59.84,
+   "webTable": 77.81,
+   "buckets": {
+    "uncached": 4346,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:37Z",
+  "experiment": "G-google-gemini-3.1-flash-lite-gov-3",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": "gemini-3.1-flash-lite",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 4346,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 4347
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 4346,
+   "completion_tokens": 1,
+   "total_tokens": 80
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 77.73,
+   "residual": 2.27,
+   "apiRates": 59.84,
+   "webTable": 77.81,
+   "buckets": {
+    "uncached": 4346,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:44Z",
+  "experiment": "N-1",
+  "flavor": "N",
+  "requested": "google-claude-45-haiku",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "asksage_tokens": 318,
+   "model_tokens": {
+    "completion_tokens": 4,
+    "prompt_tokens": 4400,
+    "total_tokens": 4404
+   }
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4400,
+   "completion_tokens": 4,
+   "total_tokens": 318
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 243.1,
+   "webTable": 315.94
+  }
+ },
+ {
+  "time": "2026-09-25T17:23:51Z",
+  "experiment": "N-2",
+  "flavor": "N",
+  "requested": "google-claude-45-haiku",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "asksage_tokens": 318,
+   "model_tokens": {
+    "completion_tokens": 4,
+    "prompt_tokens": 4400,
+    "total_tokens": 4404
+   }
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4400,
+   "completion_tokens": 4,
+   "total_tokens": 318
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 243.1,
+   "webTable": 315.94
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:08Z",
+  "experiment": "TTL-mh@17:27",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 4355
+   },
+   "cache_creation_input_tokens": 4355,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 12,
+   "output_tokens": 5,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4367,
+   "completion_tokens": 5,
+   "total_tokens": 394
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 391.75,
+   "residual": 2.25,
+   "apiRates": 241.56,
+   "webTable": 313.94,
+   "buckets": {
+    "uncached": 12,
+    "cacheRead": 0,
+    "cacheWrite5m": 4355,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:15Z",
+  "experiment": "TTL-mh1h@17:27",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4381,
+   "inference_geo": null,
+   "input_tokens": 12,
+   "output_tokens": 5,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4393,
+   "completion_tokens": 5,
+   "total_tokens": 37
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.96,
+   "residual": 3.04,
+   "apiRates": 242.99,
+   "webTable": 315.8,
+   "buckets": {
+    "uncached": 12,
+    "cacheRead": 4381,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:23Z",
+  "experiment": "TTL-luna@17:27",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 4298,
+   "total_tokens": 4302,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 4295,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 14,
+    "engine_ttft_ms": 249,
+    "engine_ttlt_ms": 317,
+    "pre_inference_ms": 337,
+    "service_tbt_ms": 16,
+    "service_ttft_ms": 833,
+    "service_ttlt_ms": 896,
+    "user_visible_ttft_ms": 496
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4298,
+   "completion_tokens": 4,
+   "total_tokens": 81
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 76.98,
+   "residual": 4.02,
+   "apiRates": 94.95,
+   "webTable": 61.8,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 4295,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:30Z",
+  "experiment": "TTL-nano54@17:27",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 18,
+   "prompt_tokens": 4342,
+   "total_tokens": 4360,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 8,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 37,
+    "engine_ttlt_ms": 192,
+    "pre_inference_ms": 98,
+    "service_tbt_ms": 7,
+    "service_ttft_ms": 249,
+    "service_ttlt_ms": 379,
+    "user_visible_ttft_ms": 151
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 4342,
+   "completion_tokens": 18,
+   "total_tokens": 13
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 10.96,
+   "residual": 2.04,
+   "apiRates": 49,
+   "webTable": 63.7,
+   "buckets": {
+    "uncached": 246,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 18
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:37Z",
+  "experiment": "TTL-nano41@17:27",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 4294,
+   "total_tokens": 4295,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 4096
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 49,
+    "engine_ttlt_ms": 65,
+    "pre_inference_ms": 180,
+    "service_tbt_ms": 15,
+    "service_ttft_ms": 413,
+    "service_ttlt_ms": 428,
+    "user_visible_ttft_ms": 232
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 4294,
+   "completion_tokens": 1,
+   "total_tokens": 8
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 4.35,
+   "residual": 3.65,
+   "apiRates": 23.64,
+   "webTable": 30.72,
+   "buckets": {
+    "uncached": 198,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:27:45Z",
+  "experiment": "TTL-rluna@17:27",
+  "flavor": "R",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "input_tokens": 4346,
+   "input_tokens_details": {
+    "cache_write_tokens": 9,
+    "cached_tokens": 4334
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 4351
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 4346,
+   "completion_tokens": 5,
+   "total_tokens": 11
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 6.82,
+   "residual": 4.18,
+   "apiRates": 96.11,
+   "webTable": 62.58,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 4334,
+    "cacheWrite5m": 9,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:12Z",
+  "experiment": "CCc-string-system",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1754,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:19Z",
+  "experiment": "CCc-string-system-2",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1754,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:25Z",
+  "experiment": "CCc-array-nocc",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1771,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:32Z",
+  "experiment": "CCc-user-cc",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1779,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:39Z",
+  "experiment": "CCc-copilot-field",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1762,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:32:46Z",
+  "experiment": "CCc-copilot-field-2",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1762,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 0,
+   "completion_tokens": 0,
+   "total_tokens": 0
+  },
+  "logRows": 1,
+  "estimate": {
+   "apiRates": 0,
+   "webTable": 0
+  }
+ },
+ {
+  "time": "2026-09-25T17:33:29Z",
+  "experiment": "CCc-sys-cc-stream",
+  "flavor": "CC",
+  "requested": "google-claude-45-haiku",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": true,
+  "usage": null,
+  "log": null,
+  "logRows": 0
+ },
+ {
+  "time": "2026-09-25T17:33:36Z",
+  "experiment": "M-stream",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": true,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 1782,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 1782,
+   "completion_tokens": 4,
+   "total_tokens": 132
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 128.8,
+   "residual": 3.2,
+   "apiRates": 99.11,
+   "webTable": 128.81,
+   "buckets": {
+    "uncached": 1782,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:33:43Z",
+  "experiment": "CC-nano-stream-nousage",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": true,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 1756,
+   "total_tokens": 1760,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 1756,
+   "completion_tokens": 4,
+   "total_tokens": 28
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 25.41,
+   "residual": 2.59,
+   "apiRates": 19.59,
+   "webTable": 25.47,
+   "buckets": {
+    "uncached": 1756,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:33:50Z",
+  "experiment": "CC-nano-stream-usage",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": true,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 1751,
+   "total_tokens": 1755,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 1751,
+   "completion_tokens": 4,
+   "total_tokens": 28
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 25.34,
+   "residual": 2.66,
+   "apiRates": 19.54,
+   "webTable": 25.4,
+   "buckets": {
+    "uncached": 1751,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:33:57Z",
+  "experiment": "G-stream",
+  "flavor": "G",
+  "requested": "google-gemini-3.1-flash-lite-gov",
+  "served": null,
+  "http": 200,
+  "error": null,
+  "stream": true,
+  "usage": {
+   "promptTokenCount": 1746,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 1747
+  },
+  "log": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "prompt_tokens": 1746,
+   "completion_tokens": 1,
+   "total_tokens": 34
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 31.29,
+   "residual": 2.71,
+   "apiRates": 24.09,
+   "webTable": 31.32,
+   "buckets": {
+    "uncached": 1746,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:34:05Z",
+  "experiment": "flag-opus55",
+  "flavor": "M",
+  "requested": "google-claude-opus-5-5",
+  "served": "claude-opus-5-5",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 4221,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-opus-5-5",
+   "prompt_tokens": 4221,
+   "completion_tokens": 0,
+   "total_tokens": 1208
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 1206.43,
+   "residual": 1.57,
+   "apiRates": 928.62,
+   "webTable": 1207.03,
+   "buckets": {
+    "uncached": 4221,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 0
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:34:13Z",
+  "experiment": "flag-gpt54",
+  "flavor": "CC",
+  "requested": "gpt-5.4",
+  "served": "gpt-5.4-2026-03-05",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 14,
+   "prompt_tokens": 3422,
+   "total_tokens": 3436,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 4,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 163,
+    "engine_ttlt_ms": 277,
+    "pre_inference_ms": 197,
+    "service_tbt_ms": 7,
+    "service_ttft_ms": 481,
+    "service_ttlt_ms": 584,
+    "user_visible_ttft_ms": 283
+   }
+  },
+  "log": {
+   "model": "gpt-5.4",
+   "prompt_tokens": 3422,
+   "completion_tokens": 14,
+   "total_tokens": 628
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 626.31,
+   "residual": 1.69,
+   "apiRates": 964.15,
+   "webTable": 626.74,
+   "buckets": {
+    "uncached": 3422,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 14
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:34:32Z",
+  "experiment": "flag-sonnet5-out",
+  "flavor": "M",
+  "requested": "google-claude-sonnet-5",
+  "served": "claude-sonnet-5",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 36,
+   "output_tokens": 700,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-sonnet-5",
+   "prompt_tokens": 36,
+   "completion_tokens": 700,
+   "total_tokens": 760
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 758.47,
+   "residual": 1.53,
+   "apiRates": 388.96,
+   "webTable": 505.51,
+   "buckets": {
+    "uncached": 36,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 700
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:03Z",
+  "experiment": "big-M-haiku-1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 34683
+   },
+   "cache_creation_input_tokens": 34683,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 34694,
+   "completion_tokens": 4,
+   "total_tokens": 3105
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 3101.03,
+   "residual": 3.97,
+   "apiRates": 1909.27,
+   "webTable": 2481.34,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 34683,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:10Z",
+  "experiment": "big-M-haiku-2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 34683,
+   "inference_geo": null,
+   "input_tokens": 11,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 34694,
+   "completion_tokens": 4,
+   "total_tokens": 253
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 250.12,
+   "residual": 2.88,
+   "apiRates": 1909.27,
+   "webTable": 2481.34,
+   "buckets": {
+    "uncached": 11,
+    "cacheRead": 34683,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:18Z",
+  "experiment": "big-CC-gpt-5.6-luna-1",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 34208,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 22,
+    "engine_ttft_ms": 267,
+    "engine_ttlt_ms": 379,
+    "pre_inference_ms": 253,
+    "service_tbt_ms": 27,
+    "service_ttft_ms": 610,
+    "service_ttlt_ms": 716,
+    "user_visible_ttft_ms": 357
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 615
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 610.46,
+   "residual": 4.54,
+   "apiRates": 753.04,
+   "webTable": 489.56,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 34208,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:25Z",
+  "experiment": "big-CC-gpt-5.6-luna-2",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 34208
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 21,
+    "engine_ttft_ms": 135,
+    "engine_ttlt_ms": 241,
+    "pre_inference_ms": 267,
+    "service_tbt_ms": 25,
+    "service_ttft_ms": 496,
+    "service_ttlt_ms": 596,
+    "user_visible_ttft_ms": 229
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 52
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 49.19,
+   "residual": 2.81,
+   "apiRates": 753.04,
+   "webTable": 489.56,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 34208,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:33Z",
+  "experiment": "big-CC-gpt-5.6-luna-3",
+  "flavor": "CC",
+  "requested": "gpt-5.6-luna",
+  "served": "gpt-5.6-luna-2026-07-09",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 34208,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 16,
+    "engine_ttft_ms": 139,
+    "engine_ttlt_ms": 219,
+    "pre_inference_ms": 385,
+    "service_tbt_ms": 23,
+    "service_ttft_ms": 679,
+    "service_ttlt_ms": 773,
+    "user_visible_ttft_ms": 294
+   }
+  },
+  "log": {
+   "model": "gpt-5.6-luna",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 615
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 610.46,
+   "residual": 4.54,
+   "apiRates": 753.04,
+   "webTable": 489.56,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 34208,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:51Z",
+  "experiment": "big-CC-gpt-4.1-nano-1",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 34273,
+   "total_tokens": 34274,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 329,
+    "engine_ttlt_ms": 334,
+    "pre_inference_ms": 351,
+    "service_tbt_ms": 3,
+    "service_ttft_ms": 11204,
+    "service_ttlt_ms": 11207,
+    "user_visible_ttft_ms": 10853
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 34273,
+   "completion_tokens": 1,
+   "total_tokens": 247
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 243.54,
+   "residual": 3.46,
+   "apiRates": 188.52,
+   "webTable": 245.01,
+   "buckets": {
+    "uncached": 34273,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:35:59Z",
+  "experiment": "big-CC-gpt-4.1-nano-2",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 34273,
+   "total_tokens": 34274,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 34048
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 71,
+    "engine_ttlt_ms": 75,
+    "pre_inference_ms": 282,
+    "service_tbt_ms": 1,
+    "service_ttft_ms": 465,
+    "service_ttlt_ms": 467,
+    "user_visible_ttft_ms": 183
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 34273,
+   "completion_tokens": 1,
+   "total_tokens": 29
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 25.82,
+   "residual": 3.18,
+   "apiRates": 188.52,
+   "webTable": 245.01,
+   "buckets": {
+    "uncached": 225,
+    "cacheRead": 34048,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:07Z",
+  "experiment": "big-CC-gpt-4.1-nano-3",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 34273,
+   "total_tokens": 34274,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 34048
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 73,
+    "engine_ttlt_ms": 77,
+    "pre_inference_ms": 265,
+    "service_tbt_ms": 2,
+    "service_ttft_ms": 455,
+    "service_ttlt_ms": 458,
+    "user_visible_ttft_ms": 191
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 34273,
+   "completion_tokens": 1,
+   "total_tokens": 29
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 25.82,
+   "residual": 3.18,
+   "apiRates": 188.52,
+   "webTable": 245.01,
+   "buckets": {
+    "uncached": 225,
+    "cacheRead": 34048,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:14Z",
+  "experiment": "big-CC-gpt-5.4-nano-24h-1",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 772,
+    "engine_ttlt_ms": 811,
+    "pre_inference_ms": 200,
+    "service_tbt_ms": 8,
+    "service_ttft_ms": 1129,
+    "service_ttlt_ms": 1161,
+    "user_visible_ttft_ms": 928
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 492
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 488.46,
+   "residual": 3.54,
+   "apiRates": 376.6,
+   "webTable": 489.58,
+   "buckets": {
+    "uncached": 34211,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:22Z",
+  "experiment": "big-CC-gpt-5.4-nano-24h-2",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 34048
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 86,
+    "engine_ttlt_ms": 125,
+    "pre_inference_ms": 243,
+    "service_tbt_ms": 4,
+    "service_ttft_ms": 460,
+    "service_ttlt_ms": 474,
+    "user_visible_ttft_ms": 216
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 54
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 51.26,
+   "residual": 2.74,
+   "apiRates": 376.6,
+   "webTable": 489.58,
+   "buckets": {
+    "uncached": 163,
+    "cacheRead": 34048,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:30Z",
+  "experiment": "big-CC-gpt-5.4-nano-24h-3",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 34048
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 8,
+    "engine_ttft_ms": 89,
+    "engine_ttlt_ms": 130,
+    "pre_inference_ms": 132,
+    "service_tbt_ms": 9,
+    "service_ttft_ms": 328,
+    "service_ttlt_ms": 365,
+    "user_visible_ttft_ms": 196
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 54
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 51.26,
+   "residual": 2.74,
+   "apiRates": 376.6,
+   "webTable": 489.58,
+   "buckets": {
+    "uncached": 163,
+    "cacheRead": 34048,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:40Z",
+  "experiment": "big-G-gem25-1",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 34622,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 34647
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 34622,
+   "completion_tokens": 1,
+   "total_tokens": 678
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 673.91,
+   "residual": 4.09,
+   "apiRates": 519.45,
+   "webTable": 675.32,
+   "buckets": {
+    "uncached": 34622,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:36:48Z",
+  "experiment": "big-G-gem25-2",
+  "flavor": "G",
+  "requested": "google-gemini-2.5-flash",
+  "served": "gemini-2.5-flash",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "promptTokenCount": 34622,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 34639,
+   "cachedContentTokenCount": 33764
+  },
+  "log": {
+   "model": "google-gemini-2.5-flash",
+   "prompt_tokens": 34622,
+   "completion_tokens": 1,
+   "total_tokens": 678
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 673.91,
+   "residual": 4.09,
+   "apiRates": 519.45,
+   "webTable": 675.32,
+   "buckets": {
+    "uncached": 34622,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:38:30Z",
+  "experiment": "loop-uncached-r1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 5920,
+   "output_tokens": 8,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 5920,
+   "completion_tokens": 8,
+   "total_tokens": 428
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 426.01,
+   "residual": 1.99,
+   "apiRates": 327.8,
+   "webTable": 426.02,
+   "buckets": {
+    "uncached": 5920,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 8
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:38:37Z",
+  "experiment": "loop-uncached-r2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 7317,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 7317,
+   "completion_tokens": 4,
+   "total_tokens": 527
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 524.43,
+   "residual": 2.57,
+   "apiRates": 403.54,
+   "webTable": 524.45,
+   "buckets": {
+    "uncached": 7317,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:38:44Z",
+  "experiment": "loop-uncached-r3",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 8713,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 8713,
+   "completion_tokens": 4,
+   "total_tokens": 627
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 624.21,
+   "residual": 2.79,
+   "apiRates": 480.32,
+   "webTable": 624.23,
+   "buckets": {
+    "uncached": 8713,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:38:52Z",
+  "experiment": "loop-uncached-r4",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 10106,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 10106,
+   "completion_tokens": 4,
+   "total_tokens": 726
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 723.78,
+   "residual": 2.22,
+   "apiRates": 556.93,
+   "webTable": 723.8,
+   "buckets": {
+    "uncached": 10106,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:38:59Z",
+  "experiment": "loop-uncached-r5",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 11505,
+   "output_tokens": 8,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 11505,
+   "completion_tokens": 8,
+   "total_tokens": 827
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 825.21,
+   "residual": 1.79,
+   "apiRates": 634.98,
+   "webTable": 825.23,
+   "buckets": {
+    "uncached": 11505,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 8
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:06Z",
+  "experiment": "loop-uncached-r6",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 12875,
+   "output_tokens": 8,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 12875,
+   "completion_tokens": 8,
+   "total_tokens": 926
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 923.13,
+   "residual": 2.87,
+   "apiRates": 710.33,
+   "webTable": 923.16,
+   "buckets": {
+    "uncached": 12875,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 8
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:14Z",
+  "experiment": "loop-cached-r1",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 5916
+   },
+   "cache_creation_input_tokens": 5916,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 8,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 5919,
+   "completion_tokens": 8,
+   "total_tokens": 535
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 531.65,
+   "residual": 3.35,
+   "apiRates": 327.75,
+   "webTable": 425.95,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 5916,
+    "cacheWrite1h": 0,
+    "output": 8
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:21Z",
+  "experiment": "loop-cached-r2",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1397
+   },
+   "cache_creation_input_tokens": 1397,
+   "cache_read_input_tokens": 5916,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 7316,
+   "completion_tokens": 4,
+   "total_tokens": 173
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 168.75,
+   "residual": 4.25,
+   "apiRates": 403.48,
+   "webTable": 524.38,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 5916,
+    "cacheWrite5m": 1397,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:28Z",
+  "experiment": "loop-cached-r3",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1396
+   },
+   "cache_creation_input_tokens": 1396,
+   "cache_read_input_tokens": 7313,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 8712,
+   "completion_tokens": 4,
+   "total_tokens": 182
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 178.64,
+   "residual": 3.36,
+   "apiRates": 480.26,
+   "webTable": 624.16,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 7313,
+    "cacheWrite5m": 1396,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:35Z",
+  "experiment": "loop-cached-r4",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1393
+   },
+   "cache_creation_input_tokens": 1393,
+   "cache_read_input_tokens": 8709,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 10105,
+   "completion_tokens": 4,
+   "total_tokens": 192
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 188.35,
+   "residual": 3.65,
+   "apiRates": 556.88,
+   "webTable": 723.73,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 8709,
+    "cacheWrite5m": 1393,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:42Z",
+  "experiment": "loop-cached-r5",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1399
+   },
+   "cache_creation_input_tokens": 1399,
+   "cache_read_input_tokens": 10102,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 11504,
+   "completion_tokens": 4,
+   "total_tokens": 203
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 198.85,
+   "residual": 4.15,
+   "apiRates": 633.82,
+   "webTable": 823.73,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 10102,
+    "cacheWrite5m": 1399,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:39:49Z",
+  "experiment": "loop-cached-r6",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1370
+   },
+   "cache_creation_input_tokens": 1370,
+   "cache_read_input_tokens": 11501,
+   "inference_geo": null,
+   "input_tokens": 3,
+   "output_tokens": 8,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 12874,
+   "completion_tokens": 8,
+   "total_tokens": 212
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 207.69,
+   "residual": 4.31,
+   "apiRates": 710.27,
+   "webTable": 923.09,
+   "buckets": {
+    "uncached": 3,
+    "cacheRead": 11501,
+    "cacheWrite5m": 1370,
+    "cacheWrite1h": 0,
+    "output": 8
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:55:08Z",
+  "experiment": "TTL-mh1h@17:55",
+  "flavor": "M",
+  "requested": "google-claude-45-haiku",
+  "served": "claude-haiku-4-5-20251001",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 4381,
+   "inference_geo": null,
+   "input_tokens": 12,
+   "output_tokens": 5,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  },
+  "log": {
+   "model": "google-claude-45-haiku",
+   "prompt_tokens": 4393,
+   "completion_tokens": 5,
+   "total_tokens": 37
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 33.96,
+   "residual": 3.04,
+   "apiRates": 242.99,
+   "webTable": 315.8,
+   "buckets": {
+    "uncached": 12,
+    "cacheRead": 4381,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 5
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:55:16Z",
+  "experiment": "TTL-nano54_24h@17:55",
+  "flavor": "CC",
+  "requested": "gpt-5.4-nano",
+  "served": "gpt-5.4-nano-2026-03-17",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 34211,
+   "total_tokens": 34215,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 21,
+    "engine_ttft_ms": 612,
+    "engine_ttlt_ms": 716,
+    "pre_inference_ms": 187,
+    "service_tbt_ms": 25,
+    "service_ttft_ms": 859,
+    "service_ttlt_ms": 958,
+    "user_visible_ttft_ms": 672
+   }
+  },
+  "log": {
+   "model": "gpt-5.4-nano",
+   "prompt_tokens": 34211,
+   "completion_tokens": 4,
+   "total_tokens": 492
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 488.46,
+   "residual": 3.54,
+   "apiRates": 376.6,
+   "webTable": 489.58,
+   "buckets": {
+    "uncached": 34211,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 4
+   }
+  }
+ },
+ {
+  "time": "2026-09-25T17:55:24Z",
+  "experiment": "TTL-nano41@17:55",
+  "flavor": "CC",
+  "requested": "gpt-4.1-nano",
+  "served": "gpt-4.1-nano-2025-04-14",
+  "http": 200,
+  "error": null,
+  "stream": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 34273,
+   "total_tokens": 34274,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 2,
+    "engine_ttft_ms": 363,
+    "engine_ttlt_ms": 368,
+    "pre_inference_ms": 319,
+    "service_tbt_ms": 9,
+    "service_ttft_ms": 821,
+    "service_ttlt_ms": 830,
+    "user_visible_ttft_ms": 502
+   }
+  },
+  "log": {
+   "model": "gpt-4.1-nano",
+   "prompt_tokens": 34273,
+   "completion_tokens": 1,
+   "total_tokens": 247
+  },
+  "logRows": 1,
+  "estimate": {
+   "tokenizerFormula": 243.54,
+   "residual": 3.46,
+   "apiRates": 188.52,
+   "webTable": 245.01,
+   "buckets": {
+    "uncached": 34273,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "output": 1
+   }
+  }
+ }
+]
