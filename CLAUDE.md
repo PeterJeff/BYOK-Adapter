@@ -25,7 +25,7 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - `scripts/run-tests.mjs`: runs every `test/**/*.test.{js,mjs}` with `node:test`.
 - `test/helpers/vscode-stub.js`: minimal `vscode` module for driving extension code under `node:test`.
 - `phase0/probe/catalog-audit.mjs`: public, unauthenticated model-catalog audit for an instance (pure checks in `phase0/probe/lib/catalog.mjs`).
-- `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T21 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first.
+- `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T21 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first. With no key set (or `--no-auth-headers`), it sends no client credential and assumes a gateway in front of `--api` authenticates requests instead.
 - `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
 
 ## Commands
