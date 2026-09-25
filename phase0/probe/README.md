@@ -1,5 +1,39 @@
 # Phase 0 probes
 
+## `api-probe.mjs`: authenticated API probes (T0–T21)
+
+Runs the Phase 0b tests in PLAN.md §9 against one tenant and records redacted fixtures to `research/live/<alias>/probe/<date>-<run>/`: one JSON file per request under a folder per test, plus `summary.md` / `summary.json`. The summary is raw observation. The conclusions go in `research/live/FINDINGS.md`.
+
+**It spends Ask Sage tokens.** It prints the models it picked and a pessimistic, full-price estimate first. It sends nothing billable without `--yes` or a typed `yes`, and it stops before any request that would push its running estimate past `--max-spend` (default 60,000). With the default models on the public catalogs the whole default set estimates at about 10k.
+
+```sh
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --dry-run        # plan and cost only; no key needed
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --tests T0,T19   # free checks + counter lag first
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --yes            # the default set
+```
+
+Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, from `--key-file <file>` and `--email`, or from a prompt (the key is not echoed). The email is only used to exchange the key for an access token (`/user/get-token-with-api-key`). The key is never printed or written. Every fixture passes through `lib/redact.mjs`, which removes the key, the access token, emails, user and org identifiers and the tenant hosts. The result is then scanned, and a file that still contains any of them is not written. Check the fixtures before committing them anyway.
+
+| Option | Effect |
+|---|---|
+| `--api <host>` | API host (required) |
+| `--alias <name>` | Tenant alias (required). Names the output folder and replaces the host in everything saved |
+| `--tests T0,T1,...` / `--skip ...` | Choose tests. Default: everything except the opt-in T13 (long context, expensive) and T21 (needs `--dataset`) |
+| `--model role=id` | Override a model. Roles: `claude`, `gpt`, `gemini`, `embedding`, `long` |
+| `--allow-non-cui` | Allow `cui_capable: false` models (skipped by default) |
+| `--max-spend <n>` | Spend cap in Ask Sage tokens (probe's own full-price estimate) |
+| `--no-measure` | Skip the budget-counter polling (much faster; T9, T19 and the billing checks become "skip") |
+| `--ttl-wait <s>` | T15's wait before re-reading the 1h/5m entries (default 360; 0 skips) |
+| `--prefix-tokens <n>` | Size of cached prefixes (default 6000; the minimum is 4500, because Haiku 4.5 needs 4096) |
+| `--catalog <file>` | Use a saved `get-models-full.json` instead of fetching it |
+| `--dataset <name>` | Dataset for T21 |
+| `--out <dir>` | Output folder |
+
+By default each role gets the cheapest `cui_capable` model that matches, preferring anything over commercial-hosted `-com` variants. Every cached prefix starts with a run-unique nonce, so an earlier run's cache cannot produce false hits. Budget measurement assumes nothing else spends from the same account while the probe runs, so close the web app. T19 runs early and tunes how long later steps wait for the counters to settle.
+
+Run T0 and T19 on their own first. T0 is free: it checks auth, the budget endpoints, the full user object (recorded as a shape summary, with values only for budget and model-restriction fields), the authenticated catalog, bad-credential envelopes, and the tokenizer's own Ask Sage conversion, which shows whether rates multiply or divide. T19 shows whether single requests can be resolved on the counters at all. If they can't, the per-request billing checks will read "unknown" and PLAN.md §3.6 batch mode applies.
+
+
 ## `catalog-audit.mjs`: model catalog audit
 
 For one Ask Sage instance, the audit compares:
