@@ -1,0 +1,334 @@
+{
+ "alias": "test-tenant",
+ "runId": "1534-b69656",
+ "startedAt": "2026-09-25T15:34:18.816Z",
+ "finishedAt": "2026-09-25T15:34:54.785Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T0",
+   "T19"
+  ],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 411,
+   "left": 199589
+  },
+  "after": {
+   "used": 810,
+   "left": 199190
+  }
+ },
+ "spentEstimate": 292.99,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T0",
+   "title": "Auth and budget endpoints (free)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "bad auth is HTTP 200 + error envelope on every flavor",
+     "result": "info",
+     "detail": "{\"bad-auth M\":{\"http\":200,\"error\":null},\"bad-auth CC\":{\"http\":400,\"error\":{\"shape\":\"openai-error\",\"status\":\"invalid_request_error\",\"message\":\"Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens.\"}},\"bad-auth R\":{\"http\":200,\"error\":null},\"bad-auth G\":{\"http\":200,\"error\":null},\"bad-auth server\":{\"http\":200,\"error\":null}}"
+    },
+    {
+     "name": "rate unit (tokenizer vs get-models prompt rate)",
+     "result": "info",
+     "detail": "ratio 0.07288317256162916 matches neither 0.055 nor its inverse"
+    }
+   ],
+   "observations": {
+    "accessToken": null,
+    "budgetEndpoints": {
+     "used GET (jwt)": {
+      "response": 411,
+      "type": "number",
+      "status": 200
+     },
+     "used POST {} (jwt)": {
+      "response": 411,
+      "type": "number",
+      "status": 200
+     },
+     "used POST app_name=byok-adapter-probe (jwt)": {
+      "response": 411,
+      "type": "number",
+      "status": 200
+     },
+     "left-with-org (jwt)": {
+      "response": 199589,
+      "type": "number",
+      "status": 200
+     },
+     "teach used GET (jwt)": {
+      "response": 0,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as x-access-tokens)": {
+      "response": 411,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as bearer)": {
+      "response": 411,
+      "type": "number",
+      "status": 200
+     }
+    },
+    "fullUser": {
+     "summary": {
+      "bot_settings": "string(empty)",
+      "cac_auth": "boolean",
+      "cac_found": "boolean",
+      "company": "string",
+      "country": "string",
+      "custom_intro_prompt": {
+       "type": "string(empty)",
+       "chars": 0
+      },
+      "datasets_with_permissions": "array(12)",
+      "email": "<redacted>",
+      "enabled_models": "null",
+      "first_name": "<redacted>",
+      "force_models": [],
+      "force_post_check": "null",
+      "id": "number",
+      "is_cui_mfa_authorized": false,
+      "last_name": "<redacted>",
+      "max_tokens": 200000,
+      "max_train_tokens": 200000,
+      "mfa_auth": "boolean",
+      "mfa_required": "boolean",
+      "mfa_secret": "string",
+      "new_password_required": "boolean",
+      "organization_id": "<redacted>",
+      "paid": true,
+      "persona_source_list": "array(0)",
+      "phone": "<redacted>",
+      "plan_type": "string",
+      "plugin_source_list": "array(0)",
+      "role": "developer",
+      "stripe_customer_id": "string",
+      "token_scopes": "null",
+      "type": "string"
+     }
+    },
+    "authenticatedCatalog": {
+     "count": 105,
+     "publicCount": 105,
+     "onlyAuthenticated": [],
+     "onlyPublic": []
+    },
+    "badAuth": {
+     "bad-auth M": {
+      "http": 200,
+      "error": null
+     },
+     "bad-auth CC": {
+      "http": 400,
+      "error": {
+       "shape": "openai-error",
+       "status": "invalid_request_error",
+       "message": "Could not finish the message because max_tokens or model output limit was reached. Please try again with higher max_tokens."
+      }
+     },
+     "bad-auth R": {
+      "http": 200,
+      "error": null
+     },
+     "bad-auth G": {
+      "http": 200,
+      "error": null
+     },
+     "bad-auth server": {
+      "http": 200,
+      "error": null
+     }
+    },
+    "countTokens": {
+     "key": {
+      "input_tokens": 14
+     },
+     "jwt": {
+      "input_tokens": 14
+     }
+    },
+    "tokenizer": {
+     "model": "google-claude-45-haiku",
+     "tokens": 933,
+     "asksage": 68,
+     "ratio": 0.0729,
+     "getModelsPromptRate": 0.055
+    }
+   },
+   "exchanges": 18
+  },
+  {
+   "id": "T19",
+   "title": "Budget counter lag and granularity",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "counter moves after one request",
+     "result": "pass",
+     "detail": "first change seen at ~2 s"
+    },
+    {
+     "name": "which pricing hypothesis fits",
+     "result": "info",
+     "detail": "measured 381; ×rate 291.12, ÷rate 95887.27 → discounted"
+    }
+   ],
+   "observations": {
+    "lag": {
+     "before": {
+      "used": 425,
+      "left": 199575
+     },
+     "readings": [
+      {
+       "s": 2,
+       "used": 806,
+       "left": 199194
+      },
+      {
+       "s": 5,
+       "used": 806,
+       "left": 199194
+      },
+      {
+       "s": 10,
+       "used": 806,
+       "left": 199194
+      }
+     ],
+     "firstMoveS": 2,
+     "usedDelta": 381,
+     "leftDelta": 381,
+     "estimate": {
+      "discounted": 291.12,
+      "full": 291.12,
+      "inverse": 95887.27,
+      "inputTokens": 5273,
+      "outputTokens": 4
+     },
+     "usage": {
+      "ok": true,
+      "in": 5273,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     }
+    },
+    "counterTypes": {
+     "usedIsInteger": true,
+     "leftIsInteger": true
+    },
+    "granularity": {
+     "estimate": {
+      "discounted": 1.87,
+      "full": 1.87,
+      "inverse": 269.09,
+      "inputTokens": 14,
+      "outputTokens": 4
+     },
+     "usedDelta": 4,
+     "leftDelta": 4
+    }
+   },
+   "exchanges": 2
+  }
+ ],
+ "measurements": [],
+ "usageFields": {
+  "M non-stream": {
+   "count": 3,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "inference_geo",
+    "input_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "server_tool_use",
+    "service_tier"
+   ],
+   "checks": {}
+  },
+  "R non-stream": {
+   "count": 1,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "G non-stream": {
+   "count": 1,
+   "fields": [
+    "candidatesTokenCount",
+    "promptTokenCount",
+    "totalTokenCount"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "count": 2
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}
