@@ -1,0 +1,15 @@
+# Built packages
+dist/
+*.vsix
+
+# Local secrets (the API key belongs in VS Code SecretStorage, never in the repo)
+.env
+.env.*
+*.key
+
+# Raw, unredacted API captures. Only redacted recordings belong in research/live/.
+research/live/**/raw/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
