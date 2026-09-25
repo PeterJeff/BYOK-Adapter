@@ -1,0 +1,47 @@
+{
+ "test": "T0",
+ "seq": 17,
+ "label": "tokenizer",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/tokenizer",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:35.220Z",
+ "ms": 146,
+ "ttftMs": 146,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "content": "<elided chars=4397 sha256=efd95d8dddf2450d>",
+   "model": "google-claude-45-haiku",
+   "app_name": "byok-adapter-probe"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [1]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [1]",
+  "status": 400
+ }
+}

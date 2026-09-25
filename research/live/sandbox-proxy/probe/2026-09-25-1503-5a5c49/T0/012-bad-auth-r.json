@@ -1,0 +1,48 @@
+{
+ "test": "T0",
+ "seq": 12,
+ "label": "bad-auth R",
+ "kind": "R",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:34.729Z",
+ "ms": 80,
+ "ttftMs": 80,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "input": "x",
+   "max_output_tokens": 16
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [2]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [2]",
+  "status": 400
+ }
+}

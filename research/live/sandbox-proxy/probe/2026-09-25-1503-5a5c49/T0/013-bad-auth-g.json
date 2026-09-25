@@ -1,0 +1,55 @@
+{
+ "test": "T0",
+ "seq": 13,
+ "label": "bad-auth G",
+ "kind": "G",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/google/v1beta/models/google-gemini-3.1-flash-lite-gov:generateContent",
+ "stream": false,
+ "startedAt": "2026-09-25T15:03:34.809Z",
+ "ms": 165,
+ "ttftMs": 165,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "x-goog-api-key",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-goog-api-key"
+  ],
+  "headers": {},
+  "body": {
+   "contents": [
+    {
+     "role": "user",
+     "parts": [
+      {
+       "text": "x"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [2]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [2]",
+  "status": 400
+ }
+}

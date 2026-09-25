@@ -61,7 +61,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Status | Detail |
 |---|---|
-| 🔶 built, not run | `phase0/probe/api-probe.mjs` implements T0–T21; needs `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL` against a real tenant. Unit-testable pieces covered by `test/probe/api-probe.test.mjs` |
+| 🔶 built, attempted, blocked on credentials | `phase0/probe/api-probe.mjs` implements T0–T21; needs `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL` against a real tenant. Unit-testable pieces covered by `test/probe/api-probe.test.mjs`. A T0+T19 run from a cloud sandbox (`research/live/sandbox-proxy/`) confirmed the sandbox's network proxy does *not* inject a working Ask Sage credential despite environment metadata claiming it does — see `research/live/sandbox-proxy/README.md`. Every LIVE-TEST assumption in §3 above is still ⛔; that run only corroborates the already-known bad-auth envelope shape (PLAN.md §7) |
 
 **Exit (`research/live/FINDINGS.md`): does not exist yet.**
 
