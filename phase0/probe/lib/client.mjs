@@ -74,11 +74,15 @@ export function createClient(opts) {
    * Exchanges the API key for an access token (x-access-tokens JWT). Under `noAuthHeaders`
    * there is nothing to exchange — a gateway in front of `apiBase` is assumed to authenticate
    * the request itself, so this returns null instead of calling the endpoint or throwing.
+   * With an API key but no email (key-only mode), the exchange needs an email it doesn't have,
+   * so this also returns null: `server`/`user`/`N` calls run with no credential and fail auth,
+   * same as `noAuthHeaders`, while M/CC/R/G calls still authenticate directly with the raw key.
    */
   async function token() {
     if (jwt) return jwt;
     if (opts.noAuthHeaders) return null;
-    if (!opts.apiKey || !opts.email) throw new Error('an API key and the account email are needed to obtain an access token');
+    if (!opts.apiKey) throw new Error('no API key');
+    if (!opts.email) return null;
     const ex = await call({ label: 'get-token-with-api-key', kind: 'user', path: '/user/get-token-with-api-key', auth: 'none', body: { email: opts.email, api_key: opts.apiKey } });
     // The recorded request body holds the key and email; drop it now so it can never be saved.
     ex.request.body = { email: '<redacted:email>', api_key: '<redacted:secret>' };

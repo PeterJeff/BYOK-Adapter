@@ -466,9 +466,16 @@ async function main() {
     );
   } else {
     apiKey = keySource;
-    email = (args.email || process.env.ASKSAGE_EMAIL || (await ask('Account email: ', false))).trim();
+    email = (args.email || process.env.ASKSAGE_EMAIL || '').trim();
     if (!/^\S{32,}$/.test(apiKey)) throw new Error('that does not look like an API key');
-    if (!/@/.test(email)) throw new Error('that does not look like an email address');
+    if (email && !/@/.test(email)) throw new Error('that does not look like an email address');
+    if (!email) {
+      console.log(
+        '\nNo ASKSAGE_EMAIL (or --email): running key-only. M/CC/R/G model-call tests (T1-T9, T11, T15-T18, T20) ' +
+          'authenticate fine with just the API key. Budget/counter and native-query checks (T0’s budget bits, ' +
+          'T19, T21) need the email-based access token and will show as auth errors.',
+      );
+    }
   }
 
   const date = new Date().toISOString().slice(0, 10);
