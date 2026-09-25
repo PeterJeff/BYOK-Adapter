@@ -41,6 +41,27 @@ By default each role gets the cheapest `cui_capable` model that matches, preferr
 Run T0 and T19 on their own first. T0 is free: it checks auth, the budget endpoints, the full user object (recorded as a shape summary, with values only for budget and model-restriction fields), the authenticated catalog, bad-credential envelopes, and the tokenizer's own Ask Sage conversion, which shows whether rates multiply or divide. T19 shows whether single requests can be resolved on the counters at all. If they can't, the per-request billing checks will read "unknown" and PLAN.md §3.6 batch mode applies.
 
 
+## `rate-sources.mjs`: which rates are billed (free)
+
+Compares three per-model rate sources for one instance and saves the ratios: `get-models` `token_conversion_rate`, the chat web app's hardcoded rate table (and its older "legacy" list), and `POST /server/tokenizer` with `convert_to_asksage`, which reproduced every measured bill on 2026-09-25 (`research/rate-sources-investigation.md`). Nothing is billed; the tokenizer needs the access token (`ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`) or a gateway that adds it.
+
+```sh
+node phase0/probe/rate-sources.mjs chat.asksage.ai                     # all models
+node phase0/probe/rate-sources.mjs chat.<tenant> --alias tenant-a --models 'claude|gpt-5'
+node phase0/probe/rate-sources.mjs chat.asksage.ai --no-tokenizer      # public sources only
+```
+
+`summary.md` / `summary.json` (ratios and model lists) go to `research/live/<alias or host>/rates/<date>/`; the absolute rates go to `raw/` there, which is gitignored (the web app's table is not published in this repo).
+
+## `billing-probe.mjs`: measured bills per request (spends tokens)
+
+Sends small synthetic requests and reads each one's exact bill from the prompt log (`POST /user/get-user-logs`: `total_tokens` per request), then compares it with the tokenizer's rates and the measured cache rules (`lib/billing.mjs`). Experiments: `rates` (prompt-heavy and output-heavy per model), `cache` (M 5m/1h/none, CC, R, G, and whether Claude through CC is billed), `loop` (a 6-round Claude tool loop, uncached versus Copilot-style breakpoints), `ttl` (re-send after `--ttl-wait` minutes). The default set is about 9k Ask Sage tokens at the test tenant's rates (the loop is 5.6k of it). Without `--yes` it only prints the plan. Nothing else may use the account while it runs (bills are matched to requests by time). Only numbers are saved: no prompt or response text, no log or user ids.
+
+```sh
+node phase0/probe/billing-probe.mjs --api api.asksage.ai --alias test-tenant                  # plan only
+node phase0/probe/billing-probe.mjs --api api.asksage.ai --alias test-tenant --experiments cache,loop --yes
+```
+
 ## `catalog-audit.mjs`: model catalog audit
 
 For one Ask Sage instance, the audit compares:

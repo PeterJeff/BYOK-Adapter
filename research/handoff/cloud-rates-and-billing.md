@@ -1,5 +1,7 @@
 # Handoff: rates and billing investigation (for the Claude Code cloud instance)
 
+**Status 2026-09-25: done, with live measurement (the author approved spending on the test tenant).** Results: `research/rate-sources-investigation.md`. The assumptions below about what the cloud session could not do were superseded.
+
 Written for: a Claude Opus 5.5 instance in Claude Code on the web, starting cold on this public repo. It has no access to the author's machine, no Ask Sage key of its own (check, don't assume; see `CLAUDE.md` "Where Phase 0b's paid probes may run"), and no permission to spend Ask Sage tokens.
 
 Read first: `CLAUDE.md`, then `PLAN.md` §2.1 and §3.1, then `requirements/REQUIREMENTS.md` §3 (the two rows dated 2026-09-25 about rates and cache multipliers), then `research/model-catalog-findings.md` §4.

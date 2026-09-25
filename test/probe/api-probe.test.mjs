@@ -141,3 +141,16 @@ test('createClient: key-only (no email) authenticates M/CC/R/G directly and neve
   assert.equal(seen[1].headers['x-access-tokens'], undefined);
   assert.equal(seen[1].headers.authorization, undefined);
 });
+
+test('normalize: CC/R cache_write_tokens is a separate bucket; Claude over CC uses Anthropic usage', () => {
+  const c = normalize('CC', { prompt_tokens: 4298, prompt_tokens_details: { cached_tokens: 0, cache_write_tokens: 4295 }, completion_tokens: 4, completion_tokens_details: { reasoning_tokens: 0 } });
+  assert.equal(c?.inputUncached, 3);
+  assert.equal(c?.cacheWriteUnsplit, 4295);
+  const r = normalize('R', { input_tokens: 4346, input_tokens_details: { cached_tokens: 4334, cache_write_tokens: 9 }, output_tokens: 5, output_tokens_details: { reasoning_tokens: 0 } });
+  assert.deepEqual([r?.inputUncached, r?.cacheRead, r?.cacheWriteUnsplit], [3, 4334, 9]);
+  const k = normalize('CC', { input_tokens: 11, cache_read_input_tokens: 4355, cache_creation_input_tokens: 0, output_tokens: 4 });
+  assert.deepEqual([k?.inputUncached, k?.cacheRead, k?.visibleOutput], [11, 4355, 4]);
+  // 40k-token GPT-5.6 Luna write measured at 615 with prompt rate 0.01432: 1.25x reproduces it within the +1..5 constant
+  const e = estimate(normalize('CC', { prompt_tokens: 34211, prompt_tokens_details: { cached_tokens: 0, cache_write_tokens: 34208 }, completion_tokens: 4 }), { prompt: 0.01432, completion: 0.0858 });
+  assert.ok(e && e.discounted > 609 && e.discounted < 615);
+});
