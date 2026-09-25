@@ -6,6 +6,8 @@ Runs the Phase 0b tests in PLAN.md §9 against one tenant and records redacted f
 
 **It spends Ask Sage tokens.** It prints the models it picked and a pessimistic, full-price estimate first. It sends nothing billable without `--yes` or a typed `yes`, and it stops before any request that would push its running estimate past `--max-spend` (default 60,000). With the default models on the public catalogs the whole default set estimates at about 10k.
 
+**Only run the paid tests from a machine with a real tenant key.** Hosted/cloud Claude Code sessions (GitLab, cloud containers, CI) don't have one and shouldn't be asked for one — from there, run `--dry-run` and `--tests T0` only (free). The full battery is for a human running Claude Code locally (Desktop or CLI) with `ASKSAGE_API_KEY`/`ASKSAGE_EMAIL` for a test tenant.
+
 ```sh
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --dry-run        # plan and cost only; no key needed
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --tests T0,T19   # free checks + counter lag first
