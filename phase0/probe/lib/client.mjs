@@ -59,7 +59,7 @@ const BAD_CREDENTIAL = 'probe-invalid-credential-0000000000000000000000000000000
 
 /**
  * @param {{ apiBase: string, apiKey?: string, email?: string, fetchImpl?: typeof fetch,
- *   timeoutMs?: number, now?: () => number }} opts
+ *   timeoutMs?: number, now?: () => number, noAuthHeaders?: boolean }} opts
  */
 export function createClient(opts) {
   const fetchImpl = opts.fetchImpl || fetch;
@@ -70,9 +70,14 @@ export function createClient(opts) {
   /** @type {Exchange | null} */
   let tokenExchange = null;
 
-  /** Exchanges the API key for an access token (x-access-tokens JWT). */
+  /**
+   * Exchanges the API key for an access token (x-access-tokens JWT). Under `noAuthHeaders`
+   * there is nothing to exchange — a gateway in front of `apiBase` is assumed to authenticate
+   * the request itself, so this returns null instead of calling the endpoint or throwing.
+   */
   async function token() {
     if (jwt) return jwt;
+    if (opts.noAuthHeaders) return null;
     if (!opts.apiKey || !opts.email) throw new Error('an API key and the account email are needed to obtain an access token');
     const ex = await call({ label: 'get-token-with-api-key', kind: 'user', path: '/user/get-token-with-api-key', auth: 'none', body: { email: opts.email, api_key: opts.apiKey } });
     // The recorded request body holds the key and email; drop it now so it can never be saved.
@@ -94,6 +99,7 @@ export function createClient(opts) {
     if (source === 'none') return null;
     if (source === 'bad') return BAD_CREDENTIAL;
     if (source === 'jwt') return token();
+    if (opts.noAuthHeaders) return null;
     if (!opts.apiKey) throw new Error('no API key');
     return opts.apiKey;
   }
@@ -198,7 +204,7 @@ export function createClient(opts) {
     return ex;
   }
 
-  return { call, token, tokenExchange: () => tokenExchange, hasJwt: () => jwt !== null, currentToken: () => jwt };
+  return { call, token, tokenExchange: () => tokenExchange, hasJwt: () => jwt !== null, currentToken: () => jwt, noAuthHeaders: () => !!opts.noAuthHeaders };
 }
 
 /**

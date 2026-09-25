@@ -12,12 +12,15 @@ node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --tests T0,T1
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias gov-a --yes            # the default set
 ```
 
-Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, from `--key-file <file>` and `--email`, or from a prompt (the key is not echoed). The email is only used to exchange the key for an access token (`/user/get-token-with-api-key`). The key is never printed or written. Every fixture passes through `lib/redact.mjs`, which removes the key, the access token, emails, user and org identifiers and the tenant hosts. The result is then scanned, and a file that still contains any of them is not written. Check the fixtures before committing them anyway.
+Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, or from `--key-file <file>` and `--email`. The email is only used to exchange the key for an access token (`/user/get-token-with-api-key`). The key is never printed or written. Every fixture passes through `lib/redact.mjs`, which removes the key, the access token, emails, user and org identifiers and the tenant hosts. The result is then scanned, and a file that still contains any of them is not written. Check the fixtures before committing them anyway.
+
+**No key in the environment?** The probe does not prompt for one. It sends requests with no client-supplied credential instead, on the assumption that something in front of `--api` (a corporate gateway, a proxy, a sidecar) authenticates them itself. Pass `--no-auth-headers` to choose that mode explicitly even when a key is available, for example to see how such a gateway actually behaves. In this mode auth-dependent checks (T0's token exchange, per-request billing) have nothing to measure and are recorded as errors rather than skipped outright — that's expected, not a bug.
 
 | Option | Effect |
 |---|---|
 | `--api <host>` | API host (required) |
 | `--alias <name>` | Tenant alias (required). Names the output folder and replaces the host in everything saved |
+| `--no-auth-headers` | Send no client-supplied credential; assume a gateway in front of `--api` authenticates requests. Implied automatically when no key is available |
 | `--tests T0,T1,...` / `--skip ...` | Choose tests. Default: everything except the opt-in T13 (long context, expensive) and T21 (needs `--dataset`) |
 | `--model role=id` | Override a model. Roles: `claude`, `gpt`, `gemini`, `embedding`, `long` |
 | `--allow-non-cui` | Allow `cui_capable: false` models (skipped by default) |

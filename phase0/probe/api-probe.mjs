@@ -6,9 +6,14 @@
 // needs --yes (or a typed "yes") before it sends anything billable. A running estimate is
 // checked against --max-spend before every request.
 //
-// Credentials: ASKSAGE_API_KEY and ASKSAGE_EMAIL from the environment, or --key-file, or a
-// hidden prompt. The key is never printed or written; every fixture is redacted (PLAN.md §6)
-// and scanned for the key, the access token and the tenant host before it is written.
+// Credentials: ASKSAGE_API_KEY and ASKSAGE_EMAIL from the environment, or --key-file/--email.
+// The key is never printed or written; every fixture is redacted (PLAN.md §6) and scanned for
+// the key, the access token and the tenant host before it is written.
+//
+// When ASKSAGE_API_KEY (or --key-file) is not set, requests are sent with no client-supplied
+// credential instead of prompting for one — this assumes a gateway in front of --api adds
+// authentication itself. Pass --no-auth-headers to choose that mode explicitly (for example,
+// to see how the API behaves through such a gateway even though a key is also available).
 //
 // Usage (see phase0/probe/README.md):
 //   node phase0/probe/api-probe.mjs --api api.<tenant> --alias tenant-a --dry-run
@@ -57,6 +62,7 @@ export function parseArgs(argv) {
     /** @type {string | undefined} */ catalog: undefined,
     /** @type {string | undefined} */ keyFile: undefined,
     /** @type {string | undefined} */ email: undefined,
+    noAuthHeaders: false,
   };
   const num = (/** @type {string} */ flag, /** @type {string | undefined} */ v) => {
     const x = Number(v);
@@ -87,6 +93,7 @@ export function parseArgs(argv) {
     else if (a === '--catalog') o.catalog = next();
     else if (a === '--key-file') o.keyFile = next();
     else if (a === '--email') o.email = next();
+    else if (a === '--no-auth-headers') o.noAuthHeaders = true;
     else throw new Error(`unknown argument ${a}`);
   }
   if (!o.api) throw new Error('--api <api host> is required (for example api.asksage.ai, or your tenant\'s API host)');
@@ -157,7 +164,7 @@ const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g
 
 /**
  * Runs the selected tests. Everything external is injected so tests can drive it.
- * @param {{ args: ReturnType<typeof parseArgs>, apiKey: string, email: string,
+ * @param {{ args: ReturnType<typeof parseArgs>, apiKey: string, email: string, noAuthHeaders?: boolean,
  *   catalog: import('./lib/models.mjs').CatalogModel[], fetchImpl?: typeof fetch,
  *   sleep?: (ms: number) => Promise<void>, outDir: string, log?: (s: string) => void,
  *   runId?: string }} p
@@ -170,7 +177,7 @@ export async function runProbe(p) {
   const { models } = pickModels(p.catalog, { overrides: args.models, allowNonCui: args.allowNonCui });
   const tests = selectTests(args.tests, args.skip, args.measure);
   const redactor = createRedactor({ secrets: [p.apiKey, p.email], hosts: [args.api, args.api.replace(/^api\./, 'chat.'), args.api.replace(/^api\./, '')], alias: args.alias });
-  const client = createClient({ apiBase: `https://${args.api}`, apiKey: p.apiKey, email: p.email, fetchImpl: p.fetchImpl });
+  const client = createClient({ apiBase: `https://${args.api}`, apiKey: p.apiKey, email: p.email, fetchImpl: p.fetchImpl, noAuthHeaders: p.noAuthHeaders });
   const rateOf = (/** @type {string | undefined} */ id) => (id ? p.catalog.find((m) => m.id === id)?.token_conversion_rate : null) || null;
   mkdirSync(p.outDir, { recursive: true });
 
@@ -447,15 +454,27 @@ async function main() {
       return;
     }
   }
-  const apiKey = (args.keyFile ? readFileSync(args.keyFile, 'utf8') : process.env.ASKSAGE_API_KEY || (await ask('Ask Sage API key (hidden): ', true))).trim();
-  const email = (args.email || process.env.ASKSAGE_EMAIL || (await ask('Account email: ', false))).trim();
-  if (!/^\S{32,}$/.test(apiKey)) throw new Error('that does not look like an API key');
-  if (!/@/.test(email)) throw new Error('that does not look like an email address');
+  const keySource = (args.keyFile ? readFileSync(args.keyFile, 'utf8') : process.env.ASKSAGE_API_KEY || '').trim();
+  const noAuthHeaders = args.noAuthHeaders || !keySource;
+  let apiKey = '';
+  let email = '';
+  if (noAuthHeaders) {
+    console.log(
+      args.noAuthHeaders
+        ? '\n--no-auth-headers: requests carry no client-supplied credential; a gateway in front of --api is assumed to authenticate them.'
+        : '\nNo ASKSAGE_API_KEY (or --key-file) in the environment; running with no client-supplied credential, as if a gateway in front of --api authenticates requests itself. Set the key (or pass --key-file/--email) to authenticate directly instead.',
+    );
+  } else {
+    apiKey = keySource;
+    email = (args.email || process.env.ASKSAGE_EMAIL || (await ask('Account email: ', false))).trim();
+    if (!/^\S{32,}$/.test(apiKey)) throw new Error('that does not look like an API key');
+    if (!/@/.test(email)) throw new Error('that does not look like an email address');
+  }
 
   const date = new Date().toISOString().slice(0, 10);
   const probeRunId = `${new Date().toISOString().slice(11, 16).replace(':', '')}-${randomBytes(3).toString('hex')}`;
   const outDir = resolve(args.out || join('research', 'live', args.alias, 'probe', `${date}-${probeRunId}`));
-  const { summaryPath, run } = await runProbe({ args, apiKey, email, catalog, outDir, runId: probeRunId });
+  const { summaryPath, run } = await runProbe({ args, apiKey, email, noAuthHeaders, catalog, outDir, runId: probeRunId });
   const counts = { pass: 0, fail: 0, other: 0 };
   for (const r of run.results) for (const c of r.checks) c.result === 'pass' ? counts.pass++ : c.result === 'fail' ? counts.fail++ : counts.other++;
   console.log(`\nDone. ${counts.pass} pass, ${counts.fail} fail, ${counts.other} informational. Estimated spend ${Math.round(run.spentEstimate)}.`);
