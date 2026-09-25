@@ -4,13 +4,13 @@ A throwaway language-model provider that answers every chat message with a repor
 
 | Test | Question |
 |---|---|
-| E1 | Do extension-contributed models appear in the chat model picker under this account's Copilot plan and org policy? |
+| E1 | Do extension-contributed models appear in the chat model picker with **no GitHub or Copilot sign-in** (the state on the target machine)? Does any org policy or MDM setting still bind a signed-out machine? |
 | E2 | Will Agent mode use such a model, pass it tools, and run a tool call the model emits? |
 | E3 | Can an extension be side-loaded here at all? |
 | E4 | Do thinking parts and private-MIME data parts emitted by the provider come back in later requests' history? (Decides plan §5: history parts vs. the side cache.) |
 | E5 | Does the extension host reach the Ask Sage host through the local proxy and TLS inspection? |
 
-It needs VS Code 1.104 or later (the stable `LanguageModelChatProvider` API) with GitHub Copilot Chat signed in.
+It needs VS Code **1.122 or later**. The stable `LanguageModelChatProvider` API arrived in 1.104, but per VS Code's documentation only from 1.122 do extension-provided and BYOK models work in chat, agent mode and MCP **without** a GitHub account or Copilot plan. Run E1–E4 **signed out** (do not sign in to Copilot or GitHub): that is the state on the target machine, and the state the project exists for. Copilot Chat ships inside VS Code from 1.116, so nothing separate needs installing. If the Chat view only offers "Sign in", that is the E1 answer: record it.
 
 ## 1. Load it (E3)
 
