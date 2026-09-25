@@ -30,7 +30,7 @@ Some research artifacts are kept outside version control. Paths are relative to 
 | `ui-bundles/` | Extracted tables and public API responses from the chat web app (raw bundles excluded) |
 | `sources/caching/` | Snapshots of the docs, release notes and Copilot source files the caching analysis cites |
 
-The `research/` folder is not in this repository yet. Cloud sessions can only see what is committed, so the digests, specs and rate table need to be added (redacted where needed) before a session can follow §13's "read `research/*.md` first".
+Most of the `research/` folder is not in this repository yet. Cloud sessions can only see what is committed, so the digests, specs and rate table need to be added (redacted where needed) before a session can follow §13's "read `research/*.md` first". Committed so far: `model-catalog-findings.md` (model naming, per-instance catalogs, CUI mismatches), dated doc and spec snapshots under `sources/asksage-docs/`, and catalog audits under `live/<instance>/catalog/`.
 
 The raw specs win whenever a digest disagrees with them. Claims about pricing come from the web app's code, not from billing records, until Phase 0 reconciles them (§3.6).
 
@@ -104,6 +104,7 @@ The picker can list the same model under several flavors (e.g. "GPT-5.5 (Respons
 ### 2.3 Tenant is a dimension
 Tenants can route the same model name to different upstream hosts and regions. Hosts lag each other on features: caching parameters, the 1-hour TTL, extended retention, newer models and reasoning round-trips. Therefore:
 - The catalog, rate table, default-flavor table and Phase 0 fixtures are all keyed by tenant.
+- The picker is never built from `get-models` alone. The public catalogs are not filtered per instance: the FedRAMP instance lists `cui_capable: false` models (`research/model-catalog-findings.md`). Intersect with the organization's `force_models`, hide `cui_capable: false` models on government-like instances by default, and treat undocumented suffixes (`-ts`, `-sec`) as unknown data handling. Always send exact `get-models` IDs, never bare public IDs or aliases, which the server resolves per environment. `phase0/probe/catalog-audit.mjs` audits an instance.
 - Findings from the test tenant are **provisional** for any other tenant until the Phase 0c subset is re-run there (§9).
 - The ledger records tenant on every request.
 
@@ -112,7 +113,7 @@ Tenants can route the same model name to different upstream hosts and regions. H
 ## 3. Cost, budget and usage design
 
 ### 3.1 Token conversion rates
-- **Where they come from.** They are hardcoded in the chat web app's JavaScript (`chat.<tenant>/assets/index-*.js`). No API endpoint serves them. `get-models` and `/v1/models` return only IDs.
+- **Where they come from.** They are hardcoded in the chat web app's JavaScript (`chat.<tenant>/assets/index-*.js`). **Correction (2026-09-25):** `POST /server/get-models?format=full` does serve `token_conversion_rate` (prompt and completion only) for most models, plus `cui_capable`, `aliases` and `limits`; cache, thinking and long-context rates still come only from the web app. See `research/model-catalog-findings.md`.
 - **Which rows are shown.** The web app filters them in the browser by the deployment's default model list plus the user's `force_models`.
 - **Formula** (per request, with every rate in model tokens per Ask Sage token, applied to *normalized* counts from §3.2):
   `AS = uncachedIn/prompt + cacheRead/cacheRead + write5m/cacheWrite5Min + write1h/cacheWrite1Hr + visibleOutput/completion + thinking/thinking`

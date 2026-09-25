@@ -1,0 +1,302 @@
+{
+ "host": "chat.asksage.com",
+ "profile": {
+  "deploymentType": "commercial",
+  "classificationLevel": "cui",
+  "governmentLike": true,
+  "activeList": "default",
+  "activeListSize": 79,
+  "declared": {
+   "REACT_APP_deployment_type": "commercial",
+   "REACT_APP_classification_level": "cui",
+   "REACT_APP_allowed_classifications": "",
+   "REACT_APP_allowed_models": "",
+   "REACT_APP_customer_tenant": "false",
+   "REACT_APP_has_government_banner": "false",
+   "REACT_APP_hide_cui_chip": "",
+   "REACT_APP_asksage_chat_service": "https://api.asksage.com/server",
+   "REACT_APP_asksage_user_service": "https://user-server-nginx.asksage.com"
+  }
+ },
+ "counts": {
+  "served": 92,
+  "nonCui": 12,
+  "lists": {
+   "default": 79,
+   "gov": 73,
+   "dod": 49
+  }
+ },
+ "suffixTable": {
+  "-gov": {
+   "true": 16,
+   "false": 0
+  },
+  "-ts": {
+   "true": 6,
+   "false": 0
+  },
+  "(none)": {
+   "true": 49,
+   "false": 9
+  },
+  "-com": {
+   "true": 8,
+   "false": 3
+  },
+  "-sec": {
+   "true": 1,
+   "false": 0
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "code": "non-cui-served",
+   "title": "12 model(s) flagged cui_capable:false are served",
+   "detail": "The instance declares deployment_type=\"commercial\", classification_level=\"cui\". Ask Sage docs: non-CUI models \"are not found on all instances... If you are on a CUI-compliant instance, these models will not be available.\"",
+   "ids": [
+    "deepseek-v3.2-com",
+    "deepseek-v4-flash",
+    "deepseek-v4-pro",
+    "google-claude-fable-5",
+    "gpt-o3",
+    "gpt-o4-mini",
+    "groq-70b",
+    "groq-deepseek",
+    "groq-llama33",
+    "groq-llama4-scout",
+    "kimi-2.6-com",
+    "kimi-2.7-code-com"
+   ]
+  },
+  {
+   "severity": "high",
+   "code": "government-without-restricted-list",
+   "title": "Government/CUI deployment runs the unrestricted default model list",
+   "detail": "vars.js sets deployment_type=\"commercial\" but neither REACT_APP_force_gov_models, REACT_APP_force_dod_models nor REACT_APP_allowed_models, so the web app offers its default list."
+  },
+  {
+   "severity": "high",
+   "code": "webapp-list-non-cui",
+   "title": "The web app's active list (\"default\") offers 5 non-CUI model(s)",
+   "detail": "These appear in the chat UI model picker for this deployment.",
+   "ids": [
+    "gpt-o3",
+    "gpt-o4-mini",
+    "groq-70b",
+    "groq-llama33",
+    "groq-llama4-scout"
+   ]
+  },
+  {
+   "severity": "medium",
+   "code": "served-outside-allow-list",
+   "title": "33 served model(s) are outside the \"gov (reference: deployment is government-like but no list is forced)\" allow-list",
+   "detail": "get-models is unauthenticated and, per Ask Sage docs, not filtered per environment; the server may still refuse these per account. Listed is not proof of callable.",
+   "ids": [
+    "aws-bedrock-gpt-oss-120b-ts",
+    "aws-bedrock-gpt-oss-20b-ts",
+    "aws-bedrock-nemotron-12b-vl-ts",
+    "aws-bedrock-nemotron-30b-ts",
+    "aws-bedrock-nemotron-9b-ts",
+    "aws-bedrock-nemotron-super-3-120b-ts",
+    "aws-bedrock-titan",
+    "claude-haiku-4-5-com",
+    "claude-opus-4-7-com",
+    "claude-sonnet-4-6-com",
+    "deepseek-v3.2-com",
+    "deepseek-v4-flash",
+    "deepseek-v4-pro",
+    "google-claude-fable-5",
+    "google-gemini-3-flash-com",
+    "google-gemini-3.1-flash-lite-com",
+    "google-gemini-3.1-pro-com",
+    "google-gemini-3.5-flash-com",
+    "google-imagen-3",
+    "gpt-4.1-gov",
+    "gpt-4.1-mini-gov",
+    "gpt-5.4-sec",
+    "gpt-5.5",
+    "gpt-image-2-com",
+    "gpt-o3",
+    "gpt-o3-mini-gov",
+    "gpt-o4-mini",
+    "groq-70b",
+    "groq-deepseek",
+    "groq-llama33",
+    "groq-llama4-scout",
+    "kimi-2.6-com",
+    "kimi-2.7-code-com"
+   ]
+  },
+  {
+   "severity": "medium",
+   "code": "commercial-hosting-on-government",
+   "title": "11 \"-com\" (commercial hosting / provider-direct) model(s) served on a government-like deployment",
+   "detail": "",
+   "ids": [
+    "claude-haiku-4-5-com",
+    "claude-opus-4-7-com",
+    "claude-sonnet-4-6-com",
+    "deepseek-v3.2-com",
+    "google-gemini-3-flash-com",
+    "google-gemini-3.1-flash-lite-com",
+    "google-gemini-3.1-pro-com",
+    "google-gemini-3.5-flash-com",
+    "gpt-image-2-com",
+    "kimi-2.6-com",
+    "kimi-2.7-code-com"
+   ]
+  },
+  {
+   "severity": "medium",
+   "code": "commercial-marked-cui",
+   "title": "Commercial deployment declares classification_level \"cui\"",
+   "detail": "The Instances page lists the commercial instance as \"Not FedRAMP\"."
+  },
+  {
+   "severity": "medium",
+   "code": "alias-collision",
+   "title": "1 alias(es) map to more than one model",
+   "detail": "\"default\" -> aws-bedrock-claude-45-sonnet-gov, google-gemini-2.5-flash",
+   "ids": [
+    "default"
+   ]
+  },
+  {
+   "severity": "medium",
+   "code": "catalog-non-cui",
+   "title": "openai/v1/models lists 2 id(s) backed by a non-CUI model",
+   "detail": "",
+   "ids": [
+    "gpt-o3",
+    "gpt-o4-mini"
+   ]
+  },
+  {
+   "severity": "medium",
+   "code": "catalog-commercial-backed",
+   "title": "openai/v1/models lists 1 id(s) that resolve to a \"-com\" model on a government-like deployment",
+   "detail": "`gpt-image-2-com` -> gpt-image-2-com",
+   "ids": [
+    "gpt-image-2-com"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "government-hosting-on-commercial",
+   "title": "\"-gov\"/\"-ts\" model(s) served on a commercial deployment",
+   "detail": "",
+   "ids": [
+    "aws-bedrock-claude-45-sonnet-gov",
+    "aws-bedrock-claude-fable-5-1-gov",
+    "aws-bedrock-claude-opus-5-5-gov",
+    "aws-bedrock-grok-4-6-gov",
+    "aws-bedrock-nova-lite-gov",
+    "aws-bedrock-nova-micro-gov",
+    "aws-bedrock-nova-pro-gov",
+    "google-gemini-3.1-flash-lite-gov",
+    "google-gemini-3.5-flash-gov",
+    "gpt-4.1-gov",
+    "gpt-4.1-mini-gov",
+    "gpt-5.1-gov",
+    "gpt-5.6-luna-gov",
+    "gpt-5.6-sol-gov",
+    "gpt-5.6-terra-gov",
+    "gpt-o3-mini-gov",
+    "aws-bedrock-gpt-oss-120b-ts",
+    "aws-bedrock-gpt-oss-20b-ts",
+    "aws-bedrock-nemotron-12b-vl-ts",
+    "aws-bedrock-nemotron-30b-ts",
+    "aws-bedrock-nemotron-9b-ts",
+    "aws-bedrock-nemotron-super-3-120b-ts"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "undocumented-suffix",
+   "title": "Model suffixes with no published definition (-ts, -sec)",
+   "detail": "Treat their data handling as unknown until Ask Sage defines them.",
+   "ids": [
+    "aws-bedrock-gpt-oss-120b-ts",
+    "aws-bedrock-gpt-oss-20b-ts",
+    "aws-bedrock-nemotron-12b-vl-ts",
+    "aws-bedrock-nemotron-30b-ts",
+    "aws-bedrock-nemotron-9b-ts",
+    "aws-bedrock-nemotron-super-3-120b-ts",
+    "gpt-5.4-sec"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "catalog-unresolved",
+   "title": "anthropic/v1/models lists 8 id(s) that are neither a get-models id nor an alias",
+   "detail": "The server maps these to a backing model per environment (per the BYOK docs, e.g. Commercial -> provider-direct \"-com\", Gov/DoD -> Vertex). Which backend, and so which hosting and CUI status, cannot be determined from public data: send exact get-models ids instead.",
+   "ids": [
+    "claude-opus-4-8",
+    "claude-opus-4-7",
+    "claude-opus-4-6",
+    "claude-sonnet-4-6",
+    "claude-opus-4-5",
+    "claude-sonnet-4-5",
+    "claude-sonnet-4-5-vertex",
+    "claude-haiku-4-5"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "catalog-alias-resolution",
+   "title": "anthropic/v1/models: 5 public id(s) resolve through aliases",
+   "detail": "`claude-opus-5-5` -> google-claude-opus-5-5; `claude-opus-5` -> google-claude-opus-5; `claude-sonnet-5` -> google-claude-sonnet-5; `claude-fable-5-1` -> aws-bedrock-claude-fable-5-1-gov; `claude-opus-5-5-gov` -> aws-bedrock-claude-opus-5-5-gov",
+   "ids": [
+    "claude-opus-5-5",
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "claude-fable-5-1",
+    "claude-opus-5-5-gov"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "webapp-list-stale",
+   "title": "15 id(s) in the web app lists are not served",
+   "detail": "",
+   "ids": [
+    "aws-bedrock-gemma-4-26b-a4b-gov",
+    "aws-bedrock-gemma-4-31b-gov",
+    "aws-bedrock-gemma-4-e2b-gov",
+    "aws-bedrock-gpt-5-6-luna-gov",
+    "aws-bedrock-gpt-5-6-terra-gov",
+    "aws-bedrock-gpt-oss-120b-gov",
+    "aws-bedrock-gpt-oss-20b-gov",
+    "aws-bedrock-grok-4-3-gov",
+    "aws-bedrock-nemotron-12b-vl-gov",
+    "aws-bedrock-nemotron-30b-gov",
+    "aws-bedrock-nemotron-9b-gov",
+    "aws-bedrock-nemotron-super-3-120b-gov",
+    "gemini-3-6-flash",
+    "google-gemini-20-flash",
+    "gpt-5.4-gov"
+   ]
+  },
+  {
+   "severity": "info",
+   "code": "unpriced",
+   "title": "10 model(s) have no token_conversion_rate",
+   "detail": "The extension must treat these as \"unpriced\" (plan §3.1).",
+   "ids": [
+    "google-imagen-3",
+    "google-imagen-4",
+    "google-veo-3.1-fast",
+    "google-veo-3.1-generate",
+    "google-veo-3.1-lite",
+    "gpt-4.1-gov",
+    "gpt-4.1-mini-gov",
+    "gpt-5.1-gov",
+    "gpt-o3-mini-gov",
+    "llma3"
+   ]
+  }
+ ]
+}

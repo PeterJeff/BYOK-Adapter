@@ -1,0 +1,5 @@
+{
+ "REACT_APP_deployment_type": "government",
+ "REACT_APP_has_government_banner": "true",
+ "REACT_APP_asksage_user_service": "https://user-server-cac-gov.asksage.ai"
+}
