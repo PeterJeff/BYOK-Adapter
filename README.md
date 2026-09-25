@@ -9,7 +9,7 @@ The extension is plain JavaScript with no dependencies and no build step, becaus
 | Phase | State |
 |---|---|
 | 0a Environment smoke test (E1–E5) | Built: [`phase0/smoke-extension`](phase0/smoke-extension/README.md). Needs running on the target machine. |
-| 0b API probes (T0–T21) | Started: [`catalog-audit.mjs`](phase0/probe/README.md), a public model-catalog audit (no key). Findings: [`research/model-catalog-findings.md`](research/model-catalog-findings.md). |
+| 0b API probes (T0–T21) | Built: [`api-probe.mjs`](phase0/probe/README.md) (needs a key; not yet run) and [`catalog-audit.mjs`](phase0/probe/README.md), a public model-catalog audit. Findings so far: [`research/model-catalog-findings.md`](research/model-catalog-findings.md). |
 | 1+ | Not started |
 
 See [`PLAN.md`](PLAN.md) for the design and the full phase plan, and [`CLAUDE.md`](CLAUDE.md) for the working rules.
