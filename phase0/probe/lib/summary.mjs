@@ -54,11 +54,13 @@ export function renderSummary(run) {
   const rows = /** @type {Record<string, any>[] | undefined} */ (t22?.observations.matrixRows);
   if (rows && rows.length) {
     L.push('## Model matrix (T22)', '', 'Multipliers are what the measured bill implies at the tokenizer\'s billed rates, after the +3 per-request constant (±0.05 on large prefixes).', '');
-    L.push('| Model | Flavor | Served | Cache read | Read × | Write × | Tool call | Reasoning state | Round 2 with state | Round 2 without | Notes |', '|---|---|---|---|---|---|---|---|---|---|---|');
+    L.push("City: the tool call's city for a question that needs a little reasoning (right answer: Berlin). Reasoning tokens: as reported, or hidden in Gemini's total.", '');
+    L.push('| Model | Flavor | Served | Cache read | Read × | Write × | Tool call | City | Reasoning tokens | Reasoning state | Round 2 with state | Round 2 without | Notes |', '|---|---|---|---|---|---|---|---|---|---|---|---|---|');
     const v = (/** @type {unknown} */ x) => (x === null || x === undefined ? '' : String(x));
     for (const r of rows) {
-      const notes = [r.error, r.cacheError, r.thinking, r.reasoning, r.round2Placeholder ? `placeholder signature: ${r.round2Placeholder}` : ''].filter(Boolean).join('; ');
-      L.push(`| \`${r.model}\` | ${r.flavor} | ${cell(v(r.served))} | ${r.cacheRead ?? ''}${r.cacheInput ? ` / ${r.cacheInput}` : ''} | ${v(r.readMult)} | ${v(r.writeMult)} | ${r.toolCall ? 'yes' : r.error ? '' : 'no'} | ${cell(v(r.state))} | ${cell(v(r.round2))} | ${cell(v(r.round2Without))} | ${cell(notes)} |`);
+      const notes = [r.error, r.cacheError, r.thinking && r.thinking !== 'enabled' ? `thinking: ${r.thinking}` : '', r.reasoning, r.thinkingNote, r.round2Placeholder ? `placeholder signature: ${r.round2Placeholder}` : '', r.billedPromptRate ? `billed prompt rate ${r.billedPromptRate}` : ''].filter(Boolean).join('; ');
+      const served = `${v(r.served)}${r.substituted ? ' **(different model)**' : ''}`;
+      L.push(`| \`${r.model}\` | ${r.flavor} | ${cell(served)} | ${r.cacheRead ?? ''}${r.cacheInput ? ` / ${r.cacheInput}` : ''} | ${v(r.readMult)} | ${v(r.writeMult)} | ${r.toolCall ? 'yes' : r.error ? '' : 'no'} | ${cell(v(r.city))} | ${v(r.thinkingTokens)} | ${cell(v(r.state))} | ${cell(v(r.round2))} | ${cell(v(r.round2Without))} | ${cell(notes)} |`);
     }
     L.push('');
   }

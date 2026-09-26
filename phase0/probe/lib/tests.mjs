@@ -10,7 +10,7 @@ import { outputOf, estimate } from './usage.mjs';
 import { summarizeUser } from './redact.mjs';
 import { readBudget } from './budget.mjs';
 import { cacheRule } from './billing.mjs';
-import { entryEstimate, impliedMultiplier, isOpenAIReasoning, MATRIX_CAPS, MATRIX_PREFIX } from './matrix.mjs';
+import { entryEstimate, impliedMultiplier, isOpenAIReasoning, sameModel, MATRIX_CAPS, MATRIX_PREFIX } from './matrix.mjs';
 
 /** @typedef {import('./client.mjs').Exchange} Exchange */
 /** @typedef {import('./client.mjs').CallOptions} CallOptions */
@@ -72,6 +72,13 @@ const WEATHER_CC = { type: 'function', function: { name: WEATHER_M.name, descrip
 const WEATHER_R = { type: 'function', name: WEATHER_M.name, description: WEATHER_M.description, parameters: WEATHER_M.input_schema };
 const WEATHER_G = { functionDeclarations: [{ name: WEATHER_M.name, description: WEATHER_M.description, parameters: WEATHER_M.input_schema }] };
 const ASK_WEATHER = 'What is the weather in Paris right now? Use the get_weather tool; do not guess.';
+/**
+ * A tool request that needs a little reasoning first, so reasoning models actually produce
+ * reasoning state (GPT-5.4 nano and GPT-6 Sol spent 0 reasoning tokens on ASK_WEATHER).
+ * 391 = 17 × 23, so the right city is Berlin.
+ */
+const REASON_WEATHER = 'Decide which city to check: if 391 is a prime number, check Paris; otherwise check Berlin. Work it out, then call the get_weather tool exactly once for that city. Do not guess the weather.';
+const REASON_CITY = 'Berlin';
 const TOOL_RESULT = '{"city":"Paris","temp_c":18,"sky":"clear"}';
 
 // ---------------------------------------------------------------- request helpers
@@ -541,7 +548,7 @@ export const TESTS = [
       // R: encrypted reasoning items with store:false.
       // effort 'low' let gpt-5.4-nano skip reasoning entirely on this prompt (2026-09-26 run), which says nothing about R.
       const rb = { tools: [WEATHER_R], reasoning: { effort: 'medium' }, include: ['reasoning.encrypted_content'], max_output_tokens: 1024 };
-      const q1 = await r(ctx, 'R round1', { ...rb, input: [{ role: 'user', content: ASK_WEATHER }] });
+      const q1 = await r(ctx, 'R round1', { ...rb, input: [{ role: 'user', content: REASON_WEATHER }] });
       const p1 = outputOf('R', q1);
       const fc = p1.items.find((it) => it.type === 'function_call');
       const reasoningItems = p1.items.filter((it) => it.type === 'reasoning');
@@ -554,8 +561,8 @@ export const TESTS = [
       );
       if (fc) {
         const out = { type: 'function_call_output', call_id: fc.call_id, output: TOOL_RESULT };
-        const withR = await r(ctx, 'R round2 with reasoning', { ...rb, input: [{ role: 'user', content: ASK_WEATHER }, ...p1.items, out] });
-        const noR = await r(ctx, 'R round2 without reasoning', { ...rb, input: [{ role: 'user', content: ASK_WEATHER }, ...p1.items.filter((it) => it.type !== 'reasoning'), out] });
+        const withR = await r(ctx, 'R round2 with reasoning', { ...rb, input: [{ role: 'user', content: REASON_WEATHER }, ...p1.items, out] });
+        const noR = await r(ctx, 'R round2 without reasoning', { ...rb, input: [{ role: 'user', content: REASON_WEATHER }, ...p1.items.filter((it) => it.type !== 'reasoning'), out] });
         ctx.check('R round 2 with reasoning items succeeds', okEx(withR) ? 'pass' : 'fail', errText(withR));
         ctx.observe('R round2', { withReasoning: usageRow(withR), withoutReasoning: usageRow(noR) });
       } else ctx.check('R tool round trip', 'unknown', `no function_call in round 1 (${errText(q1) || p1.stopReason})`);
@@ -996,21 +1003,34 @@ async function matrixCache(ctx, id, f, rates) {
   const a = A.result;
   const b = B.result;
   const read = n(b).cacheRead;
+  const substituted = !sameModel(id, a.resolvedModel);
+  ctx.check(`${label}: served model is the requested one`, substituted ? 'fail' : 'pass', `served ${a.resolvedModel ?? '(not reported)'}`);
   const hit = f === 'M' ? writes(a) > 0 && read >= 0.9 * writes(a) : read >= 0.5 * inputTotal(b);
   ctx.check(`${label}: cache read on repeat`, hit ? 'pass' : f === 'G' ? 'info' : 'fail', `read ${read} of ${inputTotal(b)}; A wrote ${writes(a)}`);
 
   // Multipliers from the bills. Gemini thinking is not billed through G, so it is left out there.
   const out = (/** @type {Exchange} */ ex) => n(ex).visibleOutput + (f === 'G' ? 0 : n(ex).thinking);
   const rule = cacheRule(f, id);
-  const readMult = writes(b) === 0 ? impliedMultiplier({ billed: B.measured?.usedDelta ?? null, cachedTokens: read, uncachedTokens: n(b).inputUncached, outputTokens: out(b), rates }) : null;
+  // Where A neither wrote nor read cache (implicit caching: CC, R, G), A's own bill gives the prompt
+  // rate actually charged, which is right even when the model was substituted (billed as the served
+  // model, 2026-09-26) or the tokenizer rate is off.
+  const billedA = A.measured?.usedDelta ?? null;
+  const selfRate = billedA !== null && writes(a) === 0 && n(a).cacheRead === 0 && inputTotal(a) > 0 && rates.completion
+    ? { prompt: (billedA - 3 - out(a) * rates.completion) / inputTotal(a), completion: rates.completion }
+    : null;
+  const readRates = selfRate && selfRate.prompt > 0 ? selfRate : rates;
+  const readMult = writes(b) === 0 ? impliedMultiplier({ billed: B.measured?.usedDelta ?? null, cachedTokens: read, uncachedTokens: n(b).inputUncached, outputTokens: out(b), rates: readRates }) : null;
   const writeMult = n(a).cacheRead === 0 && n(a).cacheWrite1h === 0 ? impliedMultiplier({ billed: A.measured?.usedDelta ?? null, cachedTokens: writes(a), uncachedTokens: n(a).inputUncached, outputTokens: out(a), rates }) : null;
   const expRead = rule ? rule.read : 1;
   const expWrite = rule ? rule.write5m : 1;
-  if (readMult !== null) ctx.check(`${label}: read billed at ${readMult}x (host rule ${expRead}x)`, Math.abs(readMult - expRead) <= 0.1 ? 'pass' : 'fail', `billed ${B.measured?.usedDelta} for ${read} cached + ${n(b).inputUncached} uncached in, ${out(b)} out`);
+  const rateNote = readRates === selfRate ? ` (prompt rate ${+readRates.prompt.toFixed(4)} from A's own bill${rates.prompt ? `; tokenizer says ${+rates.prompt.toFixed(4)}` : ''})` : '';
+  if (readMult !== null) ctx.check(`${label}: read billed at ${readMult}x (host rule ${expRead}x)`, Math.abs(readMult - expRead) <= 0.1 ? 'pass' : 'fail', `billed ${B.measured?.usedDelta} for ${read} cached + ${n(b).inputUncached} uncached in, ${out(b)} out${rateNote}`);
   else if (read > 0) ctx.check(`${label}: read multiplier`, 'unknown', B.measured ? 'too few cached tokens, or unsettled counter, to resolve a ratio' : 'budget measurement off');
   if (writeMult !== null) ctx.check(`${label}: write billed at ${writeMult}x (host rule ${expWrite}x)`, Math.abs(writeMult - expWrite) <= 0.15 ? 'pass' : 'fail', `billed ${A.measured?.usedDelta} for ${writes(a)} written + ${n(a).inputUncached} uncached in`);
   return {
     served: a.resolvedModel,
+    substituted,
+    billedPromptRate: selfRate && selfRate.prompt > 0 ? Math.round(selfRate.prompt * 10000) / 10000 : null,
     cacheRead: read,
     cacheInput: inputTotal(b),
     cacheWrite: writes(a),
@@ -1037,10 +1057,18 @@ async function matrixLoop(ctx, id, f) {
   let expectState = true;
 
   if (f === 'M') {
-    const u1 = { role: 'user', content: ASK_WEATHER };
+    const u1 = { role: 'user', content: REASON_WEATHER };
     /** @type {Record<string, any>} */
     let base = { model: id, max_tokens: MATRIX_CAPS.loopM, thinking: { type: 'enabled', budget_tokens: 1024 }, tools: [WEATHER_M] };
+    row.thinking = 'enabled';
     let r1 = await m(ctx, `${label} loop r1`, { ...base, messages: [u1] });
+    // Newer Claude models (Sonnet 5, 2026-09-26) reject "enabled" and ask for adaptive thinking
+    // with output_config.effort instead.
+    if (!okEx(r1) && /adaptive/i.test(errText(r1))) {
+      row.thinking = `adaptive ("enabled" rejected: ${errText(r1).slice(0, 90)})`;
+      base = { model: id, max_tokens: MATRIX_CAPS.loopM, thinking: { type: 'adaptive' }, output_config: { effort: 'medium' }, tools: [WEATHER_M] };
+      r1 = await m(ctx, `${label} loop r1 adaptive thinking`, { ...base, messages: [u1] });
+    }
     if (!okEx(r1)) {
       row.thinking = `not accepted: ${errText(r1).slice(0, 100)}`;
       expectState = false;
@@ -1051,15 +1079,17 @@ async function matrixLoop(ctx, id, f) {
     const call = o1.toolCalls[0];
     const think = o1.content.find((/** @type {any} */ x) => x.type === 'thinking' || x.type === 'redacted_thinking');
     row.toolCall = !!call;
+    row.city = call ? cityOf(call.args) : null;
     row.state = think?.signature ? `signature ${String(think.signature).length} chars` : 'none';
     row.thinkingTokens = n(r1).thinking;
+    if (!think && !n(r1).thinking) expectState = false; // adaptive thinking may decide not to think
     if (call) {
       const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: TOOL_RESULT }] };
       row.round2 = verdictOf(await m(ctx, `${label} loop r2 with thinking`, { ...base, messages: [u1, { role: 'assistant', content: o1.content }, result] }));
       if (think) row.round2Without = verdictOf(await m(ctx, `${label} loop r2 thinking stripped`, { ...base, messages: [u1, { role: 'assistant', content: o1.content.filter((/** @type {any} */ x) => x.type === 'tool_use' || x.type === 'text') }, result] }));
     }
   } else if (f === 'R') {
-    const input = [{ role: 'user', content: ASK_WEATHER }];
+    const input = [{ role: 'user', content: REASON_WEATHER }];
     /** @type {Record<string, any>} */
     let rb = { model: id, tools: [WEATHER_R], reasoning: { effort: 'medium' }, include: ['reasoning.encrypted_content'], max_output_tokens: cap };
     let q1 = await r(ctx, `${label} loop r1`, { ...rb, input });
@@ -1074,6 +1104,7 @@ async function matrixLoop(ctx, id, f) {
     const reasoning = p1.items.filter((/** @type {any} */ it) => it.type === 'reasoning');
     const enc = reasoning.filter((/** @type {any} */ it) => it.encrypted_content);
     row.toolCall = !!fc;
+    row.city = fc ? cityOf(fc.arguments) : null;
     row.thinkingTokens = n(q1).thinking;
     row.state = enc.length ? `encrypted reasoning ${enc.map((/** @type {any} */ it) => String(it.encrypted_content).length).join('+')} chars` : reasoning.length ? `${reasoning.length} reasoning item(s), no encrypted_content` : 'none';
     if (!n(q1).thinking && !reasoning.length) expectState = false; // the model did not reason: inconclusive, not a failure
@@ -1083,7 +1114,7 @@ async function matrixLoop(ctx, id, f) {
       if (reasoning.length) row.round2Without = verdictOf(await r(ctx, `${label} loop r2 without reasoning`, { ...rb, input: [...input, ...p1.items.filter((/** @type {any} */ it) => it.type !== 'reasoning'), out] }));
     }
   } else if (f === 'CC') {
-    const u = { role: 'user', content: ASK_WEATHER };
+    const u = { role: 'user', content: REASON_WEATHER };
     /** @type {Record<string, any>} */
     let body = { model: id, tools: [WEATHER_CC], ...capCC(id, cap), ...(isOpenAIReasoning(id) ? { reasoning_effort: 'medium' } : {}) };
     let c1 = await cc(ctx, `${label} loop r1`, { ...body, messages: [u] });
@@ -1098,6 +1129,7 @@ async function matrixLoop(ctx, id, f) {
     const msg = /** @type {any} */ (c1.body)?.choices?.[0]?.message;
     const calls = msg?.tool_calls || [];
     row.toolCall = calls.length > 0;
+    row.city = calls[0] ? cityOf(calls[0].function?.arguments) : null;
     row.thinkingTokens = n(c1).thinking;
     const extra = Object.keys(msg || {}).filter((k) => !['role', 'content', 'tool_calls', 'refusal', 'annotations', 'audio', 'function_call'].includes(k));
     const callExtra = calls[0] ? Object.keys(calls[0]).filter((k) => !['id', 'type', 'function', 'index'].includes(k)) : [];
@@ -1113,13 +1145,17 @@ async function matrixLoop(ctx, id, f) {
       }
     }
   } else {
-    const user = { role: 'user', parts: [{ text: ASK_WEATHER }] };
+    const user = { role: 'user', parts: [{ text: REASON_WEATHER }] };
     const cfg = { tools: [WEATHER_G], generationConfig: { maxOutputTokens: cap, thinkingConfig: { includeThoughts: true } } };
     const g1 = await g(ctx, `${label} loop r1`, { ...cfg, contents: [user] }, { model: id });
     const o1 = outputOf('G', g1);
     const callPart = o1.parts.find((/** @type {any} */ p) => p.functionCall);
     row.toolCall = !!callPart;
-    row.thinkingTokens = n(g1).thinking;
+    row.city = callPart ? cityOf(callPart.functionCall.args) : null;
+    row.thinkingTokens = n(g1).thinking || n(g1).thinkingHidden || 0;
+    // Ask Sage strips thought parts, thoughtsTokenCount and thought signatures from Gemini (2026-09-26);
+    // the hidden count is totalTokenCount minus prompt and candidates.
+    if (!n(g1).thinking && n(g1).thinkingHidden) row.thinkingNote = `thinking hidden: ${n(g1).thinkingHidden} tokens in totalTokenCount, no thought parts or thoughtsTokenCount`;
     row.state = callPart?.thoughtSignature ? `thoughtSignature ${String(callPart.thoughtSignature).length} chars` : 'none';
     if (callPart) {
       const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(TOOL_RESULT) } }] };
@@ -1137,12 +1173,23 @@ async function matrixLoop(ctx, id, f) {
 
   ctx.check(`${label}: tool call in round 1`, row.toolCall ? 'pass' : 'fail', row.toolCall ? '' : 'no tool call');
   if (row.toolCall) {
+    ctx.check(`${label}: reasoned to the right city`, row.city === REASON_CITY ? 'pass' : 'info', `called for ${row.city ?? '(unreadable)'}; ${row.thinkingTokens || 0} reasoning tokens`);
     ctx.check(`${label}: reasoning state returned`, row.state !== 'none' ? 'pass' : expectState ? 'fail' : 'info', row.state);
     ctx.check(`${label}: round 2 with state as returned`, row.round2 === 'ok' ? 'pass' : 'fail', row.round2);
     if (row.round2Without !== 'n/a') ctx.check(`${label}: round 2 without state`, 'info', row.round2Without);
     if (row.round2Placeholder) ctx.check(`${label}: round 2 with placeholder signature`, row.round2Placeholder === 'ok' ? 'pass' : 'info', row.round2Placeholder);
   }
   return row;
+}
+
+/** The `city` argument of a tool call, from a JSON string or an object. @param {unknown} args */
+function cityOf(args) {
+  try {
+    const o = typeof args === 'string' ? JSON.parse(args || '{}') : args;
+    return typeof (/** @type {any} */ (o)?.city) === 'string' ? /** @type {any} */ (o).city : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Google's documented placeholder for a function call whose thought signature is unavailable. */

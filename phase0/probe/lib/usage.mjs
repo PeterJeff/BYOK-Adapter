@@ -18,6 +18,8 @@
  * @property {number} visibleOutput
  * @property {number} thinking
  * @property {boolean} thinkingUnknown
+ * @property {number} [thinkingHidden]  G only: tokens in totalTokenCount beyond prompt + candidates when
+ *   thoughtsTokenCount is missing (Ask Sage strips it; the model still thinks, and it is not billed)
  */
 
 /**
@@ -143,6 +145,8 @@ export function normalize(flavor, u) {
     z.inputUncached = Math.max(0, n(u.promptTokenCount) - cached);
     z.visibleOutput = n(u.candidatesTokenCount);
     z.thinking = n(u.thoughtsTokenCount);
+    const hidden = n(u.totalTokenCount) - n(u.promptTokenCount) - z.visibleOutput - z.thinking - n(u.toolUsePromptTokenCount);
+    if (u.thoughtsTokenCount === undefined && hidden > 0) z.thinkingHidden = hidden;
     return z;
   }
   return null;

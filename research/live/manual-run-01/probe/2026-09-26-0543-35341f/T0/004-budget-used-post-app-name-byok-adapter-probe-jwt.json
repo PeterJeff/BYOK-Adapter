@@ -1,0 +1,42 @@
+{
+ "test": "T0",
+ "seq": 4,
+ "label": "budget used POST app_name=byok-adapter-probe (jwt)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-26T05:43:05.343Z",
+ "ms": 235,
+ "ttftMs": 235,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-access-tokens"
+  ],
+  "headers": {},
+  "body": {
+   "app_name": "byok-adapter-probe"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": 86670,
+  "status": 200
+ }
+}

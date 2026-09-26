@@ -106,8 +106,9 @@ test('--matrix alone selects T0 and T22; with --tests it adds T22; planCost pric
 // ---------------------------------------------------------------- whole run against a fake server
 
 /**
- * A fake Ask Sage that behaves like the 2026-09-26 run: Claude and OpenAI cache on repeat and
- * return reasoning state; Gemini returns no thought signature and accepts only the placeholder.
+ * A fake Ask Sage that behaves like the 2026-09-26 runs: Claude and OpenAI cache on repeat and
+ * return reasoning state; Sonnet 5 rejects "enabled" thinking and wants adaptive; Gemini hides its
+ * thinking, returns no thought signature, accepts only the placeholder, and is served as another model.
  */
 function fakeAskSage() {
   const seen = new Map();
@@ -130,15 +131,16 @@ function fakeAskSage() {
       return json({ response: b.convert_to_asksage ? Math.round(tokens * 0.1 + (b.completion_estimate || 0) * 0.5 + 2) : tokens, status: 200 });
     }
     if (path === '/server/anthropic/v1/messages') {
+      if (b.thinking?.type === 'enabled' && /sonnet-5/.test(b.model)) return json({ type: 'error', error: { type: 'invalid_request_error', message: '"thinking.type.enabled" is not supported for this model. Use "thinking.type.adaptive" and "output_config.effort" to control thinking behavior.' } }, 400);
       const sys = b.system?.[0]?.text;
       if (sys) {
         const hit = repeat(sys);
-        return json({ model: 'claude-served', stop_reason: 'end_turn', content: [{ type: 'text', text: 'OK' }], usage: { input_tokens: 10, cache_read_input_tokens: hit ? 5000 : 0, cache_creation_input_tokens: hit ? 0 : 5000, output_tokens: 2 } });
+        return json({ model: 'claude-sonnet-5', stop_reason: 'end_turn', content: [{ type: 'text', text: 'OK' }], usage: { input_tokens: 10, cache_read_input_tokens: hit ? 5000 : 0, cache_creation_input_tokens: hit ? 0 : 5000, output_tokens: 2 } });
       }
       const last = b.messages[b.messages.length - 1];
-      if (Array.isArray(last.content) && last.content[0]?.type === 'tool_result') return json({ model: 'claude-served', stop_reason: 'end_turn', content: [{ type: 'text', text: 'Sunny' }], usage: { input_tokens: 200, output_tokens: 5 } });
-      const content = [...(b.thinking ? [{ type: 'thinking', thinking: 'hmm', signature: 'S'.repeat(600) }] : []), { type: 'tool_use', id: 'toolu_1', name: 'get_weather', input: { city: 'Paris' } }];
-      return json({ model: 'claude-served', stop_reason: 'tool_use', content, usage: { input_tokens: 300, output_tokens: 80, output_tokens_details: { thinking_tokens: 40 } } });
+      if (Array.isArray(last.content) && last.content[0]?.type === 'tool_result') return json({ model: 'claude-sonnet-5', stop_reason: 'end_turn', content: [{ type: 'text', text: 'Sunny' }], usage: { input_tokens: 200, output_tokens: 5 } });
+      const content = [...(b.thinking ? [{ type: 'thinking', thinking: 'hmm', signature: 'S'.repeat(600) }] : []), { type: 'tool_use', id: 'toolu_1', name: 'get_weather', input: { city: 'Berlin' } }];
+      return json({ model: 'claude-sonnet-5', stop_reason: 'tool_use', content, usage: { input_tokens: 300, output_tokens: 80, output_tokens_details: { thinking_tokens: 40 } } });
     }
     if (path === '/server/openai/v1/responses') {
       if (b.instructions) {
@@ -146,7 +148,7 @@ function fakeAskSage() {
         return json({ model: b.model, status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'OK' }] }], usage: { input_tokens: 2500, input_tokens_details: { cached_tokens: hit ? 2304 : 0 }, output_tokens: 2, output_tokens_details: { reasoning_tokens: 0 } } });
       }
       if (b.input.some((/** @type {any} */ i) => i.type === 'function_call_output')) return json({ model: b.model, status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: 'Sunny' }] }], usage: { input_tokens: 100, output_tokens: 5 } });
-      return json({ model: b.model, status: 'completed', output: [{ type: 'reasoning', encrypted_content: 'E'.repeat(900) }, { type: 'function_call', call_id: 'call_1', name: 'get_weather', arguments: '{"city":"Paris"}' }], usage: { input_tokens: 60, output_tokens: 90, output_tokens_details: { reasoning_tokens: 64 } } });
+      return json({ model: b.model, status: 'completed', output: [{ type: 'reasoning', encrypted_content: 'E'.repeat(900) }, { type: 'function_call', call_id: 'call_1', name: 'get_weather', arguments: '{"city":"Berlin"}' }], usage: { input_tokens: 60, output_tokens: 90, output_tokens_details: { reasoning_tokens: 64 } } });
     }
     if (path === '/server/openai/v1/chat/completions') {
       if (/gemini/.test(b.model)) return json({ error: { message: `Unsupported model: ${b.model}`, type: 'invalid_request_error' } }, 400);
@@ -156,17 +158,17 @@ function fakeAskSage() {
         return json({ model: b.model, choices: [{ message: { role: 'assistant', content: 'OK' }, finish_reason: 'stop' }], usage: { prompt_tokens: 2500, prompt_tokens_details: { cached_tokens: hit ? 2304 : 0 }, completion_tokens: 2 } });
       }
       if (b.messages.some((/** @type {any} */ x) => x.role === 'tool')) return json({ model: b.model, choices: [{ message: { role: 'assistant', content: 'Sunny' }, finish_reason: 'stop' }], usage: { prompt_tokens: 100, completion_tokens: 5 } });
-      return json({ model: b.model, choices: [{ message: { role: 'assistant', content: null, tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'get_weather', arguments: '{"city":"Paris"}' } }] }, finish_reason: 'tool_calls' }], usage: { prompt_tokens: 60, completion_tokens: 20 } });
+      return json({ model: b.model, choices: [{ message: { role: 'assistant', content: null, tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'get_weather', arguments: '{"city":"Berlin"}' } }] }, finish_reason: 'tool_calls' }], usage: { prompt_tokens: 60, completion_tokens: 20 } });
     }
     if (path.startsWith('/server/google/')) {
-      const usage = { promptTokenCount: 40, candidatesTokenCount: 5, totalTokenCount: 45 };
-      if (b.systemInstruction) return json({ modelVersion: 'gemini-served', candidates: [{ content: { role: 'model', parts: [{ text: 'OK' }] }, finishReason: 'STOP' }], usageMetadata: usage });
+      const usage = { promptTokenCount: 40, candidatesTokenCount: 5, totalTokenCount: 65 };
+      if (b.systemInstruction) return json({ modelVersion: 'gemini-2.5-flash', candidates: [{ content: { role: 'model', parts: [{ text: 'OK' }] }, finishReason: 'STOP' }], usageMetadata: usage });
       if (b.contents.length > 1) {
         const sig = b.contents[1].parts.find((/** @type {any} */ p) => p.functionCall)?.thoughtSignature;
         if (sig !== 'skip_thought_signature_validator') return json({ error: { code: 400, message: 'Invalid request.', status: 'INVALID_ARGUMENT' } }, 400);
-        return json({ modelVersion: 'gemini-served', candidates: [{ content: { role: 'model', parts: [{ text: 'Sunny' }] }, finishReason: 'STOP' }], usageMetadata: usage });
+        return json({ modelVersion: 'gemini-2.5-flash', candidates: [{ content: { role: 'model', parts: [{ text: 'Sunny' }] }, finishReason: 'STOP' }], usageMetadata: usage });
       }
-      return json({ modelVersion: 'gemini-served', candidates: [{ content: { role: 'model', parts: [{ functionCall: { name: 'get_weather', args: { city: 'Paris' } } }] }, finishReason: 'STOP' }], usageMetadata: usage });
+      return json({ modelVersion: 'gemini-2.5-flash', candidates: [{ content: { role: 'model', parts: [{ functionCall: { name: 'get_weather', args: { city: 'Berlin' } } }] }, finishReason: 'STOP' }], usageMetadata: usage });
     }
     return json({ status: 404, response: 'not found' }, 404);
   };
@@ -192,6 +194,12 @@ test('T22 runs every flavor end to end against a fake server and reports a row p
     const by = Object.fromEntries(rows.map((/** @type {any} */ r) => [`${r.model}@${r.flavor}`, r]));
     assert.equal(by['google-claude-sonnet-5@M'].cacheRead, 5000);
     assert.equal(by['google-claude-sonnet-5@M'].state, 'signature 600 chars');
+    assert.match(by['google-claude-sonnet-5@M'].thinking, /^adaptive \("enabled" rejected/);
+    assert.equal(by['google-claude-sonnet-5@M'].city, 'Berlin');
+    assert.equal(by['google-claude-sonnet-5@M'].substituted, false);
+    assert.equal(by['google-gemini-3.1-pro-com@G'].substituted, true);
+    assert.equal(by['google-gemini-3.1-pro-com@G'].thinkingTokens, 20);
+    assert.match(by['google-gemini-3.1-pro-com@G'].thinkingNote, /thinking hidden: 20 tokens/);
     assert.equal(by['google-claude-sonnet-5@M'].round2, 'ok');
     assert.equal(by['gpt-5.6-sol@R'].state, 'encrypted reasoning 900 chars');
     assert.equal(by['gpt-5.6-sol@R'].round2Without, 'ok');
@@ -204,6 +212,9 @@ test('T22 runs every flavor end to end against a fake server and reports a row p
 
     const checks = Object.fromEntries(t22.checks.map((/** @type {any} */ c) => [c.name, c.result]));
     assert.equal(checks['google-claude-sonnet-5@M: cache read on repeat'], 'pass');
+    assert.equal(checks['google-claude-sonnet-5@M: served model is the requested one'], 'pass');
+    assert.equal(checks['google-claude-sonnet-5@M: reasoned to the right city'], 'pass');
+    assert.equal(checks['google-gemini-3.1-pro-com@G: served model is the requested one'], 'fail');
     assert.equal(checks['gpt-5.6-sol@R: reasoning state returned'], 'pass');
     assert.equal(checks['google-gemini-3.1-pro-com@G: reasoning state returned'], 'fail');
     assert.equal(checks['google-gemini-3.1-pro-com@G: round 2 with placeholder signature'], 'pass');
@@ -212,6 +223,8 @@ test('T22 runs every flavor end to end against a fake server and reports a row p
     const md = readFileSync(join(dir, 'summary.md'), 'utf8');
     assert.match(md, /## Model matrix \(T22\)/);
     assert.match(md, /\| `gpt-5\.6-sol` \| R \| gpt-5\.6-sol \| 2304 \/ 2500 \|/);
+    assert.match(md, /\| `google-gemini-3\.1-pro-com` \| G \| gemini-2\.5-flash \*\*\(different model\)\*\* \|/);
+    assert.match(md, /\| `google-claude-sonnet-5` \| M \|.*\| Berlin \| 40 \|/);
     assert.deepEqual(run.options.matrix, ['google-claude-sonnet-5@M', 'gpt-5.6-sol@R+CC', 'google-gemini-3.1-pro-com@G+CC']);
   } finally {
     rmSync(dir, { recursive: true, force: true });

@@ -1,0 +1,50 @@
+{
+ "test": "T0",
+ "seq": 16,
+ "label": "count_tokens (key x-api-key)",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages/count_tokens",
+ "stream": false,
+ "startedAt": "2026-09-26T05:43:07.883Z",
+ "ms": 599,
+ "ttftMs": 599,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "input_tokens": 14
+ }
+}

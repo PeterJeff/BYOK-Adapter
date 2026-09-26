@@ -1,0 +1,143 @@
+{
+ "test": "T22",
+ "seq": 24,
+ "label": "google-gemini-3.1-flash-lite-com@G loop r2 as returned",
+ "kind": "G",
+ "model": "google-gemini-3.1-flash-lite-com",
+ "resolvedModel": "gemini-2.5-flash",
+ "method": "POST",
+ "path": "/server/google/v1beta/models/google-gemini-3.1-flash-lite-com:generateContent",
+ "stream": false,
+ "startedAt": "2026-09-26T05:43:58.415Z",
+ "ms": 1086,
+ "ttftMs": 1086,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-goog-api-key",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-goog-api-key"
+  ],
+  "headers": {},
+  "body": {
+   "tools": [
+    {
+     "functionDeclarations": [
+      {
+       "name": "get_weather",
+       "description": "Current weather for a city.",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "city": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "city"
+        ]
+       }
+      }
+     ]
+    }
+   ],
+   "generationConfig": {
+    "maxOutputTokens": 768,
+    "thinkingConfig": {
+     "includeThoughts": true
+    }
+   },
+   "contents": [
+    {
+     "role": "user",
+     "parts": [
+      {
+       "text": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+      }
+     ]
+    },
+    {
+     "role": "model",
+     "parts": [
+      {
+       "functionCall": {
+        "name": "get_weather",
+        "args": {
+         "city": "Paris"
+        }
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "parts": [
+      {
+       "functionResponse": {
+        "name": "get_weather",
+        "response": {
+         "city": "Paris",
+         "temp_c": 18,
+         "sky": "clear"
+        }
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "promptTokenCount": 49,
+  "candidatesTokenCount": 16,
+  "totalTokenCount": 65
+ },
+ "normalized": {
+  "inputUncached": 49,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 16,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 1.81,
+  "full": 1.81,
+  "inverse": 4133.33,
+  "inputTokens": 49,
+  "outputTokens": 16
+ },
+ "body": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "The weather in Paris is clear with a temperature of 18 degrees Celsius."
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP"
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 49,
+   "candidatesTokenCount": 16,
+   "totalTokenCount": 65
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "n1u3aqyrCMSy88APwr39EA"
+ }
+}

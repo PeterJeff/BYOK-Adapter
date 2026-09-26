@@ -1,0 +1,707 @@
+{
+ "alias": "manual-run-01",
+ "runId": "0543-35341f",
+ "startedAt": "2026-09-26T05:43:03.905Z",
+ "finishedAt": "2026-09-26T05:47:06.138Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T0",
+   "T22"
+  ],
+  "matrix": [
+   "google-gemini-3.1-flash-lite-com@G+CC",
+   "google-gemini-3.7-flash@G+CC"
+  ],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 86670,
+   "left": 113330
+  },
+  "after": {
+   "used": 87867,
+   "left": 112133
+  }
+ },
+ "spentEstimate": 1121.3700000000001,
+ "billedRates": {
+  "google-gemini-3.1-flash-lite-com": {
+   "prompt": 0.015954415954415956,
+   "completion": 0.0975,
+   "source": "tokenizer"
+  },
+  "google-gemini-3.7-flash": {
+   "prompt": 0.05356125356125356,
+   "completion": 0.268125,
+   "source": "tokenizer"
+  }
+ },
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T0",
+   "title": "Auth and budget endpoints (free)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "bad auth is HTTP 200 + error envelope on every flavor",
+     "result": "pass",
+     "detail": "{\"bad-auth M\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth CC\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth R\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth G\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":4"
+    },
+    {
+     "name": "rate unit (tokenizer vs get-models prompt rate)",
+     "result": "info",
+     "detail": "ratio 0.07288317256162916 matches neither 0.055 nor its inverse"
+    }
+   ],
+   "observations": {
+    "accessToken": "<redacted:object>",
+    "budgetEndpoints": {
+     "used GET (jwt)": {
+      "response": 86670,
+      "type": "number",
+      "status": 200
+     },
+     "used POST {} (jwt)": {
+      "response": 86670,
+      "type": "number",
+      "status": 200
+     },
+     "used POST app_name=byok-adapter-probe (jwt)": {
+      "response": 86670,
+      "type": "number",
+      "status": 200
+     },
+     "left-with-org (jwt)": {
+      "response": 113330,
+      "type": "number",
+      "status": 200
+     },
+     "teach used GET (jwt)": {
+      "response": 11,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as x-access-tokens)": {
+      "response": 86670,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as bearer)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     }
+    },
+    "fullUser": {
+     "summary": {
+      "bot_settings": "string(empty)",
+      "cac_auth": "boolean",
+      "cac_found": "boolean",
+      "company": "string",
+      "country": "string",
+      "custom_intro_prompt": {
+       "type": "string(empty)",
+       "chars": 0
+      },
+      "datasets_with_permissions": "array(12)",
+      "email": "<redacted>",
+      "enabled_models": "null",
+      "first_name": "<redacted>",
+      "force_models": [],
+      "force_post_check": "null",
+      "id": "number",
+      "is_cui_mfa_authorized": false,
+      "last_name": "<redacted>",
+      "max_tokens": 200000,
+      "max_train_tokens": 200000,
+      "mfa_auth": "boolean",
+      "mfa_required": "boolean",
+      "mfa_secret": "string",
+      "new_password_required": "boolean",
+      "organization_id": "<redacted>",
+      "paid": true,
+      "persona_source_list": "array(0)",
+      "phone": "<redacted>",
+      "plan_type": "string",
+      "plugin_source_list": "array(0)",
+      "role": "developer",
+      "stripe_customer_id": "string",
+      "token_scopes": "null",
+      "type": "string"
+     }
+    },
+    "authenticatedCatalog": {
+     "count": 105,
+     "publicCount": 105,
+     "onlyAuthenticated": [],
+     "onlyPublic": []
+    },
+    "badAuth": {
+     "bad-auth M": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth CC": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth R": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth G": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth server": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     }
+    },
+    "countTokens": {
+     "key": {
+      "input_tokens": 14
+     },
+     "jwt": {
+      "input_tokens": 14
+     }
+    },
+    "tokenizer": {
+     "model": "google-claude-45-haiku",
+     "tokens": 933,
+     "asksage": 68,
+     "ratio": 0.0729,
+     "getModelsPromptRate": 0.055
+    }
+   },
+   "exchanges": 19
+  },
+  {
+   "id": "T22",
+   "title": "Model matrix: cache repeat and reasoning tool loop per model and flavor (--matrix)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: cache read on repeat",
+     "result": "pass",
+     "detail": "read 5092 of 5244; A wrote 0"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: read billed at 1.21x (host rule 1x)",
+     "result": "fail",
+     "detail": "billed 104 for 5092 cached + 152 uncached in, 1 out"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: tool call in round 1",
+     "result": "pass"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: reasoning state returned",
+     "result": "fail",
+     "detail": "none"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: round 2 with state as returned",
+     "result": "pass",
+     "detail": "ok"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@G: round 2 with placeholder signature",
+     "result": "pass",
+     "detail": "ok"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@CC: cache request accepted",
+     "result": "fail",
+     "detail": "openai-error invalid_request_error: Unsupported model: google-gemini-3.1-flash-lite-com"
+    },
+    {
+     "name": "google-gemini-3.1-flash-lite-com@CC: tool call in round 1",
+     "result": "fail",
+     "detail": "no tool call"
+    },
+    {
+     "name": "google-gemini-3.7-flash@G: cache read on repeat",
+     "result": "info",
+     "detail": "read 0 of 5277; A wrote 0"
+    },
+    {
+     "name": "google-gemini-3.7-flash@G: tool call in round 1",
+     "result": "pass"
+    },
+    {
+     "name": "google-gemini-3.7-flash@G: reasoning state returned",
+     "result": "fail",
+     "detail": "none"
+    },
+    {
+     "name": "google-gemini-3.7-flash@G: round 2 with state as returned",
+     "result": "fail",
+     "detail": "rejected: gemini-error 400: Invalid request. Please check your input and try again."
+    },
+    {
+     "name": "google-gemini-3.7-flash@G: round 2 with placeholder signature",
+     "result": "pass",
+     "detail": "ok"
+    },
+    {
+     "name": "google-gemini-3.7-flash@CC: cache request accepted",
+     "result": "fail",
+     "detail": "openai-error invalid_request_error: Unsupported model: google-gemini-3.7-flash"
+    },
+    {
+     "name": "google-gemini-3.7-flash@CC: tool call in round 1",
+     "result": "fail",
+     "detail": "no tool call"
+    }
+   ],
+   "observations": {
+    "billedRates": {
+     "google-gemini-3.1-flash-lite-com": {
+      "prompt": 0.015954415954415956,
+      "completion": 0.0975,
+      "source": "tokenizer"
+     },
+     "google-gemini-3.7-flash": {
+      "prompt": 0.05356125356125356,
+      "completion": 0.268125,
+      "source": "tokenizer"
+     }
+    },
+    "matrixRows": [
+     {
+      "model": "google-gemini-3.1-flash-lite-com",
+      "flavor": "G",
+      "served": "gemini-2.5-flash",
+      "cacheRead": 5092,
+      "cacheInput": 5244,
+      "cacheWrite": 0,
+      "readMult": 1.21,
+      "writeMult": null,
+      "billedA": 104,
+      "billedB": 104,
+      "toolCall": true,
+      "state": "none",
+      "round2": "ok",
+      "round2Without": "n/a",
+      "thinkingTokens": 0,
+      "round2Placeholder": "ok"
+     },
+     {
+      "model": "google-gemini-3.1-flash-lite-com",
+      "flavor": "CC",
+      "served": null,
+      "cacheError": "openai-error invalid_request_error: Unsupported model: google-gemini-3.1-flash-lite-com",
+      "toolCall": false,
+      "state": "none",
+      "round2": "n/a",
+      "round2Without": "n/a",
+      "thinkingTokens": 0
+     },
+     {
+      "model": "google-gemini-3.7-flash",
+      "flavor": "G",
+      "served": "gemini-3.7-flash",
+      "cacheRead": 0,
+      "cacheInput": 5277,
+      "cacheWrite": 0,
+      "readMult": null,
+      "writeMult": null,
+      "billedA": 285,
+      "billedB": 285,
+      "toolCall": true,
+      "state": "none",
+      "round2": "rejected: gemini-error 400: Invalid request. Please check your input and try again.",
+      "round2Without": "n/a",
+      "thinkingTokens": 0,
+      "round2Placeholder": "ok"
+     },
+     {
+      "model": "google-gemini-3.7-flash",
+      "flavor": "CC",
+      "served": null,
+      "cacheError": "openai-error invalid_request_error: Unsupported model: google-gemini-3.7-flash",
+      "toolCall": false,
+      "state": "none",
+      "round2": "n/a",
+      "round2Without": "n/a",
+      "thinkingTokens": 0
+     }
+    ]
+   },
+   "exchanges": 16
+  }
+ ],
+ "measurements": [
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.1-flash-lite-com@G cache A",
+   "usedDelta": 104,
+   "leftDelta": 104,
+   "settled": true,
+   "firstMoveMs": 5664,
+   "est": {
+    "discounted": 65.63,
+    "full": 65.63,
+    "inverse": 419533.33
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5664,
+     "used": 86774,
+     "left": 113226
+    },
+    {
+     "tMs": 11423,
+     "used": 86774,
+     "left": 113226
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.1-flash-lite-com@G cache B",
+   "usedDelta": 104,
+   "leftDelta": 104,
+   "settled": true,
+   "firstMoveMs": 5764,
+   "est": {
+    "discounted": 65.63,
+    "full": 65.63,
+    "inverse": 419533.33
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5764,
+     "used": 86878,
+     "left": 113122
+    },
+    {
+     "tMs": 11552,
+     "used": 86878,
+     "left": 113122
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.1-flash-lite-com@G cache B retry",
+   "usedDelta": 104,
+   "leftDelta": 104,
+   "settled": true,
+   "firstMoveMs": 5729,
+   "est": {
+    "discounted": 8.34,
+    "full": 65.63,
+    "inverse": 419533.33
+   },
+   "closest": "full",
+   "polls": [
+    {
+     "tMs": 5729,
+     "used": 86982,
+     "left": 113018
+    },
+    {
+     "tMs": 11472,
+     "used": 86982,
+     "left": 113018
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.1-flash-lite-com@CC cache A",
+   "usedDelta": 0,
+   "leftDelta": 0,
+   "settled": false,
+   "firstMoveMs": null,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 5785,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 11613,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 17323,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 23036,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 28727,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 34448,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 40222,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 45889,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 51622,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 57366,
+     "used": 86994,
+     "left": 113006
+    },
+    {
+     "tMs": 63073,
+     "used": 86994,
+     "left": 113006
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.7-flash@G cache A",
+   "usedDelta": 285,
+   "leftDelta": 285,
+   "settled": true,
+   "firstMoveMs": 5711,
+   "est": {
+    "discounted": 217.88,
+    "full": 217.88,
+    "inverse": 127932.12
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5711,
+     "used": 87279,
+     "left": 112721
+    },
+    {
+     "tMs": 11423,
+     "used": 87279,
+     "left": 112721
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.7-flash@G cache B",
+   "usedDelta": 285,
+   "leftDelta": 285,
+   "settled": true,
+   "firstMoveMs": 5741,
+   "est": {
+    "discounted": 217.88,
+    "full": 217.88,
+    "inverse": 127932.12
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5741,
+     "used": 87564,
+     "left": 112436
+    },
+    {
+     "tMs": 11428,
+     "used": 87564,
+     "left": 112436
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.7-flash@G cache B retry",
+   "usedDelta": 285,
+   "leftDelta": 285,
+   "settled": true,
+   "firstMoveMs": 5535,
+   "est": {
+    "discounted": 217.88,
+    "full": 217.88,
+    "inverse": 127932.12
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5535,
+     "used": 87849,
+     "left": 112151
+    },
+    {
+     "tMs": 10976,
+     "used": 87849,
+     "left": 112151
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-gemini-3.7-flash@CC cache A",
+   "usedDelta": 0,
+   "leftDelta": 0,
+   "settled": false,
+   "firstMoveMs": null,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 5452,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 11174,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 16882,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 22582,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 29330,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 35043,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 40815,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 46534,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 52232,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 57945,
+     "used": 87867,
+     "left": 112133
+    },
+    {
+     "tMs": 63688,
+     "used": 87867,
+     "left": 112133
+    }
+   ]
+  }
+ ],
+ "usageFields": {
+  "G non-stream": {
+   "count": 11,
+   "fields": [
+    "cachedContentTokenCount",
+    "candidatesTokenCount",
+    "promptTokenCount",
+    "totalTokenCount"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-gemini-3.1-flash-lite-com",
+   "served": "gemini-2.5-flash",
+   "count": 6
+  },
+  {
+   "requested": "google-gemini-3.7-flash",
+   "served": "gemini-3.7-flash",
+   "count": 5
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}

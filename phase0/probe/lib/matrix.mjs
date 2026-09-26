@@ -151,3 +151,37 @@ export function impliedMultiplier(x) {
   const rest = x.uncachedTokens * x.rates.prompt + x.outputTokens * x.rates.completion + 3;
   return Math.round(((x.billed - rest) / cachedAtFull) * 100) / 100;
 }
+
+/** Hosting and packaging words that do not identify a model. */
+const HOST_WORDS = new Set(['google', 'aws', 'bedrock', 'com', 'gov', 'ts', 'sec', 'preview', 'latest', 'models', 'publishers']);
+
+/**
+ * The parts of a model id that identify the model: its words (family, tier) and its version
+ * digits, without hosting prefixes and suffixes or a release date.
+ * @param {string} id
+ */
+function modelKey(id) {
+  const s = String(id || '').toLowerCase().replace(/\d{4}-\d{2}-\d{2}|\d{8}/g, ' ');
+  const tokens = s.split(/[^a-z0-9]+/).filter(Boolean);
+  const words = new Set(tokens.filter((t) => /^[a-z]+$/.test(t) && !HOST_WORDS.has(t)));
+  const digits = tokens.filter((t) => /^\d+$/.test(t)).join('');
+  return { words, digits };
+}
+
+/**
+ * Whether the served model (the response's `model`) is the requested one under another name
+ * (`google-claude-45-haiku` → `claude-haiku-4-5-20251001`: same) or a different model
+ * (`google-gemini-3.1-flash-lite-com` → `gemini-2.5-flash`: different, seen 2026-09-26).
+ * Unknown (no served id) counts as the same.
+ * @param {string} requested
+ * @param {string | null | undefined} served
+ */
+export function sameModel(requested, served) {
+  if (!served) return true;
+  const a = modelKey(requested);
+  const b = modelKey(served);
+  if (a.digits !== b.digits) return false;
+  for (const w of a.words) if (!b.words.has(w)) return false;
+  for (const w of b.words) if (!a.words.has(w)) return false;
+  return true;
+}

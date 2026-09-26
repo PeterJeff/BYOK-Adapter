@@ -1,0 +1,38 @@
+{
+ "test": "T0",
+ "seq": 7,
+ "label": "budget used GET (raw key as x-access-tokens)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "GET",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-26T05:37:58.406Z",
+ "ms": 192,
+ "ttftMs": 192,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "x-access-tokens"
+  ],
+  "headers": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": 83907,
+  "status": 200
+ }
+}

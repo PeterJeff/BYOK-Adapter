@@ -1,0 +1,232 @@
+{
+ "test": "T22",
+ "seq": 27,
+ "label": "gpt-6-sol@R loop r1",
+ "kind": "R",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T05:39:00.530Z",
+ "ms": 1363,
+ "ttftMs": 1363,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "store": false,
+   "tools": [
+    {
+     "type": "function",
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "reasoning": {
+    "effort": "medium"
+   },
+   "include": [
+    "reasoning.encrypted_content"
+   ],
+   "max_output_tokens": 768,
+   "input": [
+    {
+     "role": "user",
+     "content": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 61,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 18,
+  "output_tokens_details": {
+   "reasoning_tokens": 0
+  },
+  "total_tokens": 79
+ },
+ "normalized": {
+  "inputUncached": 61,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 18,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 39.05,
+  "full": 39.05,
+  "inverse": 236.36,
+  "inputTokens": 61,
+  "outputTokens": 18
+ },
+ "body": {
+  "id": "resp_00ed0440d82cbeec016ab75a750ae88190a74025b64bf99d30",
+  "created_at": 1790401141,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6-sol",
+  "object": "response",
+  "output": [
+   {
+    "arguments": "{\"city\":\"Paris\"}",
+    "call_id": "call_vBC4b7xyx6jEQ12ldMefey3r",
+    "name": "get_weather",
+    "type": "function_call",
+    "id": "fc_00ed0440d82cbeec016ab75a75bac08190b2140704003d60e3",
+    "caller": null,
+    "namespace": null,
+    "status": "completed"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [
+   {
+    "name": "get_weather",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "city": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "city"
+     ],
+     "additionalProperties": false
+    },
+    "strict": true,
+    "type": "function",
+    "allowed_callers": null,
+    "defer_loading": null,
+    "description": "Current weather for a city.",
+    "output_schema": null
+   }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790401141,
+  "conversation": null,
+  "max_output_tokens": 768,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 61,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 18,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 79
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 112,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 16,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

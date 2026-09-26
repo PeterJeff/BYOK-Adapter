@@ -1,0 +1,62 @@
+{
+ "test": "T22",
+ "seq": 26,
+ "label": "google-gemini-3.1-flash-lite-com@CC cache A",
+ "kind": "CC",
+ "model": "google-gemini-3.1-flash-lite-com",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:44:01.449Z",
+ "ms": 208,
+ "ttftMs": 208,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "google-gemini-3.1-flash-lite-com",
+   "messages": [
+    {
+     "role": "system",
+     "content": "<elided chars=10915 sha256=0cc2f9ea1ed6d603>"
+    },
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_tokens": 256
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "openai-error",
+  "status": "invalid_request_error",
+  "message": "Unsupported model: google-gemini-3.1-flash-lite-com"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "message": "Unsupported model: google-gemini-3.1-flash-lite-com",
+   "type": "invalid_request_error",
+   "code": "invalid_request_error",
+   "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+   "ref": "ERR-A81AFDC4"
+  }
+ }
+}

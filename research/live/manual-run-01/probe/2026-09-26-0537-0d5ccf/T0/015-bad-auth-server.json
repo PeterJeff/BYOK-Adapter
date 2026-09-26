@@ -1,0 +1,42 @@
+{
+ "test": "T0",
+ "seq": 15,
+ "label": "bad-auth server",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "GET",
+ "path": "/server/count-monthly-tokens",
+ "stream": false,
+ "startedAt": "2026-09-26T05:37:59.547Z",
+ "ms": 114,
+ "ttftMs": 114,
+ "aborted": false,
+ "request": {
+  "auth": "bad",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "x-access-tokens"
+  ],
+  "headers": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "asksage-envelope",
+  "status": 400,
+  "message": "Token is invalid [2]"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "Token is invalid [2]",
+  "status": 400
+ }
+}
