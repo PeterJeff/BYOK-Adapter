@@ -125,6 +125,9 @@ function makeJsonDataPart(value, mime) {
   return new DataPart(new TextEncoder().encode(JSON.stringify(value)), mime);
 }
 
+/** Hashes of the texts provideTokenCount has measured this session (memory only). */
+const measuredTexts = new Set();
+
 /** @type {vscode.LanguageModelChatProvider} */
 const provider = {
   provideLanguageModelChatInformation(options, _token) {
@@ -137,13 +140,20 @@ const provider = {
   },
 
   async provideTokenCount(_model, text, _token) {
-    findings.tokenCountCalls++;
-    return inspect.estimateTokens(text, partCtors());
+    // Count what VS Code asks us to measure, and how often it is a text already measured (sizes only, no text kept).
+    const isMessage = typeof text !== 'string';
+    const body = isMessage ? inspect.messageText(text, partCtors()) : text;
+    const key = inspect.fnv1a(body);
+    const isNew = !measuredTexts.has(key);
+    if (isNew && measuredTexts.size < 200000) measuredTexts.add(key);
+    report.noteTokenCount(findings, { chars: body.length, isMessage, isNew });
+    return Math.ceil(body.length / 4);
   },
 
   async provideLanguageModelChatResponse(model, messages, options, progress, token) {
     const ctors = partCtors();
     const n = ++findings.requests;
+    const tokenCallsBefore = report.markRequestStart(findings);
     const nonce = inspect.makeNonce(n);
     const cfg = vscode.workspace.getConfiguration(CONFIG);
     const emitKinds = /** @type {string[]} */ (cfg.get('emitParts', ['thinking', 'data', 'usage']));
@@ -191,6 +201,9 @@ const provider = {
     // Only act on commands in a fresh user message, never on a tool-result turn, so a tool call cannot loop.
     const command = toolResults.length === 0 ? inspect.parseCommand(lastUserText) : undefined;
 
+    const emitThinking = () => tryEmit('thinking', emitKinds, () => (typeof vs.LanguageModelThinkingPart === 'function' ? new vs.LanguageModelThinkingPart(`Smoke-test thinking for ${nonce}.`, `think-${nonce}`, { smokeNonce: nonce }) : undefined), progress);
+    const emitData = () => tryEmit('data', emitKinds, () => makeJsonDataPart({ smokeNonce: nonce }, inspect.SMOKE_MIME), progress);
+
     try {
       if (command && command.command === 'error') {
         save();
@@ -205,19 +218,22 @@ const provider = {
           const why = error || (tools.length ? `no tool named \`${name}\` in this request` : 'this request carries no tools (switch to Agent mode)');
           await streamText(`smoke:tool not run: ${why}. Use \`smoke:tool\` alone to list tools.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
         } else {
-          await streamText(`Calling \`${tool.name}\` with ${JSON.stringify(input)}.`, progress, token, delayMs);
+          // The tool-loop shape of E4: thinking, tagged text, an opaque data part and a tool call in ONE
+          // reply. The next request (carrying the tool result) shows which of them come back, which is what
+          // a reasoning model's signed thinking block needs during a tool loop (plan §5).
+          const emit = { thinking: emitThinking(), data: 'disabled', usage: 'disabled' };
+          await streamText(`Calling \`${tool.name}\` with ${JSON.stringify(input)}.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
+          emit.data = emitData();
           progress.report(new vscode.LanguageModelToolCallPart(`smoke-${nonce}`, tool.name, input));
           findings.e2.toolCallsEmitted++;
+          report.addEmitted(findings, { nonce, at: new Date().toISOString(), model: model.id, emit, back: { text: false, thinking: false, thinkingId: false, thinkingMetadata: false, data: false } });
+          log.info(`request #${n} emitted with a tool call ${JSON.stringify(emit)}`);
         }
         return;
       }
 
       // Thinking comes first, as a reasoning model's would.
-      const emit = {
-        thinking: tryEmit('thinking', emitKinds, () => (typeof vs.LanguageModelThinkingPart === 'function' ? new vs.LanguageModelThinkingPart(`Smoke-test thinking for ${nonce}.`, `think-${nonce}`, { smokeNonce: nonce }) : undefined), progress),
-        data: 'disabled',
-        usage: 'disabled',
-      };
+      const emit = { thinking: emitThinking(), data: 'disabled', usage: 'disabled' };
 
       let body;
       if (command && command.command === 'help') body = HELP;
@@ -241,7 +257,7 @@ const provider = {
         log.info(`request #${n} cancelled`);
       }
 
-      emit.data = tryEmit('data', emitKinds, () => makeJsonDataPart({ smokeNonce: nonce }, inspect.SMOKE_MIME), progress);
+      emit.data = emitData();
       const inTokens = Math.ceil(promptChars / 4);
       const outTokens = Math.ceil(body.length / 4);
       emit.usage = tryEmit('usage', emitKinds, () => makeJsonDataPart({ prompt_tokens: inTokens, completion_tokens: outTokens, total_tokens: inTokens + outTokens, prompt_tokens_details: { cached_tokens: 0 } }, inspect.USAGE_MIME), progress);
@@ -252,6 +268,7 @@ const provider = {
       report.addError(findings, `request #${n}`, e);
       throw e;
     } finally {
+      report.markRequestEnd(findings, n, tokenCallsBefore);
       save();
     }
   },
@@ -302,7 +319,7 @@ function gatherEnv() {
   return {
     extensionId: ext.id,
     extensionVersion: pkg.version,
-    installSource: meta.source || (ctx.extensionMode === vscode.ExtensionMode.Development ? 'extension development host' : 'folder (no install metadata)'),
+    installSource: meta.source || (ctx.extensionMode === vscode.ExtensionMode.Development ? 'extension development host' : 'local install (no source metadata)'),
     extensionPath: ext.extensionPath,
     extensionKind: ext.extensionKind === vscode.ExtensionKind.UI ? 'ui' : 'workspace',
     vscodeVersion: vscode.version,

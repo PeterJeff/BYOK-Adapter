@@ -74,6 +74,11 @@ test('full conversation: echo, tool round trip and E4 round trip', async () => {
   assert.ok(call, 'a tool call was emitted');
   assert.equal(call.name, 'fake_read');
   assert.deepEqual(call.input, { path: 'a.txt' });
+  // The tool-call reply also carries thinking, a tagged text part and an opaque data part (E4 in a tool loop).
+  const nonce2 = /smk-2-[a-z0-9]{6}/.exec(joinedText(out2))?.[0];
+  assert.ok(nonce2, 'the tool-call reply is tagged with its nonce');
+  assert.ok(out2.some((p) => p instanceof parts.LanguageModelThinkingPart), 'thinking accompanies the tool call');
+  assert.deepEqual(out2.filter((p) => p instanceof parts.LanguageModelDataPart).map((p) => p.mimeType), ['application/vnd.asksage.smoke+json']);
 
   // Turn 3: tool result comes back; the provider must not call the tool again.
   const out3 = await send(
@@ -88,11 +93,12 @@ test('full conversation: echo, tool round trip and E4 round trip', async () => {
   assert.equal(out3.filter((p) => p instanceof parts.LanguageModelToolCallPart).length, 0);
   assert.match(joinedText(out3), /Tool result received .* \*\*E2 tool round trip works\.\*\*/);
   assert.match(joinedText(out3), new RegExp(`\\| ${nonce1} \\| yes \\| yes \\| yes \\| yes \\| yes \\|`));
+  assert.match(joinedText(out3), new RegExp(`\\| ${nonce2} \\| yes \\| yes \\| yes \\| yes \\| yes \\|`), 'the tool-call reply is tracked through the tool loop');
 
   const md = await reportText();
   assert.match(md, /\| E1 Models in picker \| \*\*PASS\*\*/);
   assert.match(md, /\| E2 Agent mode \+ tools \| \*\*PASS\*\*/);
-  assert.match(md, /\| E3 Side-loading \| \*\*PASS\*\* \| The extension is loaded \(install source: vsix\)/);
+  assert.match(md, /\| E3 Side-loading \| \*\*PASS\*\* \| The extension is installed and running \(install source: vsix\)/);
   assert.match(md, /\| E4 Parts round-trip \| \*\*PASS\*\*/);
   assert.match(md, /\| E5 Network reach \| \*\*NOT RUN\*\*/);
   assert.match(md, /`modelOptions._conversationId` seen \(plan §3\.4\): yes/);

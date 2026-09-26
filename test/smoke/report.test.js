@@ -17,6 +17,18 @@ test('fresh findings: E1, E2, E4, E5 not run; E3 passes', () => {
   assert.equal(s.E5.status, 'NOT RUN');
 });
 
+test('E3 passes for any local install, not for the development host, the marketplace or an unknown source', () => {
+  const f = report.createFindings();
+  for (const installSource of ['vsix', 'resource', 'local install (no source metadata)']) {
+    assert.equal(report.deriveStatus(f, { installSource }).E3.status, 'PASS', installSource);
+  }
+  for (const installSource of ['extension development host', 'gallery', undefined]) {
+    const e3 = report.deriveStatus(f, { installSource }).E3;
+    assert.equal(e3.status, 'PARTIAL', String(installSource));
+    assert.match(e3.detail, /Install Extension from Location/);
+  }
+});
+
 test('E1 and E2 progress from partial to pass', () => {
   const f = report.createFindings();
   f.infoCalls = 1;
@@ -107,4 +119,38 @@ test('renderReport includes the summary table and is redacted', () => {
   assert.match(md, /~\/\.vscode\/extensions\/x/);
   assert.doesNotMatch(md, /\/home\/pat/);
   assert.doesNotMatch(md, /u:p@/);
+});
+
+test('token-count bookkeeping: per-request before/during, repeats, and no text kept', () => {
+  const f = report.createFindings();
+  // Two calls before the first request starts (rendering its prompt), one repeated text.
+  report.noteTokenCount(f, { chars: 100, isMessage: false, isNew: true });
+  report.noteTokenCount(f, { chars: 100, isMessage: false, isNew: false });
+  const before1 = report.markRequestStart(f);
+  assert.equal(before1, 2);
+  report.noteTokenCount(f, { chars: 40, isMessage: true, isNew: true });
+  report.markRequestEnd(f, 1, before1);
+  // Idle calls between requests count as "before" the next one.
+  report.noteTokenCount(f, { chars: 10, isMessage: false, isNew: false });
+  const before2 = report.markRequestStart(f);
+  assert.equal(before2, 1);
+  report.markRequestEnd(f, 2, before2);
+
+  assert.equal(f.tokenCountCalls, 4);
+  assert.deepEqual(f.tokenCount.requests, [{ n: 1, before: 2, during: 1 }, { n: 2, before: 1, during: 0 }]);
+  assert.deepEqual([f.tokenCount.strings, f.tokenCount.messages, f.tokenCount.distinct, f.tokenCount.chars, f.tokenCount.maxChars], [3, 1, 2, 250, 100]);
+
+  const md = report.renderReport(f, { installSource: 'vsix' });
+  assert.match(md, /- Token count calls: 4\n  - measured 3 strings and 1 message objects, 250 chars in total \(largest 100\); 2 distinct texts this session, so 50% of calls repeat/);
+  assert.match(md, /per chat request \(calls before it, while it ran\): #1 2\/1, #2 1\/0/);
+});
+
+test('token-count history is capped and restoring older findings keeps defaults', () => {
+  const f = report.createFindings();
+  for (let i = 1; i <= 30; i++) report.markRequestEnd(f, i, 0);
+  assert.equal(f.tokenCount.requests.length, 20);
+  assert.equal(f.tokenCount.requests[0].n, 11);
+  const restored = report.restoreFindings({ version: 1, tokenCountCalls: 5 });
+  assert.equal(restored.tokenCountCalls, 5);
+  assert.deepEqual(restored.tokenCount.requests, []);
 });
