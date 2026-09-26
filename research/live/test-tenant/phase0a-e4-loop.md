@@ -1,6 +1,6 @@
 # Phase 0a E4 in a multi-round tool loop: dev machine
 
-Run 2026-09-25 on the developer's test machine (VS Code 1.139.x, signed out of Copilot), in Agent mode, with the smoke extension's `smoke:loop 3 read_file {...}` (commit 272ea06). The install source (folder install or development host) was not captured with this output; the report's E3 row and API-surface table record it. The tool input used a placeholder path, so every `read_file` call returned an error result. That does not matter here: an error result still drives the next request.
+Run 2026-09-25 on the developer's test machine (VS Code 1.139.x, signed out of Copilot), in Agent mode, with the smoke extension's `smoke:loop 3 read_file {...}` (commit 272ea06). The extension was a **folder install** (Developer: Install Extension from Location...) running in the author's everyday VS Code window, not the development host, so proposed APIs were not enabled for it. The tool input used a placeholder path, so every `read_file` call returned an error result. That does not matter here: an error result still drives the next request.
 
 ## Result
 
@@ -16,7 +16,9 @@ Read on the request that carried round 3's tool result: 9 messages, roles `{"sys
 
 - Reasoning state can ride in the thinking part's metadata through a tool loop of at least three rounds, at sizes up to 64 KB. That covers Claude signatures (hundreds of bytes to a few KB) and leaves headroom for encrypted reasoning items.
 - The metadata is returned byte-for-byte, so the provider can hand a signature back to the API unchanged.
-- Still to show: 5+ rounds (Phase 2's target; `smoke:loop 6` does it), an installed copy if this was the development host, and the target machine.
+- `LanguageModelThinkingPart` exists for an installed extension: the provider could not have emitted these parts otherwise. That settles the open point in `phase0a-report.md` item 5 for the thinking class.
+- E3 (side-loading) passes on this machine. Its `extensions.allowed` is `*`, so this says nothing about the target machine's policy.
+- Still to show: 5+ rounds (Phase 2's target; `smoke:loop 6` does it) and the target machine.
 
 ## Raw echo (placeholder path as sent)
 
