@@ -16,6 +16,8 @@ It needs VS Code **1.122 or later**. The stable `LanguageModelChatProvider` API 
 
 Pick whichever your machine allows. Nothing here needs npm.
 
+**Folder install (the way to iterate; no build step).** Command Palette → **Developer: Install Extension from Location...** → select the `phase0/smoke-extension` folder. Nothing is packaged. If later edits do not take effect, run **Developer: Reload Window**, or uninstall and install again (I have not verified whether VS Code copies the folder or uses it in place). This is a real side-load, so it answers E3. A `.vsix` matters only when the extension is to be distributed.
+
 **A. Install a `.vsix`.** Build it with VS Code's own Node, from the repository root:
 
 ```powershell
@@ -38,7 +40,7 @@ This writes `dist/byok-adapter.asksage-smoke-0.1.0.vsix`. Install it from the Ex
 
 **C. Copy the folder.** Copy `phase0/smoke-extension` to `~/.vscode/extensions/byok-adapter.asksage-smoke-0.1.0` (Windows: `%USERPROFILE%\.vscode\extensions\...`) and restart VS Code. Recent VS Code versions track installs in `extensions.json` and may ignore a folder copied in by hand; use A or B if it does not show up.
 
-If VS Code refuses (for example "extension is not allowed" from the `extensions.allowed` policy), that is the E3 answer: record the message.
+If VS Code refuses (for example "extension is not allowed" from the `extensions.allowed` policy), that is the E3 answer: record the message. A local install (folder, `.vsix` or copied folder) answers E3; B shows PARTIAL because the development host skips the install path. B also enables proposed APIs for the extension under development. Per the research notes `LanguageModelThinkingPart` is exported at runtime without a proposal check, so an installed extension should get it too, but that is unverified: rerun E4 from an installed copy and read the report's API-surface table. Windows paths inside `smoke:tool` JSON need `/` or `\\`.
 
 Check it loaded: **View → Output → Ask Sage Smoke** shows `activated: ...`.
 
@@ -46,7 +48,7 @@ Check it loaded: **View → Output → Ask Sage Smoke** shows `activated: ...`.
 
 1. **E1.** Open the Chat view and its model picker. Look for **Ask Sage Smoke Echo** and **Ask Sage Smoke Echo (128-tool limit)**. If they are missing, try **Manage Models...** in the picker and enable the "Ask Sage (smoke test)" provider. Select one, stay in **Ask** mode and send `hello`. The reply is the echo report.
 2. **E2.** Switch to **Agent** mode and send `smoke:tool`. The reply lists the tools Agent mode passed. Pick a harmless read-only one and send, for example, `smoke:tool <tool name> {"filePath": "<some file in the workspace>"}` with arguments that match its schema. Approve the tool if VS Code asks. The next reply should say **E2 tool round trip works**. A tool error still counts: it proves the result came back.
-3. **E4.** Send any second message in the same chat. The reply's table shows, for each earlier smoke reply, whether its text, thinking part (with id and metadata) and private data part came back.
+3. **E4.** Send any second message in the same chat. The reply's table shows, for each earlier smoke reply, whether its text, thinking part (with id and metadata) and private data part came back. Then repeat it **in a tool loop**, which is the case Claude's signed thinking blocks need: in Agent mode send `smoke:tool <tool> {json}` (the reply carries thinking, a data part and the tool call), let the tool run, and read the table in the reply that follows the tool result. Tool inputs are validated against the tool's schema first (`read_file` needs `filePath`, `startLine` and `endLine`); an error result still gives the next request.
 4. **E5.** Command Palette → **Ask Sage Smoke: Test Connectivity (E5)**. Enter your tenant's API host (default `api.asksage.ai`). It sends one unauthenticated POST to `/server/get-models` through both `fetch` and Node's `https` module. `HTTP 200` with body class `asksage-auth-rejected` (the `{"response":"Token is invalid ..."}` envelope) or `asksage-catalog-no-auth-required` (a real model list — some instances serve it with no credential at all, despite the docs) both mean Ask Sage was reached. A failure lists the error codes (e.g. `SELF_SIGNED_CERT_IN_CHAIN` for TLS inspection, `ECONNREFUSED`, `ENOTFOUND`).
 5. Optional: **Ask Sage Smoke: Self-Test through vscode.lm** calls the model through the extension API instead of the chat UI.
 6. **Ask Sage Smoke: Show Report** opens the full report as a markdown document.

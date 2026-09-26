@@ -29,7 +29,8 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - `phase0/probe/rate-sources.mjs` (free): compares `get-models` rates, the web app's table and the tokenizer's billed conversion. `phase0/probe/billing-probe.mjs` (spends tokens): exact per-request bills from the prompt log. Findings: `research/rate-sources-investigation.md`.
 - `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T21 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first. With no key set (or `--no-auth-headers`), it sends no client credential and assumes a gateway in front of `--api` authenticates requests instead.
 - `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
-- `TODO.md`: the open-work list. `research/handoff/`: briefing notes for other Claude instances (for example the cloud session's rates investigation).
+- `TODO.md`: the open-work list. `research/handoff/`: briefing notes for other Claude instances (the cloud session's rates investigation; measuring a private instance). `research/reports/`: reports meant to be read by people outside the project (the public caching and billing report; a template for per-instance reports).
+- **Results from a private instance never go in this public repo.** Run the probes with `--alias private-<name>` (default output lands in `research/live/private-*/`) or `--out private/<...>`; both are gitignored. See `research/handoff/private-instance-billing-run.md`.
 - `requirements/REQUIREMENTS.md`: expectations (hard constraints, security rules, LIVE-TEST assumptions, phase acceptance criteria) vs. what's actually built and verified. Update it in the same commit that changes a status.
 
 ## Commands

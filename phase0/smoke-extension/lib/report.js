@@ -6,6 +6,7 @@
 
 const MAX_EMITTED = 50;
 const MAX_ERRORS = 20;
+const MAX_TOKEN_REQUESTS = 20;
 
 /**
  * @typedef {'ok' | 'unavailable' | 'disabled' | string} EmitResult
@@ -22,6 +23,18 @@ function createFindings() {
     infoCalls: 0,
     infoSilentCalls: 0,
     tokenCountCalls: 0,
+    // What provideTokenCount is asked to measure. No text is kept, only sizes and counts.
+    tokenCount: {
+      chars: 0,
+      maxChars: 0,
+      strings: 0,
+      messages: 0,
+      distinct: 0,
+      startMark: 0,
+      endMark: 0,
+      /** `before`: calls since the previous reply finished (rendering this prompt, plus idle). `during`: calls while this reply was produced. */
+      requests: /** @type {{ n: number, before: number, during: number }[]} */ ([]),
+    },
     requests: 0,
     requestsByModel: /** @type {Record<string, number>} */ ({}),
     cancellations: 0,
@@ -61,7 +74,44 @@ function restoreFindings(stored) {
   const fresh = createFindings();
   if (!stored || typeof stored !== 'object' || /** @type {any} */ (stored).version !== fresh.version) return fresh;
   const s = /** @type {any} */ (stored);
-  return { ...fresh, ...s, e2: { ...fresh.e2, ...s.e2 }, e4: { ...fresh.e4, ...s.e4 } };
+  return { ...fresh, ...s, tokenCount: { ...fresh.tokenCount, ...s.tokenCount }, e2: { ...fresh.e2, ...s.e2 }, e4: { ...fresh.e4, ...s.e4 } };
+}
+
+/**
+ * Records one provideTokenCount call.
+ * @param {Findings} f
+ * @param {{ chars: number, isMessage: boolean, isNew: boolean }} call `isNew`: this text was not measured before in this session
+ */
+function noteTokenCount(f, call) {
+  const t = f.tokenCount;
+  f.tokenCountCalls++;
+  t.chars += call.chars;
+  t.maxChars = Math.max(t.maxChars, call.chars);
+  if (call.isMessage) t.messages++;
+  else t.strings++;
+  if (call.isNew) t.distinct++;
+}
+
+/**
+ * Call when a chat request starts; returns the calls made since the previous reply finished.
+ * @param {Findings} f
+ */
+function markRequestStart(f) {
+  f.tokenCount.startMark = f.tokenCountCalls;
+  return f.tokenCountCalls - f.tokenCount.endMark;
+}
+
+/**
+ * Call when a chat request ends.
+ * @param {Findings} f
+ * @param {number} n request number
+ * @param {number} before what markRequestStart returned
+ */
+function markRequestEnd(f, n, before) {
+  const t = f.tokenCount;
+  t.requests.push({ n, before, during: f.tokenCountCalls - t.startMark });
+  if (t.requests.length > MAX_TOKEN_REQUESTS) t.requests.splice(0, t.requests.length - MAX_TOKEN_REQUESTS);
+  t.endMark = f.tokenCountCalls;
 }
 
 /**
@@ -130,7 +180,15 @@ function deriveStatus(f, env) {
   else if (f.e2.requestsWithTools > 0) e2 = { status: 'PARTIAL', detail: `Agent mode passed up to ${f.e2.maxTools} tools. Run \`smoke:tool <name> {json}\` to check the tool-call round trip.` };
   else e2 = { status: 'NOT RUN', detail: 'No request has carried tools yet. Switch the chat to Agent mode.' };
 
-  const e3 = { status: /** @type {Status} */ ('PASS'), detail: `The extension is loaded (install source: ${env.installSource || 'unknown'}).` };
+  // E3 asks whether side-loading is permitted. A local install counts (a .vsix, "Install Extension from
+  // Location...", a copied folder): if VS Code policy blocked it, the extension would not be running.
+  // The extension development host skips the install path, and a marketplace install is not a side-load.
+  const source = env.installSource || 'unknown';
+  const notInstalled = source === 'unknown' || source === 'gallery' || source.startsWith('extension development host');
+  /** @type {Verdict} */
+  const e3 = notInstalled
+    ? { status: 'PARTIAL', detail: `The extension is loaded (install source: ${source}), but not from a local install, so this does not show that side-loading is allowed. Install it from a folder ("Developer: Install Extension from Location...") or a .vsix and rerun.` }
+    : { status: 'PASS', detail: `The extension is installed and running (install source: ${source}).` };
 
   /** @type {Verdict} */
   let e4;
@@ -220,6 +278,12 @@ function renderReport(f, env) {
   L.push(`- Activations: ${f.activations} (first ${f.firstActivatedAt || '-'}, last ${f.lastActivatedAt || '-'})`);
   L.push(`- Model list requests: ${f.infoCalls} (${f.infoSilentCalls} silent)`);
   L.push(`- Token count calls: ${f.tokenCountCalls}`);
+  {
+    const t = f.tokenCount;
+    const calls = f.tokenCountCalls;
+    L.push(`  - measured ${t.strings} strings and ${t.messages} message objects, ${t.chars} chars in total (largest ${t.maxChars}); ${t.distinct} distinct texts this session, so ${calls ? Math.round((1 - Math.min(t.distinct, calls) / calls) * 100) : 0}% of calls repeat a text already measured`);
+    if (t.requests.length) L.push(`  - per chat request (calls before it, while it ran): ${t.requests.map((r) => `#${r.n} ${r.before}/${r.during}`).join(', ')}`);
+  }
   L.push(`- Chat requests: ${f.requests} ${JSON.stringify(f.requestsByModel)}; cancelled: ${f.cancellations}`);
   L.push(`- Largest prompt: ${f.maxPromptChars} chars (about ${Math.ceil(f.maxPromptChars / 4)} tokens)`);
   L.push(`- Request option keys seen: ${f.optionKeys.join(', ') || '-'}`);
@@ -265,4 +329,4 @@ function renderReport(f, env) {
   return redactText(L.join('\n') + '\n', env.homeDirs || []);
 }
 
-module.exports = { createFindings, restoreFindings, addEmitted, mergeRoundTrips, addError, addUnique, deriveStatus, redactText, renderReport };
+module.exports = { createFindings, restoreFindings, noteTokenCount, markRequestStart, markRequestEnd, addEmitted, mergeRoundTrips, addError, addUnique, deriveStatus, redactText, renderReport };

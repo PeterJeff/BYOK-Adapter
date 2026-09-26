@@ -261,10 +261,12 @@ v2's "per-request state only" principle is relaxed, because reasoning models nee
 - **Gemini 3 (G, and possibly CC):** thought signatures are required on function calls.
 - **OpenAI R:** encrypted reasoning items must be sent back for reasoning to persist.
 
-**First choice:** emit reasoning as parts VS Code preserves in history (a thinking part or a `LanguageModelDataPart` with a private MIME type) and read it back from the incoming messages. Whether the stable API hands these back to a third-party provider is **LIVE-TEST** (E4).
+**First choice:** emit reasoning as a part VS Code preserves in history and read it back from the incoming messages: a thinking part with the signature in its id or metadata (a `LanguageModelDataPart` with a private MIME type turned out not to come back; see E4 below).
 
-**Fallback:** a bounded in-memory side cache in `state/`:
-- keyed by tool-call ID (and response item ID for R), which appears in the history VS Code sends back
+**E4 results (2026-09-25, dev machine, VS Code 1.139.1, dev host; `research/live/test-tenant/phase0a-report.md`).** Between turns, a plain reply's thinking part is **not** handed back (0 of 5) and neither is a private-MIME data part (0 of 5): only the text is. **Inside a tool loop the thinking part does come back, with its id and metadata intact** (the reply that carried thinking + text + data part + tool call was seen again on the request carrying the tool result: thinking, id and metadata yes, data part no). One sample, one tool round, a small metadata object, from the development host. That is the case that matters: Claude needs its signed thinking block back only during the tool loop, and Gemini thought signatures and OpenAI encrypted reasoning items are needed in the same place. So the first choice is now viable: carry the signature in the thinking part's metadata (feature-detected `LanguageModelThinkingPart`, which per the research is exported at runtime with no proposal check; confirm on an installed copy), and never rely on a data part. Still to show: several rounds (Phase 2 needs 5+), realistically large signatures, and an installed (not development-host) extension.
+
+**Fallback (needed if the thinking part is absent on the target, drops the metadata or size-limits it): a bounded in-memory side cache in `state/`:**
+- keyed by tool-call ID (and response item ID for R), which appears in the history VS Code sends back (E2 confirmed the provider's own call id returns on the tool result)
 - LRU-bounded by entry count and bytes, entries expire after 2 hours
 - memory only, never written to disk, cleared when the extension host exits
 - on a miss (e.g. after a window reload): M re-sends the tool loop without thinking for that round and logs `reasoningStateLost`; G falls back per T18 findings; R continues without reasoning items

@@ -15,7 +15,7 @@ Update this file in the same commit that changes status: when a phase's acceptan
 | Plain JavaScript, CommonJS, `// @ts-check` + JSDoc, no TypeScript, no build step | ✅ | All of `phase0/`, `scripts/`, `test/` are `.js`/`.mjs` with no `tsconfig.json` or transpile step |
 | No npm dependencies, no lockfile, nothing vendored from `asksageclient` | ✅ | No `package.json` `dependencies`/`devDependencies` anywhere in the repo; `phase0/smoke-extension/package.json` declares none |
 | Standalone scripts are `.mjs`, run under VS Code's bundled Node (`ELECTRON_RUN_AS_NODE=1`), Node 22+, Windows-path safe | ✅ | 2026-09-25, Windows 11, VS Code 1.139.0 (bundled Node 24.20.0, Electron 43.6.0): `scripts/run-tests.mjs` (64/64 pass), `scripts/pack-vsix.mjs` (8-entry `.vsix` for the smoke extension, `--list` OK) and `phase0/probe/api-probe.mjs --dry-run` all ran through `Code.exe` with `ELECTRON_RUN_AS_NODE=1`. Live (network) probe runs under that Node are not yet done. Note: VS Code's Node is 24, not the "Node 22" the docs assumed; the contract is "22 or newer" |
-| No dependence on a Copilot / GitHub sign-in (target machine is never signed in) | 🔶 | Stated in `CLAUDE.md` and `PLAN.md` v3.2. Per VS Code's docs (research: 1.122 release notes), extension-provided and BYOK models work signed out from VS Code 1.122; this machine has 1.139. Not yet observed here: that is E1 |
+| No dependence on a Copilot / GitHub sign-in (target machine is never signed in) | 🔶 | Stated in `CLAUDE.md` and `PLAN.md` v3.2. Observed on the dev machine (VS Code 1.139.1, throwaway profile, signed out): the smoke provider's models were selectable in chat and Agent mode ran a tool round trip (`research/live/test-tenant/phase0a-report.md`). Caveat: on 1.139.0 in the same profile the chat asked for a sign-in and no model was selectable; it worked after updating to 1.139.1, cause unestablished. Not yet shown on the target machine |
 | Manual loading only (`.vsix`, unpacked folder, `--extensionDevelopmentPath`) | ✅ | `scripts/pack-vsix.mjs` builds a zero-dependency `.vsix`; `phase0/smoke-extension/README.md` documents all three load paths |
 | Stable VS Code API only; proposed APIs / Copilot internals feature-detected and degrade silently | 🔶 | `phase0/smoke-extension` targets only the stable `LanguageModelChatProvider` API; whether Copilot internals it probes (thinking parts, `usage` data part) actually round-trip is E4, not yet run (see §3) |
 
@@ -45,7 +45,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 | §2.1 (new) | Cache TTLs: Claude 5m / 1h; OpenAI retention | T15 | 🔶 Claude 5m expired after 8 min idle; 1h held after 28 min (≥60 min not measured); OpenAI hits at 6 min, misses at 20 min; `prompt_cache_retention: "24h"` accepted but no effect. `research/live/test-tenant/billing/2026-09-25/measurements.json` |
 | §2 (new) | Claude through CC is billed | measurement | ❌ **billed 0** on 9 requests of every shape (Ask Sage bug): report to support; never route Claude through CC |
 | §3.5 | Billing behavior of a cancelled stream | T9 | ⛔ not run |
-| §5 | The stable VS Code API hands thinking parts / private-MIME `LanguageModelDataPart`s back to a third-party provider in later requests | E4 | 🔶 built (`phase0/smoke-extension`), not yet run on the target machine |
+| §5 | The stable VS Code API hands thinking parts / private-MIME `LanguageModelDataPart`s back to a third-party provider in later requests | E4 | 🔶 **thinking part round-trips inside a tool loop; data part never; thinking dropped between turns.** Dev machine, VS Code 1.139.1, development host: plain replies thinking 0/5, data 0/5; tool-loop reply (thinking + text + data part + tool call) came back with thinking, id and metadata intact, no data part. One sample, one tool round. Not yet: several rounds, real signature sizes, an installed (non-dev-host) copy, the target machine. Design effect: PLAN §5, signature rides in the thinking part's metadata, side cache is the fallback |
 | §8 | Which balance (inference or training) embeddings charge | T20 | ⛔ not run |
 | §8 | `/get <text>` or `/get-dataset-results` give results-only dataset search | T21 | ⛔ not run (opt-in; needs `--dataset`) |
 
@@ -55,13 +55,13 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Test | Question | Status |
 |---|---|---|
-| E1 | Extension-contributed models appear in the chat model picker **signed out** (no GitHub/Copilot; VS Code ≥1.122). Also: does any org policy/MDM bind a signed-out machine | 🔶 built, not run (test bed available: this machine, VS Code 1.139, signed out). Docs corrected 2026-09-25 — they previously assumed a signed-in Copilot plan |
-| E2 | Agent mode uses the model and passes it tools | 🔶 built, not run on target machine |
-| E3 | `.vsix` side-loading is permitted | 🔶 built, not run on target machine |
-| E4 | Thinking parts / private-MIME data parts round-trip through history | 🔶 built, not run on target machine |
-| E5 | Extension host `fetch` reaches the tenant host through local proxy/TLS inspection | 🔶 built, not run on target machine |
+| E1 | Extension-contributed models appear in the chat model picker **signed out** (no GitHub/Copilot; VS Code ≥1.122). Also: does any org policy/MDM bind a signed-out machine | ✅ on the dev machine, 2026-09-25 (VS Code 1.139.1, signed out); ⛔ target machine. Caveat: on 1.139.0 the chat asked for a sign-in and no model was selectable; fixed by updating, cause unestablished. Docs corrected: they previously assumed a signed-in Copilot plan |
+| E2 | Agent mode uses the model and passes it tools | ✅ on the dev machine (51–52 tools; a provider-emitted tool call ran and its result came back); ⛔ target machine |
+| E3 | Side-loading is permitted (a local install: folder via "Developer: Install Extension from Location...", or a `.vsix`) | ⛔ **not tested.** The dev-host run reported PASS but skips install policy; the smoke extension's E3 verdict now passes only for a local install and shows PARTIAL for the development host or a marketplace install. Run it as a folder install here and on the target machine |
+| E4 | Thinking parts / private-MIME data parts round-trip through history | 🔶 tool loop: thinking yes (id, metadata intact), data part no; between turns neither (see §3) |
+| E5 | Extension host `fetch` reaches the tenant host through local proxy/TLS inspection | ✅ on the dev machine (no proxy, HTTP 200 via `fetch` and `https`); ⛔ target machine, the one that matters |
 
-**Exit (`research/live/<tenant-alias>/phase0a-report.md`): not yet produced.**
+**Exit (`research/live/<tenant-alias>/phase0a-report.md`): `research/live/test-tenant/phase0a-report.md` covers the dev machine only; the target-machine run is not done.**
 
 ### 0b — API probes (T0–T21)
 
@@ -89,7 +89,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Phase | Acceptance | Status |
 |---|---|---|
-| 0a | E1–E5 all pass, or the plan is revised | ⛔ not run |
+| 0a | E1–E5 all pass, or the plan is revised | 🔶 dev machine: E1, E2, E5 pass; E4 negative (plan §5 revised: side cache primary); E3 not tested. Target machine and the E4 tool-loop case still to run |
 | 0b | `research/live/FINDINGS.md` with default flavor table, cache policy, normalization rules confirmed/corrected | ⛔ not run |
 | 0c | T0, T1–T6, T7, T15–T19 re-run on the day-to-day tenant if it differs from the test tenant | ⛔ not started |
 | 1 | Claude (M) and GPT-5.x (CC) stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; spend cap stops a synthetic runaway loop | ⛔ not started (no `src/`) |

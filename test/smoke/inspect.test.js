@@ -101,3 +101,11 @@ test('estimateTokens is chars/4 over text and tool results', () => {
   assert.equal(inspect.estimateTokens('12345678', ctors), 2);
   assert.equal(inspect.estimateTokens({ role: 1, content: [text('123'), new parts.LanguageModelToolResultPart('c', [text('45')])] }, ctors), 2);
 });
+
+test('fnv1a is stable, order-sensitive and distinguishes near-identical texts', () => {
+  assert.equal(inspect.fnv1a('hello'), inspect.fnv1a('hello'));
+  assert.notEqual(inspect.fnv1a('hello'), inspect.fnv1a('hellp'));
+  assert.notEqual(inspect.fnv1a('ab'), inspect.fnv1a('ba'));
+  assert.equal(inspect.fnv1a(''), 0x811c9dc5);
+  assert.equal(inspect.fnv1a('a'), 0xe40c292c);
+});

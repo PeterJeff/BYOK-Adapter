@@ -14,3 +14,8 @@ research/live/**/raw/
 .DS_Store
 Thumbs.db
 .claude/settings.json
+
+# Results from private instances are NOT for this public repo. Run the probes with
+# --alias private-<name> (default output lands in research/live/private-*/) or --out private/<...>.
+private/
+research/live/private-*/

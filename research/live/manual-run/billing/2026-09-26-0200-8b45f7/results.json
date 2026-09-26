@@ -1,0 +1,1049 @@
+{
+ "run": "0200-8b45f7",
+ "startedAt": "2026-09-26T02:00:36.425Z",
+ "endedAt": "2026-09-26T02:03:18.882Z",
+ "models": {
+  "claude": "google-claude-45-haiku",
+  "gpt": "gpt-5.6-luna",
+  "gptnano": "gpt-5.4-nano",
+  "gemini": "google-gemini-3.1-flash-lite-gov"
+ },
+ "results": [
+  {
+   "experiment": "rates",
+   "name": "claude prompt-heavy",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4382,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4382,
+    "completion_tokens": 4,
+    "total_tokens": 318
+   },
+   "logRows": 1,
+   "expected": 314.84,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "claude output-heavy",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 27,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 526,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 27,
+    "completion_tokens": 526,
+    "total_tokens": 192
+   },
+   "logRows": 1,
+   "expected": 189.98,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gpt prompt-heavy",
+   "flavor": "CC",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna-2026-07-09",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 891,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 891,
+    "completion_tokens": 4,
+    "total_tokens": 15
+   },
+   "logRows": 1,
+   "expected": 13.04,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gpt output-heavy",
+   "flavor": "CC",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna-2026-07-09",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 22,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 532,
+    "thinking": 49,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 22,
+    "completion_tokens": 581,
+    "total_tokens": 52
+   },
+   "logRows": 1,
+   "expected": 50.16,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gptnano prompt-heavy",
+   "flavor": "CC",
+   "model": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 899,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 10,
+    "thinking": 27,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.4-nano",
+    "prompt_tokens": 899,
+    "completion_tokens": 37,
+    "total_tokens": 17
+   },
+   "logRows": 1,
+   "expected": 16.12,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gptnano output-heavy",
+   "flavor": "CC",
+   "model": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 22,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 635,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.4-nano",
+    "prompt_tokens": 22,
+    "completion_tokens": 635,
+    "total_tokens": 59
+   },
+   "logRows": 1,
+   "expected": 57.07,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gemini prompt-heavy",
+   "flavor": "G",
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4374,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 1,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "google-gemini-3.1-flash-lite-gov",
+    "prompt_tokens": 4374,
+    "completion_tokens": 1,
+    "total_tokens": 81
+   },
+   "logRows": 1,
+   "expected": 78.27,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "rates",
+   "name": "gemini output-heavy",
+   "flavor": "G",
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 19,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 493,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "google-gemini-3.1-flash-lite-gov",
+    "prompt_tokens": 19,
+    "completion_tokens": 493,
+    "total_tokens": 55
+   },
+   "logRows": 1,
+   "expected": 53.21,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M 5m #1",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 4376,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4387,
+    "completion_tokens": 4,
+    "total_tokens": 396
+   },
+   "logRows": 1,
+   "expected": 393.44,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M 5m #2",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 11,
+    "cacheRead": 4376,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4387,
+    "completion_tokens": 4,
+    "total_tokens": 37
+   },
+   "logRows": 1,
+   "expected": 33.51,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M 1h #1",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 11,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 4343,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4354,
+    "completion_tokens": 4,
+    "total_tokens": 626
+   },
+   "logRows": 1,
+   "expected": 623.45,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M 1h #2",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 11,
+    "cacheRead": 4343,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4354,
+    "completion_tokens": 4,
+    "total_tokens": 36
+   },
+   "logRows": 1,
+   "expected": 33.28,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M no cache_control #1",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4384,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4384,
+    "completion_tokens": 4,
+    "total_tokens": 318
+   },
+   "logRows": 1,
+   "expected": 314.98,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "M no cache_control #2",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4384,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 4384,
+    "completion_tokens": 4,
+    "total_tokens": 318
+   },
+   "logRows": 1,
+   "expected": 314.98,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gpt #1",
+   "flavor": "CC",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna-2026-07-09",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 4324,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 4327,
+    "completion_tokens": 4,
+    "total_tokens": 81
+   },
+   "logRows": 1,
+   "expected": 77.41,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gpt #2",
+   "flavor": "CC",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna-2026-07-09",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 4324,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 4327,
+    "completion_tokens": 4,
+    "total_tokens": 10
+   },
+   "logRows": 1,
+   "expected": 6.55,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gpt #3",
+   "flavor": "CC",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna-2026-07-09",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 4324,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 4327,
+    "completion_tokens": 4,
+    "total_tokens": 81
+   },
+   "logRows": 1,
+   "expected": 77.41,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gptnano #1",
+   "flavor": "CC",
+   "model": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4322,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.4-nano",
+    "prompt_tokens": 4322,
+    "completion_tokens": 4,
+    "total_tokens": 64
+   },
+   "logRows": 1,
+   "expected": 61.95,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gptnano #2",
+   "flavor": "CC",
+   "model": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 226,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.4-nano",
+    "prompt_tokens": 4322,
+    "completion_tokens": 4,
+    "total_tokens": 12
+   },
+   "logRows": 1,
+   "expected": 9.42,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC gptnano #3",
+   "flavor": "CC",
+   "model": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 226,
+    "cacheRead": 4096,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.4-nano",
+    "prompt_tokens": 4322,
+    "completion_tokens": 4,
+    "total_tokens": 12
+   },
+   "logRows": 1,
+   "expected": 9.42,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "R gpt #1",
+   "flavor": "R",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 4300,
+    "visibleOutput": 5,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 4303,
+    "completion_tokens": 5,
+    "total_tokens": 81
+   },
+   "logRows": 1,
+   "expected": 77.07,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "R gpt #2",
+   "flavor": "R",
+   "model": "gpt-5.6-luna",
+   "served": "gpt-5.6-luna",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 4300,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 5,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "gpt-5.6-luna",
+    "prompt_tokens": 4303,
+    "completion_tokens": 5,
+    "total_tokens": 10
+   },
+   "logRows": 1,
+   "expected": 6.6,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "G gemini #1",
+   "flavor": "G",
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 4358,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 1,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "google-gemini-3.1-flash-lite-gov",
+    "prompt_tokens": 4358,
+    "completion_tokens": 1,
+    "total_tokens": 80
+   },
+   "logRows": 1,
+   "expected": 77.99,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "G gemini #2",
+   "flavor": "G",
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 296,
+    "cacheRead": 4062,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 1,
+    "thinking": 0,
+    "thinkingUnknown": false
+   },
+   "log": {
+    "model": "google-gemini-3.1-flash-lite-gov",
+    "prompt_tokens": 4358,
+    "completion_tokens": 1,
+    "total_tokens": 80
+   },
+   "logRows": 1,
+   "expected": 77.99,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "cache",
+   "name": "CC claude (billed at all?)",
+   "flavor": "CC",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 1084,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+   },
+   "logRows": 1,
+   "expected": 78.96,
+   "verdict": "unbilled"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 1",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 5764,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 5764,
+    "completion_tokens": 8,
+    "total_tokens": 418
+   },
+   "logRows": 1,
+   "expected": 415.11,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 2",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 7161,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 7161,
+    "completion_tokens": 4,
+    "total_tokens": 515
+   },
+   "logRows": 1,
+   "expected": 513.59,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 3",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 8557,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 8557,
+    "completion_tokens": 4,
+    "total_tokens": 615
+   },
+   "logRows": 1,
+   "expected": 613.44,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 4",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 9950,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 9950,
+    "completion_tokens": 8,
+    "total_tokens": 717
+   },
+   "logRows": 1,
+   "expected": 714.5,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 5",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 11349,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 11349,
+    "completion_tokens": 8,
+    "total_tokens": 817
+   },
+   "logRows": 1,
+   "expected": 814.55,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop uncached round 6",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 12719,
+    "cacheRead": 0,
+    "cacheWrite5m": 0,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 12719,
+    "completion_tokens": 8,
+    "total_tokens": 914
+   },
+   "logRows": 1,
+   "expected": 912.54,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 1",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 0,
+    "cacheWrite5m": 5758,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 5761,
+    "completion_tokens": 8,
+    "total_tokens": 520
+   },
+   "logRows": 1,
+   "expected": 517.85,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 2",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 5758,
+    "cacheWrite5m": 1397,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 7158,
+    "completion_tokens": 4,
+    "total_tokens": 172
+   },
+   "logRows": 1,
+   "expected": 167.72,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 3",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 7155,
+    "cacheWrite5m": 1396,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 4,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 8554,
+    "completion_tokens": 4,
+    "total_tokens": 181
+   },
+   "logRows": 1,
+   "expected": 177.62,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 4",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 8551,
+    "cacheWrite5m": 1393,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 9947,
+    "completion_tokens": 8,
+    "total_tokens": 193
+   },
+   "logRows": 1,
+   "expected": 188.77,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 5",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 9944,
+    "cacheWrite5m": 1399,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 11346,
+    "completion_tokens": 8,
+    "total_tokens": 203
+   },
+   "logRows": 1,
+   "expected": 199.27,
+   "verdict": "fits"
+  },
+  {
+   "experiment": "loop",
+   "name": "loop cached round 6",
+   "flavor": "M",
+   "model": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "http": 200,
+   "error": null,
+   "norm": {
+    "inputUncached": 3,
+    "cacheRead": 11343,
+    "cacheWrite5m": 1370,
+    "cacheWrite1h": 0,
+    "cacheWriteUnsplit": 0,
+    "visibleOutput": 8,
+    "thinking": 0,
+    "thinkingUnknown": true
+   },
+   "log": {
+    "model": "google-claude-45-haiku",
+    "prompt_tokens": 12716,
+    "completion_tokens": 8,
+    "total_tokens": 211
+   },
+   "logRows": 1,
+   "expected": 206.68,
+   "verdict": "fits"
+  }
+ ]
+}

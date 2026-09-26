@@ -254,7 +254,21 @@ function estimateTokens(input, ctors) {
   return Math.ceil(text.length / 4);
 }
 
+/**
+ * 32-bit FNV-1a hash, to tell whether a text has been measured before without keeping it.
+ * @param {string} text
+ */
+function fnv1a(text) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
 module.exports = {
+  fnv1a,
   SMOKE_MIME,
   USAGE_MIME,
   makeNonce,
