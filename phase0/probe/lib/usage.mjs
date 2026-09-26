@@ -100,8 +100,16 @@ export function normalize(flavor, u) {
       z.cacheWrite5m = n(split.ephemeral_5m_input_tokens);
       z.cacheWrite1h = n(split.ephemeral_1h_input_tokens);
     } else z.cacheWriteUnsplit = n(u.cache_creation_input_tokens);
-    z.visibleOutput = n(u.output_tokens);
-    z.thinkingUnknown = true;
+    // Vertex Claude reports thinking inside output_tokens and separately as
+    // output_tokens_details.thinking_tokens (measured 2026-09-26); other hosts may not.
+    const thinking = u.output_tokens_details?.thinking_tokens;
+    if (typeof thinking === 'number') {
+      z.thinking = thinking;
+      z.visibleOutput = Math.max(0, n(u.output_tokens) - thinking);
+    } else {
+      z.visibleOutput = n(u.output_tokens);
+      z.thinkingUnknown = true;
+    }
     return z;
   }
   // Claude served through CC answers with Anthropic-shaped usage (measured 2026-09-25).

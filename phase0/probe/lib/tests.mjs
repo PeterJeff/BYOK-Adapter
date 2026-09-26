@@ -535,13 +535,19 @@ export const TESTS = [
       }
       if (!ctx.models.gpt) return;
       // R: encrypted reasoning items with store:false.
-      const rb = { tools: [WEATHER_R], reasoning: { effort: 'low' }, include: ['reasoning.encrypted_content'], max_output_tokens: 1024 };
+      // effort 'low' let gpt-5.4-nano skip reasoning entirely on this prompt (2026-09-26 run), which says nothing about R.
+      const rb = { tools: [WEATHER_R], reasoning: { effort: 'medium' }, include: ['reasoning.encrypted_content'], max_output_tokens: 1024 };
       const q1 = await r(ctx, 'R round1', { ...rb, input: [{ role: 'user', content: ASK_WEATHER }] });
       const p1 = outputOf('R', q1);
       const fc = p1.items.find((it) => it.type === 'function_call');
       const reasoningItems = p1.items.filter((it) => it.type === 'reasoning');
+      const reasoned = n(q1).thinking > 0 || reasoningItems.length > 0;
       ctx.observe('R round1', { ...usageRow(q1), items: p1.items.map((it) => it.type), encryptedContent: reasoningItems.map((it) => (it.encrypted_content ? String(it.encrypted_content).length : 0)) });
-      ctx.check('R returns encrypted reasoning with store:false', reasoningItems.some((it) => it.encrypted_content) ? 'pass' : 'fail', `${reasoningItems.length} reasoning item(s)`);
+      ctx.check(
+        'R returns encrypted reasoning with store:false',
+        reasoningItems.some((it) => it.encrypted_content) ? 'pass' : reasoned ? 'fail' : 'unknown',
+        reasoned ? `${reasoningItems.length} reasoning item(s), ${n(q1).thinking} reasoning tokens` : 'inconclusive: the model did not reason (0 reasoning tokens)'
+      );
       if (fc) {
         const out = { type: 'function_call_output', call_id: fc.call_id, output: TOOL_RESULT };
         const withR = await r(ctx, 'R round2 with reasoning', { ...rb, input: [{ role: 'user', content: ASK_WEATHER }, ...p1.items, out] });
@@ -832,6 +838,9 @@ export const TESTS = [
       const o1 = outputOf('G', g1);
       const callPart = o1.parts.find((p) => p.functionCall);
       ctx.observe('G round1', { ...usageRow(g1), parts: o1.parts.map((p) => Object.keys(p).join('+')), signature: callPart?.thoughtSignature ? `${String(callPart.thoughtSignature).length} chars` : null });
+      // Gemini 3 attaches a thoughtSignature to the first functionCall part and requires it back.
+      // Without one in round 1, round 2 cannot succeed whatever the provider sends (2026-09-26 run).
+      if (callPart) ctx.check('G round 1 function call carries a thought signature', callPart.thoughtSignature ? 'pass' : 'fail', callPart.thoughtSignature ? '' : `none in the response (served ${g1.resolvedModel || '?'}): the proxy or model dropped it`);
       if (callPart) {
         const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(TOOL_RESULT) } }] };
         const withSig = await g(ctx, 'G round2 with signature', { ...cfg, contents: [user, { role: 'model', parts: o1.parts }, resp] });
