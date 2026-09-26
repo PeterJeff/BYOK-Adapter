@@ -374,6 +374,7 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 | T19 | budget counter lag and granularity (single-request resolvability) |
 | T20 | embeddings endpoint availability and which balance it charges |
 | T21 | dataset results-only search leads |
+| T22 | model matrix (`--matrix`): cache repeat and a reasoning tool loop per model and flavor, so flagship, other-host and partner models are covered, not only the cheapest per role |
 
 Estimated cost: about 200–350k Ask Sage tokens. **Exit:** `research/live/FINDINGS.md`, with the default flavor table, cache policy and normalization rules confirmed or corrected for the test tenant.
 

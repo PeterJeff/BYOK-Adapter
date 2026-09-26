@@ -53,13 +53,13 @@ Bills below are in Ask Sage tokens from the used counter, which moved within 2 s
 | Question | Next step | Cost |
 |---|---|---|
 | R encrypted reasoning (T7) | Inconclusive: at `effort: "low"` gpt-5.4-nano did no reasoning (0 reasoning tokens), so there was nothing to return. Round 2 succeeded with and without reasoning items. The probe now uses `effort: "medium"` and reports "inconclusive" instead of FAIL when the model does not reason. Rerun T7. | small |
-| Gemini tool loops (T18) | Rerun T18 on a non-`-gov` Gemini 3 id (for example `google-gemini-3-flash-com` or `google-gemini-3.1-flash-lite-com`), through G and CC. The probe now checks round 1 for the signature directly. | small |
+| Gemini tool loops (T18) | `--matrix gemini` runs the loop on four Gemini ids through G and CC, and tries Google's placeholder signature (`skip_thought_signature_validator`) when none comes back. T18 does the same. | small |
 | Long-context pricing (T13) | Opt-in, expensive. Needed only before long-context models are offered. | large |
 | BYOK baseline (T12) | Manual, in Phase 2. | – |
 | Dataset search (T21) | Opt-in with `--dataset`; Phase 5. | small |
 | Cache TTL beyond 60 minutes, Fable 5.1 / Opus 5.5 read multipliers | From `TODO.md`; not needed for Phase 1. | small |
 
-Suggested follow-up, about 1–2k tokens: `--tests T7,T18 --model gemini=google-gemini-3-flash-com` (dry run first).
+**Model coverage gap.** Every test above ran on the cheapest model per family (Haiku 4.5, GPT-5.4 nano, Gemini 3.1 Flash Lite Gov). Flagship GPT caching, Claude flagships (Sonnet 5, Opus 5.5), other hosts and partner models are covered by billing measurements only (`rate-sources-investigation.md`), not by cache and reasoning loops. `api-probe.mjs --matrix` (T22) fills this; see `phase0/probe/README.md`, "Model coverage".
 
 ## Effect on Phase 1
 

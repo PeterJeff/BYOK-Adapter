@@ -19,6 +19,8 @@
 //   node phase0/probe/api-probe.mjs --api api.<tenant> --alias tenant-a --dry-run
 //   node phase0/probe/api-probe.mjs --api api.<tenant> --alias tenant-a --tests T0,T19,T1
 //   node phase0/probe/api-probe.mjs --api api.<tenant> --alias tenant-a --yes
+//   node phase0/probe/api-probe.mjs --api api.<tenant> --alias tenant-a --matrix flagship --dry-run
+//   node phase0/probe/api-probe.mjs --list-matrix        (presets for --matrix; no network)
 
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -31,6 +33,7 @@ import { estimate } from './lib/usage.mjs';
 import { estTokens } from './lib/filler.mjs';
 import { pickModels, parseModelOverride, ROLES } from './lib/models.mjs';
 import { TESTS, DEFAULT_ORDER, closest, usageFieldReport } from './lib/tests.mjs';
+import { PRESETS, resolveMatrix, entryEstimate } from './lib/matrix.mjs';
 import { renderSummary } from './lib/summary.mjs';
 
 /** Pessimistic rate for a model the catalog does not price. */
@@ -55,6 +58,7 @@ export function parseArgs(argv) {
     prefixTokens: 6000,
     ttlWaitS: 360,
     /** @type {string | undefined} */ dataset: undefined,
+    /** @type {string | undefined} */ matrix: undefined,
     measure: true,
     dryRun: false,
     yes: false,
@@ -86,6 +90,7 @@ export function parseArgs(argv) {
     else if (a === '--prefix-tokens') o.prefixTokens = num(a, next());
     else if (a === '--ttl-wait') o.ttlWaitS = num(a, next());
     else if (a === '--dataset') o.dataset = next();
+    else if (a === '--matrix') o.matrix = next();
     else if (a === '--no-measure') o.measure = false;
     else if (a === '--dry-run') o.dryRun = true;
     else if (a === '--yes') o.yes = true;
@@ -104,6 +109,8 @@ export function parseArgs(argv) {
   if (o.prefixTokens < 4500) throw new Error('--prefix-tokens must be at least 4500 (Claude Haiku 4.5 does not cache prefixes under 4096 tokens)');
   const known = new Set(TESTS.map((t) => t.id));
   for (const t of [...(o.tests || []), ...o.skip]) if (!known.has(t)) throw new Error(`unknown test ${t}; known: ${[...known].join(', ')}`);
+  // --matrix runs T22; on its own it runs only T0 (access token, budget) and T22.
+  if (o.matrix) o.tests = o.tests ? (o.tests.includes('T22') ? o.tests : [...o.tests, 'T22']) : ['T0', 'T22'];
   return { ...o, api: o.api, alias: o.alias };
 }
 
@@ -138,7 +145,7 @@ export function planCost(tests, models, options) {
     let cost = 0;
     const est = t.estimate(models, /** @type {any} */ (options));
     for (const e of est) {
-      const rate = models[e.role]?.token_conversion_rate || UNPRICED;
+      const rate = (e.model ? e.model.token_conversion_rate : e.role ? models[e.role]?.token_conversion_rate : null) || UNPRICED;
       cost += e.inTokens * (rate.prompt || UNPRICED.prompt) + e.outTokens * (rate.completion || UNPRICED.completion);
     }
     total += cost;
@@ -175,6 +182,7 @@ export async function runProbe(p) {
   const sleep = p.sleep || ((ms) => new Promise((r) => setTimeout(r, ms)));
   const runId = p.runId || `${new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')}-${randomBytes(3).toString('hex')}`;
   const { models } = pickModels(p.catalog, { overrides: args.models, allowNonCui: args.allowNonCui });
+  const matrix = args.matrix ? resolveMatrix(args.matrix, p.catalog, { allowNonCui: args.allowNonCui }).entries : [];
   const tests = selectTests(args.tests, args.skip, args.measure);
   const redactor = createRedactor({ secrets: [p.apiKey, p.email], hosts: [args.api, args.api.replace(/^api\./, 'chat.'), args.api.replace(/^api\./, '')], alias: args.alias });
   const client = createClient({ apiBase: `https://${args.api}`, apiKey: p.apiKey, email: p.email, fetchImpl: p.fetchImpl, noAuthHeaders: p.noAuthHeaders });
@@ -260,7 +268,7 @@ export async function runProbe(p) {
     runId,
     models,
     catalog: p.catalog,
-    options: { prefixTokens: args.prefixTokens, ttlWaitS: args.ttlWaitS, dataset: args.dataset, measure: args.measure },
+    options: { prefixTokens: args.prefixTokens, ttlWaitS: args.ttlWaitS, dataset: args.dataset, measure: args.measure, matrix },
     call,
     record: (ex) => write(ex),
     async measure(label, fn) {
@@ -344,7 +352,7 @@ export async function runProbe(p) {
     finishedAt: new Date().toISOString(),
     apiVia: '--api',
     models: Object.fromEntries(Object.entries(models).map(([k, m]) => [k, m ? { id: m.id, token_conversion_rate: m.token_conversion_rate ?? null, cui_capable: m.cui_capable ?? null } : null])),
-    options: { tests: tests.map((t) => t.id), maxSpend: args.maxSpend, prefixTokens: args.prefixTokens, ttlWaitS: args.ttlWaitS, measure: args.measure, allowNonCui: args.allowNonCui, dataset: args.dataset ? '<given>' : null },
+    options: { tests: tests.map((t) => t.id), matrix: matrix.map((e) => `${e.model.id}@${e.flavors.join('+')}`), maxSpend: args.maxSpend, prefixTokens: args.prefixTokens, ttlWaitS: args.ttlWaitS, measure: args.measure, allowNonCui: args.allowNonCui, dataset: args.dataset ? '<given>' : null },
     budget: args.measure ? { before: budgetBefore, after: budgetAfter } : null,
     spentEstimate: spent,
     maxSpend: args.maxSpend,
@@ -427,17 +435,36 @@ function ask(prompt, hidden) {
   });
 }
 
+/** Presets for --matrix, for --list-matrix. */
+export function describePresets() {
+  const out = ['Presets for --matrix (combine with commas; add @M, @CC, @R, @G or @R+CC to a model id to pick flavors):', ''];
+  for (const [name, p] of Object.entries(PRESETS)) out.push(`  ${name.padEnd(9)} ${p.purpose}`, `            ${p.ids.join(', ')}`);
+  out.push('', 'Default flavors: Claude M; GPT-5.4+ and older reasoning GPTs R and CC; Gemini G and CC; others CC.');
+  return out.join('\n');
+}
+
 async function main() {
+  if (process.argv.includes('--list-matrix')) return console.log(describePresets());
   const args = parseArgs(process.argv.slice(2));
   const catalog = await loadCatalog(args.api, args.catalog);
   const { models, notes } = pickModels(catalog, { overrides: args.models, allowNonCui: args.allowNonCui });
+  const matrix = args.matrix ? resolveMatrix(args.matrix, catalog, { allowNonCui: args.allowNonCui }) : null;
   const tests = selectTests(args.tests, args.skip, args.measure);
-  const plan = planCost(tests, models, args);
+  const plan = planCost(tests, models, { ...args, matrix: matrix?.entries || [] });
 
   const out = [];
   out.push(`Ask Sage API probe, tenant <${args.alias}>`, '', 'Models:');
   for (const [role, m] of Object.entries(models)) out.push(`  ${role.padEnd(9)} ${m ? `${m.id} (prompt ${m.token_conversion_rate?.prompt ?? '?'}, completion ${m.token_conversion_rate?.completion ?? '?'})` : '-'}   ${ROLES[role].purpose}`);
   for (const nte of notes) out.push(`  note: ${nte}`);
+  if (matrix) {
+    out.push('', 'Model matrix (T22), pessimistic estimate per model:');
+    for (const e of matrix.entries) {
+      const cost = entryEstimate(e, args).reduce((s, q) => s + q.inTokens * (e.model.token_conversion_rate?.prompt || UNPRICED.prompt) + q.outTokens * (e.model.token_conversion_rate?.completion || UNPRICED.completion), 0);
+      out.push(`  ${String(Math.round(cost)).padStart(8)}  ${e.model.id} @ ${e.flavors.join('+')}${e.preset ? `  (${e.preset})` : ''}`);
+    }
+    for (const nte of matrix.notes) out.push(`  note: ${nte}`);
+    if (!matrix.entries.length) throw new Error('--matrix resolved to no models; see the notes above (or --list-matrix)');
+  }
   out.push('', 'Tests (pessimistic Ask Sage token estimate):');
   for (const r of plan.rows) out.push(`  ${r.id.padEnd(4)} ${String(r.cost).padStart(8)}  ${r.requests ? `${r.requests} billed request(s)` : ''} ${r.title}${r.note ? ` [${r.note}]` : ''}`);
   out.push(`  total ${plan.total} (cap --max-spend ${args.maxSpend})`);

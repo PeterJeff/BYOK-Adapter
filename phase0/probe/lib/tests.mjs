@@ -9,6 +9,9 @@ import { filler, nonce } from './filler.mjs';
 import { outputOf, estimate } from './usage.mjs';
 import { summarizeUser } from './redact.mjs';
 import { readBudget } from './budget.mjs';
+import { cacheRule } from './billing.mjs';
+import { tokenizerRates } from './webrates.mjs';
+import { entryEstimate, impliedMultiplier, isOpenAIReasoning, MATRIX_CAPS, MATRIX_PREFIX } from './matrix.mjs';
 
 /** @typedef {import('./client.mjs').Exchange} Exchange */
 /** @typedef {import('./client.mjs').CallOptions} CallOptions */
@@ -20,7 +23,7 @@ import { readBudget } from './budget.mjs';
  * @property {string} runId
  * @property {Record<string, CatalogModel | null>} models
  * @property {CatalogModel[]} catalog
- * @property {{ prefixTokens: number, ttlWaitS: number, dataset?: string, measure: boolean }} options
+ * @property {{ prefixTokens: number, ttlWaitS: number, dataset?: string, measure: boolean, matrix?: import('./matrix.mjs').MatrixEntry[] }} options
  * @property {(o: CallOptions, extra?: { record?: boolean, transform?: (ex: Exchange) => void }) => Promise<Exchange>} call
  * @property {(ex: Exchange) => void} record              record an exchange made with record:false
  * @property {<T>(label: string, fn: () => Promise<T>) => Promise<{ result: T, measured: Measured | null }>} measure
@@ -46,7 +49,8 @@ import { readBudget } from './budget.mjs';
  * @property {boolean} [optIn]           only runs when named in --tests
  * @property {boolean} [manual]          nothing automated; prints instructions
  * @property {boolean} [needsMeasure]    meaningless without budget measurement
- * @property {(m: Record<string, CatalogModel | null>, o: Ctx['options']) => { role: string, inTokens: number, outTokens: number }[]} estimate
+ * @property {(m: Record<string, CatalogModel | null>, o: Ctx['options']) => { role?: string, model?: CatalogModel, inTokens: number, outTokens: number }[]} estimate
+ *   each request is priced at `model`'s rate when given, else at the rate of the model in `role`
  * @property {(ctx: Ctx) => Promise<void>} run
  */
 
@@ -847,6 +851,11 @@ export const TESTS = [
         const noSig = await g(ctx, 'G round2 signature stripped', { ...cfg, contents: [user, { role: 'model', parts: o1.parts.map(({ thoughtSignature, ...p }) => p) }, resp] });
         ctx.check('G round 2 with thought signature succeeds', okEx(withSig) ? 'pass' : 'fail', errText(withSig));
         ctx.check('G round 2 without signature is rejected', okEx(noSig) ? 'info' : 'pass', okEx(noSig) ? 'accepted (model does not require signatures)' : errText(noSig));
+        if (!callPart.thoughtSignature) {
+          const dummy = o1.parts.map((p) => (p === callPart ? { ...p, thoughtSignature: GEMINI_SKIP_SIGNATURE } : p));
+          const ph = await g(ctx, 'G round2 placeholder signature', { ...cfg, contents: [user, { role: 'model', parts: dummy }, resp] });
+          ctx.check('G round 2 with Google\'s placeholder signature succeeds', okEx(ph) ? 'pass' : 'info', okEx(ph) ? 'a tool loop works despite the missing signature' : errText(ph));
+        }
       } else ctx.check('G function call', 'unknown', `no functionCall in round 1 (${errText(g1) || o1.stopReason})`);
       // CC shim.
       const gid = idOf(ctx, 'gemini');
@@ -905,10 +914,262 @@ export const TESTS = [
       ctx.observe('getCommand', { ok: okEx(b.result), err: errText(b.result) || undefined, chunkKeys: chunkKeys(b.result), measured: b.measured });
     },
   },
+
+  {
+    id: 'T22',
+    title: 'Model matrix: cache repeat and reasoning tool loop per model and flavor (--matrix)',
+    needs: [],
+    optIn: true,
+    estimate: (_m, o) => (o.matrix || []).flatMap((e) => entryEstimate(e, o)),
+    async run(ctx) {
+      const entries = ctx.options.matrix || [];
+      if (!entries.length) return ctx.check('matrix', 'skip', 'pass --matrix <preset|model id>[,...] (presets: --list-matrix)');
+      /** @type {Record<string, any>[]} */
+      const rows = [];
+      /** @type {Record<string, any>} */
+      const rates = {};
+      for (const e of entries) {
+        const id = e.model.id;
+        rates[id] = await billedRates(ctx, e.model);
+        for (const f of e.flavors) {
+          const label = `${id}@${f}`;
+          ctx.log(`  T22 ${label}`);
+          try {
+            const cache = await matrixCache(ctx, id, f, rates[id]);
+            const loop = await matrixLoop(ctx, id, f);
+            rows.push({ model: id, flavor: f, ...cache, ...loop });
+          } catch (err) {
+            if (/** @type {any} */ (err)?.constructor?.name === 'SpendCapError') throw err;
+            const msg = /** @type {Error} */ (err).message || String(err);
+            ctx.check(`${label}: ran`, 'fail', msg);
+            rows.push({ model: id, flavor: f, error: msg.slice(0, 200) });
+          }
+        }
+      }
+      ctx.observe('billedRates', rates);
+      ctx.observe('matrixRows', rows);
+    },
+  },
 ];
 
 /** Default order: T0 first, T19 next (it tunes budget polling), then the rest. */
-export const DEFAULT_ORDER = ['T0', 'T19', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'T13', 'T14', 'T15', 'T16', 'T17', 'T18', 'T20', 'T21'];
+export const DEFAULT_ORDER = ['T0', 'T19', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12', 'T13', 'T14', 'T15', 'T16', 'T17', 'T18', 'T20', 'T21', 'T22'];
+
+// ---------------------------------------------------------------- T22 model matrix
+
+/** OpenAI-served GPT (not the open-weight gpt-oss): takes max_completion_tokens and prompt_cache_key. @param {string} id */
+const isOpenAI = (id) => /^(aws-bedrock-)?gpt-(?!oss)/i.test(id);
+/** @param {string} id @param {number} cap */
+const capCC = (id, cap) => (isOpenAI(id) ? { max_completion_tokens: cap } : { max_tokens: cap });
+
+/**
+ * The model's billed rates from the free tokenizer conversion (PLAN §3.1); falls back to the
+ * catalog rate × 1.3 (the usual markup) when the tokenizer is unreachable.
+ * @param {Ctx} ctx @param {CatalogModel} model
+ * @returns {Promise<{ prompt: number | null, completion: number | null, source: string }>}
+ */
+async function billedRates(ctx, model) {
+  const tok = async (/** @type {Record<string, any>} */ body) => {
+    const ex = await ctx.call({ label: 'tokenizer', kind: 'server', path: '/server/tokenizer', body: { model: model.id, ...body } }, { record: false });
+    const v = Number(/** @type {any} */ (ex.body)?.response);
+    if (ex.error || !Number.isFinite(v)) throw new Error(ex.error ? ex.error.message : `HTTP ${ex.status}`);
+    return v;
+  };
+  try {
+    const big = filler(hash(model.id), 2000);
+    const est = 1000000;
+    const r = tokenizerRates({
+      tokens: await tok({ content: big }),
+      oneTokens: await tok({ content: 'x' }),
+      asBig: await tok({ content: big, convert_to_asksage: true }),
+      asOne: await tok({ content: 'x', convert_to_asksage: true }),
+      asCompletion: await tok({ content: 'x', convert_to_asksage: true, completion_estimate: est }),
+      completionEstimate: est,
+    });
+    return { prompt: r.prompt, completion: r.completion, source: 'tokenizer' };
+  } catch (e) {
+    const c = model.token_conversion_rate;
+    return { prompt: c?.prompt ? c.prompt * 1.3 : null, completion: c?.completion ? c.completion * 1.3 : null, source: `get-models x1.3 (tokenizer failed: ${/** @type {Error} */ (e).message.slice(0, 80)})` };
+  }
+}
+
+/**
+ * Cache repeat for one model and flavor: A writes (or primes) the prefix, B repeats it. Reports
+ * what was cached and, from the measured bills, the multipliers Ask Sage actually applied,
+ * against the host rule the plan assumes (billing.mjs cacheRule).
+ * @param {Ctx} ctx @param {string} id @param {import('./matrix.mjs').MatrixFlavor} f
+ * @param {{ prompt: number | null, completion: number | null }} rates
+ */
+async function matrixCache(ctx, id, f, rates) {
+  const label = `${id}@${f}`;
+  const tokens = f === 'M' || f === 'G' ? Math.max(ctx.options.prefixTokens, MATRIX_PREFIX[f]) : MATRIX_PREFIX[f];
+  const text = prefix(ctx, `T22-${label}`, tokens);
+  const cap = MATRIX_CAPS.cache;
+  const key = `probe-${ctx.runId}-${id}-${f}`;
+  /** @type {(l: string) => Promise<Exchange>} */
+  let send;
+  if (f === 'M') send = (l) => m(ctx, l, { model: id, system: [{ type: 'text', text, cache_control: { type: 'ephemeral' } }], messages: [{ role: 'user', content: OK }], max_tokens: cap });
+  else if (f === 'CC') send = (l) => cc(ctx, l, { model: id, messages: [{ role: 'system', content: text }, { role: 'user', content: OK }], ...capCC(id, cap), ...(isOpenAI(id) ? { prompt_cache_key: key } : {}) });
+  else if (f === 'R') send = (l) => r(ctx, l, { model: id, instructions: text, input: OK, max_output_tokens: cap, prompt_cache_key: key });
+  else send = (l) => g(ctx, l, { systemInstruction: { parts: [{ text }] }, contents: [{ role: 'user', parts: [{ text: OK }] }], generationConfig: { maxOutputTokens: cap } }, { model: id });
+
+  const A = await ctx.measure(`T22 ${label} cache A`, () => send(`${label} cache A`));
+  if (!okEx(A.result)) {
+    ctx.check(`${label}: cache request accepted`, 'fail', errText(A.result));
+    return { served: null, cacheError: errText(A.result).slice(0, 160) };
+  }
+  if (f !== 'M') await ctx.sleep(3000);
+  let B = await ctx.measure(`T22 ${label} cache B`, () => send(`${label} cache B`));
+  if (f !== 'M' && okEx(B.result) && n(B.result).cacheRead === 0) {
+    await ctx.sleep(5000);
+    B = await ctx.measure(`T22 ${label} cache B retry`, () => send(`${label} cache B retry`));
+  }
+  const a = A.result;
+  const b = B.result;
+  const read = n(b).cacheRead;
+  const hit = f === 'M' ? writes(a) > 0 && read >= 0.9 * writes(a) : read >= 0.5 * inputTotal(b);
+  ctx.check(`${label}: cache read on repeat`, hit ? 'pass' : f === 'G' ? 'info' : 'fail', `read ${read} of ${inputTotal(b)}; A wrote ${writes(a)}`);
+
+  // Multipliers from the bills. Gemini thinking is not billed through G, so it is left out there.
+  const out = (/** @type {Exchange} */ ex) => n(ex).visibleOutput + (f === 'G' ? 0 : n(ex).thinking);
+  const rule = cacheRule(f, id);
+  const readMult = writes(b) === 0 ? impliedMultiplier({ billed: B.measured?.usedDelta ?? null, cachedTokens: read, uncachedTokens: n(b).inputUncached, outputTokens: out(b), rates }) : null;
+  const writeMult = n(a).cacheRead === 0 && n(a).cacheWrite1h === 0 ? impliedMultiplier({ billed: A.measured?.usedDelta ?? null, cachedTokens: writes(a), uncachedTokens: n(a).inputUncached, outputTokens: out(a), rates }) : null;
+  const expRead = rule ? rule.read : 1;
+  const expWrite = rule ? rule.write5m : 1;
+  if (readMult !== null) ctx.check(`${label}: read billed at ${readMult}x (host rule ${expRead}x)`, Math.abs(readMult - expRead) <= 0.1 ? 'pass' : 'fail', `billed ${B.measured?.usedDelta} for ${read} cached + ${n(b).inputUncached} uncached in, ${out(b)} out`);
+  else if (read > 0) ctx.check(`${label}: read multiplier`, 'unknown', B.measured ? 'too few cached tokens, or unsettled counter, to resolve a ratio' : 'budget measurement off');
+  if (writeMult !== null) ctx.check(`${label}: write billed at ${writeMult}x (host rule ${expWrite}x)`, Math.abs(writeMult - expWrite) <= 0.15 ? 'pass' : 'fail', `billed ${A.measured?.usedDelta} for ${writes(a)} written + ${n(a).inputUncached} uncached in`);
+  return {
+    served: a.resolvedModel,
+    cacheRead: read,
+    cacheInput: inputTotal(b),
+    cacheWrite: writes(a),
+    readMult,
+    writeMult,
+    billedA: A.measured?.usedDelta ?? null,
+    billedB: B.measured?.usedDelta ?? null,
+  };
+}
+
+/**
+ * Two-round tool loop with reasoning on, per flavor: does round 1 call the tool and return
+ * reasoning state (Claude signature, encrypted reasoning, Gemini thought signature, CC reasoning
+ * fields), and does round 2 succeed with that state sent back, and without it?
+ * @param {Ctx} ctx @param {string} id @param {import('./matrix.mjs').MatrixFlavor} f
+ */
+async function matrixLoop(ctx, id, f) {
+  const label = `${id}@${f}`;
+  const cap = MATRIX_CAPS.loop;
+  /** @type {Record<string, any>} */
+  const row = { toolCall: false, state: 'none', round2: 'n/a', round2Without: 'n/a' };
+  /** @param {Exchange} ex */
+  const verdictOf = (ex) => (okEx(ex) ? 'ok' : `rejected: ${errText(ex).slice(0, 100)}`);
+  let expectState = true;
+
+  if (f === 'M') {
+    const u1 = { role: 'user', content: ASK_WEATHER };
+    /** @type {Record<string, any>} */
+    let base = { model: id, max_tokens: MATRIX_CAPS.loopM, thinking: { type: 'enabled', budget_tokens: 1024 }, tools: [WEATHER_M] };
+    let r1 = await m(ctx, `${label} loop r1`, { ...base, messages: [u1] });
+    if (!okEx(r1)) {
+      row.thinking = `not accepted: ${errText(r1).slice(0, 100)}`;
+      expectState = false;
+      base = { model: id, max_tokens: cap, tools: [WEATHER_M] };
+      r1 = await m(ctx, `${label} loop r1 without thinking`, { ...base, messages: [u1] });
+    }
+    const o1 = outputOf('M', r1);
+    const call = o1.toolCalls[0];
+    const think = o1.content.find((/** @type {any} */ x) => x.type === 'thinking' || x.type === 'redacted_thinking');
+    row.toolCall = !!call;
+    row.state = think?.signature ? `signature ${String(think.signature).length} chars` : 'none';
+    row.thinkingTokens = n(r1).thinking;
+    if (call) {
+      const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: TOOL_RESULT }] };
+      row.round2 = verdictOf(await m(ctx, `${label} loop r2 with thinking`, { ...base, messages: [u1, { role: 'assistant', content: o1.content }, result] }));
+      if (think) row.round2Without = verdictOf(await m(ctx, `${label} loop r2 thinking stripped`, { ...base, messages: [u1, { role: 'assistant', content: o1.content.filter((/** @type {any} */ x) => x.type === 'tool_use' || x.type === 'text') }, result] }));
+    }
+  } else if (f === 'R') {
+    const input = [{ role: 'user', content: ASK_WEATHER }];
+    /** @type {Record<string, any>} */
+    let rb = { model: id, tools: [WEATHER_R], reasoning: { effort: 'medium' }, include: ['reasoning.encrypted_content'], max_output_tokens: cap };
+    let q1 = await r(ctx, `${label} loop r1`, { ...rb, input });
+    if (!okEx(q1)) {
+      row.reasoning = `not accepted: ${errText(q1).slice(0, 100)}`;
+      expectState = false;
+      rb = { model: id, tools: [WEATHER_R], max_output_tokens: cap };
+      q1 = await r(ctx, `${label} loop r1 without reasoning`, { ...rb, input });
+    }
+    const p1 = outputOf('R', q1);
+    const fc = p1.items.find((/** @type {any} */ it) => it.type === 'function_call');
+    const reasoning = p1.items.filter((/** @type {any} */ it) => it.type === 'reasoning');
+    const enc = reasoning.filter((/** @type {any} */ it) => it.encrypted_content);
+    row.toolCall = !!fc;
+    row.thinkingTokens = n(q1).thinking;
+    row.state = enc.length ? `encrypted reasoning ${enc.map((/** @type {any} */ it) => String(it.encrypted_content).length).join('+')} chars` : reasoning.length ? `${reasoning.length} reasoning item(s), no encrypted_content` : 'none';
+    if (!n(q1).thinking && !reasoning.length) expectState = false; // the model did not reason: inconclusive, not a failure
+    if (fc) {
+      const out = { type: 'function_call_output', call_id: fc.call_id, output: TOOL_RESULT };
+      row.round2 = verdictOf(await r(ctx, `${label} loop r2 with reasoning`, { ...rb, input: [...input, ...p1.items, out] }));
+      if (reasoning.length) row.round2Without = verdictOf(await r(ctx, `${label} loop r2 without reasoning`, { ...rb, input: [...input, ...p1.items.filter((/** @type {any} */ it) => it.type !== 'reasoning'), out] }));
+    }
+  } else if (f === 'CC') {
+    const u = { role: 'user', content: ASK_WEATHER };
+    const body = { model: id, tools: [WEATHER_CC], ...capCC(id, cap), ...(isOpenAIReasoning(id) ? { reasoning_effort: 'medium' } : {}) };
+    const c1 = await cc(ctx, `${label} loop r1`, { ...body, messages: [u] });
+    const k1 = outputOf('CC', c1);
+    const msg = /** @type {any} */ (c1.body)?.choices?.[0]?.message;
+    const calls = msg?.tool_calls || [];
+    row.toolCall = calls.length > 0;
+    row.thinkingTokens = n(c1).thinking;
+    const extra = Object.keys(msg || {}).filter((k) => !['role', 'content', 'tool_calls', 'refusal', 'annotations', 'audio', 'function_call'].includes(k));
+    const callExtra = calls[0] ? Object.keys(calls[0]).filter((k) => !['id', 'type', 'function', 'index'].includes(k)) : [];
+    row.state = k1.reasoningChars ? `reasoning text ${k1.reasoningChars} chars` : extra.length || callExtra.length ? `extra fields: ${[...extra, ...callExtra.map((k) => `tool_calls[].${k}`)].join(', ')}` : 'none';
+    // CC is expected to lose reasoning between rounds; state is informational except for Gemini (extra_content signatures).
+    expectState = /gemini/i.test(id);
+    if (calls[0]) {
+      const tail = [{ role: 'tool', tool_call_id: calls[0].id, content: TOOL_RESULT }];
+      row.round2 = verdictOf(await cc(ctx, `${label} loop r2 as returned`, { ...body, messages: [u, { ...msg, content: msg.content ?? null }, ...tail] }));
+      if (extra.length || callExtra.length) {
+        const bare = calls.map((/** @type {any} */ t) => ({ id: t.id, type: 'function', function: { name: t.function?.name, arguments: t.function?.arguments } }));
+        row.round2Without = verdictOf(await cc(ctx, `${label} loop r2 bare tool_calls`, { ...body, messages: [u, { role: 'assistant', content: null, tool_calls: bare }, ...tail] }));
+      }
+    }
+  } else {
+    const user = { role: 'user', parts: [{ text: ASK_WEATHER }] };
+    const cfg = { tools: [WEATHER_G], generationConfig: { maxOutputTokens: cap, thinkingConfig: { includeThoughts: true } } };
+    const g1 = await g(ctx, `${label} loop r1`, { ...cfg, contents: [user] }, { model: id });
+    const o1 = outputOf('G', g1);
+    const callPart = o1.parts.find((/** @type {any} */ p) => p.functionCall);
+    row.toolCall = !!callPart;
+    row.thinkingTokens = n(g1).thinking;
+    row.state = callPart?.thoughtSignature ? `thoughtSignature ${String(callPart.thoughtSignature).length} chars` : 'none';
+    if (callPart) {
+      const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(TOOL_RESULT) } }] };
+      row.round2 = verdictOf(await g(ctx, `${label} loop r2 as returned`, { ...cfg, contents: [user, { role: 'model', parts: o1.parts }, resp] }, { model: id }));
+      if (callPart.thoughtSignature) {
+        row.round2Without = verdictOf(await g(ctx, `${label} loop r2 signature stripped`, { ...cfg, contents: [user, { role: 'model', parts: o1.parts.map(({ thoughtSignature, ...p }) => p) }, resp] }, { model: id }));
+      } else {
+        // Google documents a placeholder signature for history that lacks one; if Ask Sage strips
+        // signatures, this is the only way a Gemini 3 tool loop could work.
+        const dummy = o1.parts.map((/** @type {any} */ p) => (p === callPart ? { ...p, thoughtSignature: GEMINI_SKIP_SIGNATURE } : p));
+        row.round2Placeholder = verdictOf(await g(ctx, `${label} loop r2 placeholder signature`, { ...cfg, contents: [user, { role: 'model', parts: dummy }, resp] }, { model: id }));
+      }
+    }
+  }
+
+  ctx.check(`${label}: tool call in round 1`, row.toolCall ? 'pass' : 'fail', row.toolCall ? '' : 'no tool call');
+  if (row.toolCall) {
+    ctx.check(`${label}: reasoning state returned`, row.state !== 'none' ? 'pass' : expectState ? 'fail' : 'info', row.state);
+    ctx.check(`${label}: round 2 with state as returned`, row.round2 === 'ok' ? 'pass' : 'fail', row.round2);
+    if (row.round2Without !== 'n/a') ctx.check(`${label}: round 2 without state`, 'info', row.round2Without);
+    if (row.round2Placeholder) ctx.check(`${label}: round 2 with placeholder signature`, row.round2Placeholder === 'ok' ? 'pass' : 'info', row.round2Placeholder);
+  }
+  return row;
+}
+
+/** Google's documented placeholder for a function call whose thought signature is unavailable. */
+const GEMINI_SKIP_SIGNATURE = 'skip_thought_signature_validator';
 
 /** Tool schemas that providers disagree on. @type {[string, Record<string, any>][]} */
 export const SCHEMAS = [

@@ -50,6 +50,19 @@ export function renderSummary(run) {
   }
   L.push('');
 
+  const t22 = run.results.find((r) => r.id === 'T22');
+  const rows = /** @type {Record<string, any>[] | undefined} */ (t22?.observations.matrixRows);
+  if (rows && rows.length) {
+    L.push('## Model matrix (T22)', '', 'Multipliers are what the measured bill implies at the tokenizer\'s billed rates, after the +3 per-request constant (±0.05 on large prefixes).', '');
+    L.push('| Model | Flavor | Served | Cache read | Read × | Write × | Tool call | Reasoning state | Round 2 with state | Round 2 without | Notes |', '|---|---|---|---|---|---|---|---|---|---|---|');
+    const v = (/** @type {unknown} */ x) => (x === null || x === undefined ? '' : String(x));
+    for (const r of rows) {
+      const notes = [r.error, r.cacheError, r.thinking, r.reasoning, r.round2Placeholder ? `placeholder signature: ${r.round2Placeholder}` : ''].filter(Boolean).join('; ');
+      L.push(`| \`${r.model}\` | ${r.flavor} | ${cell(v(r.served))} | ${r.cacheRead ?? ''}${r.cacheInput ? ` / ${r.cacheInput}` : ''} | ${v(r.readMult)} | ${v(r.writeMult)} | ${r.toolCall ? 'yes' : r.error ? '' : 'no'} | ${cell(v(r.state))} | ${cell(v(r.round2))} | ${cell(v(r.round2Without))} | ${cell(notes)} |`);
+    }
+    L.push('');
+  }
+
   if (run.measurements.length) {
     L.push('## Budget deltas per measured step', '', '| Step | Measured Δ used | Δ remaining | Settled | First move (ms) | Est. discounted | Est. full | Est. ÷rate | Closest |', '|---|---|---|---|---|---|---|---|---|');
     for (const m of run.measurements) {

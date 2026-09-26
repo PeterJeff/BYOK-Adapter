@@ -1,6 +1,6 @@
 # Phase 0 probes
 
-## `api-probe.mjs`: authenticated API probes (T0–T21)
+## `api-probe.mjs`: authenticated API probes (T0–T22)
 
 Runs the Phase 0b tests in PLAN.md §9 against one tenant and records redacted fixtures to `research/live/<alias>/probe/<date>-<run>/`: one JSON file per request under a folder per test, plus `summary.md` / `summary.json`. The summary is raw observation. The conclusions go in `research/live/FINDINGS.md`.
 
@@ -25,7 +25,8 @@ Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, or from `--key-file
 | `--api <host>` | API host (required) |
 | `--alias <name>` | Tenant alias (required). Names the output folder and replaces the host in everything saved |
 | `--no-auth-headers` | Send no client-supplied credential; assume a gateway in front of `--api` authenticates requests. Implied automatically when no key is available |
-| `--tests T0,T1,...` / `--skip ...` | Choose tests. Default: everything except the opt-in T13 (long context, expensive) and T21 (needs `--dataset`) |
+| `--tests T0,T1,...` / `--skip ...` | Choose tests. Default: everything except the opt-in T13 (long context, expensive), T21 (needs `--dataset`) and T22 (needs `--matrix`) |
+| `--matrix <presets,ids>` | Run T22 on these models (below). `--list-matrix` prints the presets |
 | `--model role=id` | Override a model. Roles: `claude`, `gpt`, `gemini`, `embedding`, `long` |
 | `--allow-non-cui` | Allow `cui_capable: false` models (skipped by default) |
 | `--max-spend <n>` | Spend cap in Ask Sage tokens (probe's own full-price estimate) |
@@ -39,6 +40,42 @@ Credentials come from `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL`, or from `--key-file
 By default each role gets the cheapest `cui_capable` model that matches, preferring anything over commercial-hosted `-com` variants. Every cached prefix starts with a run-unique nonce, so an earlier run's cache cannot produce false hits. Budget measurement assumes nothing else spends from the same account while the probe runs, so close the web app. T19 runs early and tunes how long later steps wait for the counters to settle.
 
 Run T0 and T19 on their own first. T0 is free: it checks auth, the budget endpoints, the full user object (recorded as a shape summary, with values only for budget and model-restriction fields), the authenticated catalog, bad-credential envelopes, and the tokenizer's own Ask Sage conversion, which shows whether rates multiply or divide. T19 shows whether single requests can be resolved on the counters at all. If they can't, the per-request billing checks will read "unknown" and PLAN.md §3.6 batch mode applies.
+
+### Model coverage: `--matrix` (T22)
+
+T1–T21 run once per role on the cheapest matching model. That is right for endpoint mechanics (errors, auth, usage fields, parameter handling), but it says nothing about flagship models, other hosts or partner models. T22 fills that gap. For each model named by `--matrix` and each of its flavors, it runs:
+- **a cache repeat** (two requests). It reports what was cached and, from the measured bills at the tokenizer's billed rates, the read and write multipliers Ask Sage applied, checked against the plan's host rule.
+- **a two-round tool loop with reasoning on.** It reports whether round 1 calls the tool and returns reasoning state (Claude signature, encrypted reasoning, Gemini thought signature, reasoning fields on CC), and whether round 2 succeeds with that state sent back and without it. For Gemini with no signature it also tries Google's documented placeholder signature.
+
+`--matrix` takes presets and model ids, comma-separated, with an optional `@M`, `@CC`, `@R`, `@G` or `@R+CC` per id. On its own it runs only T0 and T22; with `--tests` it adds T22. `--list-matrix` prints the presets (no network).
+
+| Preset | Models (test-tenant ids) | Fills |
+|---|---|---|
+| `flagship` | Sonnet 5, Opus 5.5, GPT-5.6 Sol, GPT-6 Sol, GPT-5.5, Gemini 3.1 Pro | large-model caching (GPT-5.6/6 cache writes), reasoning round trips at flagship scale |
+| `premium` | Fable 5.1 (Bedrock), GPT-6 Astra, Opus 4.7 (-com) | the most expensive tier; Fable's 0.025× read is unmeasured |
+| `hosts` | Opus 5.5 on Bedrock, Sonnet 4.6 -com, GPT-5.6 Terra Gov, GPT-5.4 Gov, Bedrock GPT-5.6 Luna | the same families on other hosts |
+| `gemini` | 3.1 Flash Lite -com, 3.5 Flash Gov, 3.7 Flash, 3.1 Pro | thought signatures and implicit caching across Gemini tiers |
+| `partners` | Grok 4.20 reasoning, Grok 4.6 (Bedrock), Mistral Large 3, gpt-oss-120b | what the plan routes through CC by default |
+| `small` | Haiku 4.5, GPT-5.4 nano, GPT-6 Luna, GPT-4.1 mini, 3.1 Flash Lite Gov | cheap baseline per family |
+
+Suggested order after the default run, each with `--dry-run` first. The dry run prints a pessimistic estimate per model (every allowed output token billed); actual spend is usually well below it.
+
+```sh
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix small,partners,gemini   # ~22k estimate
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix flagship --max-spend 80000
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix hosts
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix premium --max-spend 100000   # optional
+```
+
+What the matrix does not cover, and how to fill it with role overrides:
+
+| Scenario | Model-sensitive? | To run on another model |
+|---|---|---|
+| TTL expiry, mixed TTLs (T15), lookback (T16) | yes, per Claude model and host (cache minimum, tokenizer) | `--model claude=google-claude-opus-5-5 --tests T15,T16` |
+| Output caps (T8), cancellation billing (T9) | per flavor, mostly not per model | `--model gpt=gpt-5.6-sol --tests T8,T9` |
+| GPT-5 parameters on CC (T6), cache key and retention (T17) | per model generation | `--model gpt=gpt-6-sol --tests T6,T17` |
+| Tool limits and schemas (T11) | per host (Bedrock vs Vertex) | `--model claude=aws-bedrock-claude-opus-5-5-gov --tests T11` |
+| Errors, auth, usage fields, injection (T0, T5, T10, T14, T19) | no: endpoint mechanics | once is enough |
 
 
 ## `rate-sources.mjs`: which rates are billed (free)
