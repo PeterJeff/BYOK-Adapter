@@ -71,8 +71,49 @@ test('scanRoundTrips finds nonces in assistant text, thinking and data parts onl
   const { roundTrips, usageParts } = inspect.scanRoundTrips(messages, ctors);
   assert.equal(usageParts, 1);
   const byNonce = Object.fromEntries(roundTrips.map((r) => [r.nonce, r]));
-  assert.deepEqual(byNonce[n1], { nonce: n1, text: true, thinking: true, thinkingId: true, thinkingMetadata: true, data: true });
-  assert.deepEqual(byNonce[n2], { nonce: n2, text: true, thinking: true, thinkingId: false, thinkingMetadata: false, data: false });
+  assert.deepEqual(byNonce[n1], { nonce: n1, text: true, thinking: true, thinkingId: true, thinkingMetadata: true, signatureIntact: false, data: true });
+  assert.deepEqual(byNonce[n2], { nonce: n2, text: true, thinking: true, thinkingId: false, thinkingMetadata: false, signatureIntact: false, data: false });
+});
+
+test('makeSignature is deterministic, sized, and signatureIntact catches truncation or edits', () => {
+  const a = inspect.makeSignature('smk-3-abcdef', 8192);
+  assert.equal(a.signature.length, 8192);
+  assert.match(a.signature, /^[A-Za-z0-9+/]+$/);
+  assert.deepEqual(inspect.makeSignature('smk-3-abcdef', 8192), a);
+  assert.notEqual(inspect.makeSignature('smk-4-abcdef', 8192).signature, a.signature);
+  assert.ok(inspect.signatureIntact({ smokeNonce: 'x', ...a }));
+  assert.ok(!inspect.signatureIntact({ ...a, signature: a.signature.slice(0, -1) }), 'truncated');
+  assert.ok(!inspect.signatureIntact({ ...a, signature: (a.signature[0] === 'A' ? 'B' : 'A') + a.signature.slice(1) }), 'edited');
+  assert.ok(!inspect.signatureIntact({ smokeNonce: 'x' }));
+  assert.ok(!inspect.signatureIntact(undefined));
+  assert.deepEqual([1, 2, 3, 4].map(inspect.signatureBytesForRound), [1024, 8192, 65536, 65536]);
+});
+
+test('scanRoundTrips reports an intact signature in thinking metadata', () => {
+  const n = 'smk-5-cccccc';
+  const sig = inspect.makeSignature(n, 1024);
+  const whole = inspect.scanRoundTrips([{ role: 2, content: [new parts.LanguageModelThinkingPart(`t ${n}`, `think-${n}`, { smokeNonce: n, ...sig })] }], ctors);
+  assert.equal(whole.roundTrips[0].signatureIntact, true);
+  const cut = inspect.scanRoundTrips([{ role: 2, content: [new parts.LanguageModelThinkingPart(`t ${n}`, `think-${n}`, { smokeNonce: n, ...sig, signature: sig.signature.slice(0, 100) })] }], ctors);
+  assert.equal(cut.roundTrips[0].thinkingMetadata, true);
+  assert.equal(cut.roundTrips[0].signatureIntact, false);
+});
+
+test('parseLoopArgs takes a round count, then a tool and JSON', () => {
+  assert.deepEqual(inspect.parseLoopArgs('3 read_file {"a":1}'), { rounds: 3, name: 'read_file', input: { a: 1 } });
+  assert.match(String(inspect.parseLoopArgs('read_file').error), /expected `smoke:loop/);
+  assert.match(String(inspect.parseLoopArgs('0 t').error), /rounds must be 1 to 6/);
+  assert.match(String(inspect.parseLoopArgs('7 t').error), /rounds must be 1 to 6/);
+  assert.deepEqual(inspect.parseCommand('<userRequest>smoke:loop 2 t {}</userRequest>'), { command: 'loop', args: '2 t {}</userRequest>' });
+});
+
+test('loopProgress finds the originating user message and counts tool results since', () => {
+  const result = (/** @type {string} */ id) => ({ role: 1, content: [new parts.LanguageModelToolResultPart(id, [text('r')])] });
+  const call = (/** @type {string} */ id) => ({ role: 2, content: [new parts.LanguageModelToolCallPart(id, 't', {})] });
+  assert.deepEqual(inspect.loopProgress([{ role: 1, content: [text('go')] }], ctors), { originText: 'go', toolResultsSince: 0 });
+  const msgs = [{ role: 1, content: [text('old')] }, call('a'), result('a'), { role: 1, content: [text('smoke:loop 2 t')] }, call('b'), result('b'), call('c'), result('c')];
+  assert.deepEqual(inspect.loopProgress(msgs, ctors), { originText: 'smoke:loop 2 t', toolResultsSince: 2 });
+  assert.deepEqual(inspect.loopProgress([], ctors), { originText: '', toolResultsSince: 0 });
 });
 
 test('parseCommand finds directives inside wrapped prompts', () => {

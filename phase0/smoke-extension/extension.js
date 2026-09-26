@@ -49,6 +49,7 @@ const HELP = [
   '- `smoke:help` shows this list.',
   '- `smoke:tool` lists the tools this request carries (Agent mode passes them).',
   '- `smoke:tool <name> {"arg": "value"}` makes the model call that tool, to test the tool round trip (E2). Pick a read-only tool.',
+  `- \`smoke:loop <rounds> <name> {"arg": "value"}\` calls it that many times in a row (1 to ${inspect.MAX_LOOP_ROUNDS}), each reply carrying thinking with a larger signature in its metadata (E4 in a tool loop).`,
   '- `smoke:slow` streams for about 15 seconds; press Stop to test cancellation.',
   '- `smoke:error` throws a LanguageModelError to show how VS Code displays provider errors.',
   'Any other message gets the echo report. Send a second message in the same chat to test E4.',
@@ -198,10 +199,17 @@ const provider = {
     const lastUser = [...messages].reverse().find((m) => inspect.roleName(m.role) === 'user');
     const lastUserText = lastUser ? inspect.messageText(lastUser, ctors) : '';
     const toolResults = last ? (last.content || []).filter((p) => inspect.classifyPart(p, ctors) === 'toolResult') : [];
-    // Only act on commands in a fresh user message, never on a tool-result turn, so a tool call cannot loop.
-    const command = toolResults.length === 0 ? inspect.parseCommand(lastUserText) : undefined;
+    // Act on commands in a fresh user message. On a tool-result turn the only command that continues is the
+    // smoke:loop that started it, until its rounds are done; the round count comes from history, so it cannot run away.
+    const loopState = inspect.loopProgress(messages, ctors);
+    let command = toolResults.length === 0 ? inspect.parseCommand(lastUserText) : undefined;
+    if (toolResults.length > 0) {
+      const origin = inspect.parseCommand(loopState.originText);
+      if (origin && origin.command === 'loop' && loopState.toolResultsSince < inspect.parseLoopArgs(origin.args).rounds) command = origin;
+    }
 
-    const emitThinking = () => tryEmit('thinking', emitKinds, () => (typeof vs.LanguageModelThinkingPart === 'function' ? new vs.LanguageModelThinkingPart(`Smoke-test thinking for ${nonce}.`, `think-${nonce}`, { smokeNonce: nonce }) : undefined), progress);
+    const emitThinking = (/** @type {object} */ extra = {}) =>
+      tryEmit('thinking', emitKinds, () => (typeof vs.LanguageModelThinkingPart === 'function' ? new vs.LanguageModelThinkingPart(`Smoke-test thinking for ${nonce}.`, `think-${nonce}`, { smokeNonce: nonce, ...extra }) : undefined), progress);
     const emitData = () => tryEmit('data', emitKinds, () => makeJsonDataPart({ smokeNonce: nonce }, inspect.SMOKE_MIME), progress);
 
     try {
@@ -211,23 +219,36 @@ const provider = {
         throw vs.LanguageModelError && typeof vs.LanguageModelError.Blocked === 'function' ? vs.LanguageModelError.Blocked(msg) : new Error(msg);
       }
 
-      if (command && command.command === 'tool' && command.args) {
-        const { name, input, error } = inspect.parseToolArgs(command.args);
+      if (command && ((command.command === 'tool' && command.args) || command.command === 'loop')) {
+        const directive = `smoke:${command.command}`;
+        const { rounds, name, input, error } = command.command === 'loop' ? inspect.parseLoopArgs(command.args) : { rounds: 1, ...inspect.parseToolArgs(command.args) };
         const tool = tools.find((t) => t.name === name);
         if (error || !tool) {
           const why = error || (tools.length ? `no tool named \`${name}\` in this request` : 'this request carries no tools (switch to Agent mode)');
-          await streamText(`smoke:tool not run: ${why}. Use \`smoke:tool\` alone to list tools.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
+          await streamText(`${directive} not run: ${why}. Use \`smoke:tool\` alone to list tools.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
         } else {
           // The tool-loop shape of E4: thinking, tagged text, an opaque data part and a tool call in ONE
           // reply. The next request (carrying the tool result) shows which of them come back, which is what
-          // a reasoning model's signed thinking block needs during a tool loop (plan §5).
-          const emit = { thinking: emitThinking(), data: 'disabled', usage: 'disabled' };
-          await streamText(`Calling \`${tool.name}\` with ${JSON.stringify(input)}.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
+          // a reasoning model's signed thinking block needs during a tool loop (plan §5). The thinking
+          // metadata carries a fake signature that grows each round, to show whether large values survive.
+          const round = loopState.toolResultsSince + 1;
+          const signature = inspect.makeSignature(nonce, inspect.signatureBytesForRound(round));
+          const emit = { thinking: emitThinking({ round, ...signature }), data: 'disabled', usage: 'disabled' };
+          const prefix = rounds > 1 ? `Round ${round} of ${rounds}. ` : '';
+          await streamText(`${prefix}Calling \`${tool.name}\` with ${JSON.stringify(input)}.\n\n\`nonce ${nonce}\``, progress, token, delayMs);
           emit.data = emitData();
           progress.report(new vscode.LanguageModelToolCallPart(`smoke-${nonce}`, tool.name, input));
           findings.e2.toolCallsEmitted++;
-          report.addEmitted(findings, { nonce, at: new Date().toISOString(), model: model.id, emit, back: { text: false, thinking: false, thinkingId: false, thinkingMetadata: false, data: false } });
-          log.info(`request #${n} emitted with a tool call ${JSON.stringify(emit)}`);
+          report.addEmitted(findings, {
+            nonce,
+            at: new Date().toISOString(),
+            model: model.id,
+            emit,
+            back: { text: false, thinking: false, thinkingId: false, thinkingMetadata: false, signatureIntact: false, data: false },
+            loop: { round, of: rounds },
+            signatureBytes: emit.thinking === 'ok' ? signature.signatureBytes : undefined,
+          });
+          log.info(`request #${n} emitted with a tool call (round ${round}/${rounds}) ${JSON.stringify(emit)}`);
         }
         return;
       }
@@ -262,7 +283,7 @@ const provider = {
       const outTokens = Math.ceil(body.length / 4);
       emit.usage = tryEmit('usage', emitKinds, () => makeJsonDataPart({ prompt_tokens: inTokens, completion_tokens: outTokens, total_tokens: inTokens + outTokens, prompt_tokens_details: { cached_tokens: 0 } }, inspect.USAGE_MIME), progress);
 
-      report.addEmitted(findings, { nonce, at: new Date().toISOString(), model: model.id, emit, back: { text: false, thinking: false, thinkingId: false, thinkingMetadata: false, data: false } });
+      report.addEmitted(findings, { nonce, at: new Date().toISOString(), model: model.id, emit, back: { text: false, thinking: false, thinkingId: false, thinkingMetadata: false, signatureIntact: false, data: false } });
       log.info(`request #${n} emitted ${JSON.stringify(emit)}`);
     } catch (e) {
       report.addError(findings, `request #${n}`, e);
@@ -298,9 +319,13 @@ function renderEcho(a) {
   L.push(`- Request option keys: ${a.optionKeys.join(', ') || '-'}`);
   L.push(`- modelOptions keys: ${a.modelOptionKeys.join(', ') || '-'}`);
   if (a.roundTrips.length) {
-    L.push('', '| Earlier nonce | Text | Thinking | Thinking id | Thinking metadata | Data part |', '|---|---|---|---|---|---|');
+    L.push('', '| Earlier nonce | Text | Thinking | Thinking id | Thinking metadata | Signature | Data part |', '|---|---|---|---|---|---|---|');
     const yn = (/** @type {boolean} */ b) => (b ? 'yes' : 'no');
-    for (const r of a.roundTrips.slice(-5)) L.push(`| ${r.nonce} | ${yn(r.text)} | ${yn(r.thinking)} | ${yn(r.thinkingId)} | ${yn(r.thinkingMetadata)} | ${yn(r.data)} |`);
+    for (const r of a.roundTrips.slice(-8)) {
+      const rec = findings.e4.emitted.find((e) => e.nonce === r.nonce);
+      const sig = rec && rec.signatureBytes ? `${r.signatureIntact ? 'intact' : 'no'} (${rec.signatureBytes} B)` : '-';
+      L.push(`| ${r.nonce} | ${yn(r.text)} | ${yn(r.thinking)} | ${yn(r.thinkingId)} | ${yn(r.thinkingMetadata)} | ${sig} | ${yn(r.data)} |`);
+    }
   } else {
     L.push('- No earlier smoke responses in this history yet. Send another message in this chat to test E4.');
   }

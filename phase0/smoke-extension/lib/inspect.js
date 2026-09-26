@@ -10,6 +10,13 @@ const SMOKE_MIME = 'application/vnd.asksage.smoke+json';
 const USAGE_MIME = 'usage';
 /** Matches nonces written by makeNonce(). */
 const NONCE_RE = /smk-\d+-[a-z0-9]{6}/g;
+/** Most tool rounds `smoke:loop` runs. */
+const MAX_LOOP_ROUNDS = 6;
+/**
+ * Size of the fake signature carried in a tool-loop thinking part's metadata, by round.
+ * Claude signatures run to hundreds of bytes or a few KB; encrypted reasoning items can be tens of KB.
+ */
+const SIGNATURE_BYTES = [1024, 8192, 65536];
 
 /** vscode.LanguageModelChatMessageRole values. System (3) is proposed API. */
 const ROLE_NAMES = /** @type {Record<number, string>} */ ({ 1: 'user', 2: 'assistant', 3: 'system' });
@@ -140,8 +147,45 @@ function summarizeMessages(messages, ctors) {
 }
 
 /**
+ * Signature size for a tool-loop round (1-based); later rounds reuse the largest.
+ * @param {number} round
+ */
+function signatureBytesForRound(round) {
+  return SIGNATURE_BYTES[Math.min(Math.max(round, 1), SIGNATURE_BYTES.length) - 1];
+}
+
+/**
+ * A deterministic stand-in for an opaque reasoning signature: `bytes` base64
+ * characters derived from the nonce, plus the hash to check it came back whole.
+ * @param {string} nonce
+ * @param {number} bytes
+ */
+function makeSignature(nonce, bytes) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  let x = fnv1a(nonce) || 1;
+  let out = '';
+  for (let i = 0; i < bytes; i++) {
+    // xorshift32
+    x ^= x << 13;
+    x ^= x >>> 17;
+    x ^= x << 5;
+    out += alphabet[(x >>> 0) & 63];
+  }
+  return { signature: out, signatureHash: fnv1a(out), signatureBytes: bytes };
+}
+
+/**
+ * True if thinking-part metadata carries a signature that is intact (same length and hash).
+ * @param {any} metadata
+ */
+function signatureIntact(metadata) {
+  if (!metadata || typeof metadata.signature !== 'string') return false;
+  return metadata.signature.length === metadata.signatureBytes && fnv1a(metadata.signature) === metadata.signatureHash;
+}
+
+/**
  * @typedef {{ nonce: string, text: boolean, thinking: boolean, thinkingId: boolean,
- *   thinkingMetadata: boolean, data: boolean }} RoundTrip
+ *   thinkingMetadata: boolean, signatureIntact: boolean, data: boolean }} RoundTrip
  */
 
 /**
@@ -158,7 +202,7 @@ function scanRoundTrips(messages, ctors) {
   const entry = (nonce) => {
     let e = found.get(nonce);
     if (!e) {
-      e = { nonce, text: false, thinking: false, thinkingId: false, thinkingMetadata: false, data: false };
+      e = { nonce, text: false, thinking: false, thinkingId: false, thinkingMetadata: false, signatureIntact: false, data: false };
       found.set(nonce, e);
     }
     return e;
@@ -175,7 +219,10 @@ function scanRoundTrips(messages, ctors) {
           const e = entry(n);
           e.thinking = true;
           if (part.id === `think-${n}`) e.thinkingId = true;
-          if (part.metadata && part.metadata.smokeNonce === n) e.thinkingMetadata = true;
+          if (part.metadata && part.metadata.smokeNonce === n) {
+            e.thinkingMetadata = true;
+            if (signatureIntact(part.metadata)) e.signatureIntact = true;
+          }
         }
       } else if (kind === 'data') {
         if (part.mimeType === USAGE_MIME) usageParts++;
@@ -197,10 +244,10 @@ function scanRoundTrips(messages, ctors) {
  * Finds a `smoke:<command> args` directive in the text of the last user message.
  * Copilot wraps user text in its own prompt markup, so the search is not anchored.
  * @param {string} text
- * @returns {{ command: 'help' | 'tool' | 'error' | 'slow', args: string } | undefined}
+ * @returns {{ command: 'help' | 'tool' | 'loop' | 'error' | 'slow', args: string } | undefined}
  */
 function parseCommand(text) {
-  const m = /smoke:(help|tool|error|slow)\b([^\n]*)/.exec(text);
+  const m = /smoke:(help|tool|loop|error|slow)\b([^\n]*)/.exec(text);
   if (!m) return undefined;
   return { command: /** @type {any} */ (m[1]), args: m[2].trim() };
 }
@@ -229,6 +276,42 @@ function parseToolArgs(args) {
     }
   }
   return { name, input: {}, error: `invalid JSON: ${lastError || 'no closing brace'}` };
+}
+
+/**
+ * Parses `ROUNDS NAME {json}` from a smoke:loop directive.
+ * @param {string} args
+ * @returns {{ rounds: number, name?: string, input: object, error?: string }}
+ */
+function parseLoopArgs(args) {
+  const m = /^(\d+)\s+(.*)$/.exec(args);
+  if (!m) return { rounds: 0, input: {}, error: 'expected `smoke:loop <rounds> <tool> {json}`' };
+  const rounds = Number(m[1]);
+  if (rounds < 1 || rounds > MAX_LOOP_ROUNDS) return { rounds, input: {}, error: `rounds must be 1 to ${MAX_LOOP_ROUNDS}` };
+  return { rounds, ...parseToolArgs(m[2]) };
+}
+
+/**
+ * Where a request stands in a tool loop: the user message that started it (the last
+ * user message that is not only tool results) and how many tool results have come back since.
+ * @param {readonly any[]} messages
+ * @param {PartCtors} ctors
+ * @returns {{ originText: string, toolResultsSince: number }}
+ */
+function loopProgress(messages, ctors) {
+  let toolResultsSince = 0;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i];
+    if (roleName(m.role) !== 'user') continue;
+    const kinds = (m.content || []).map((/** @type {unknown} */ p) => classifyPart(p, ctors));
+    const results = kinds.filter((/** @type {string} */ k) => k === 'toolResult').length;
+    if (results > 0 && results === kinds.length) {
+      toolResultsSince += results;
+      continue;
+    }
+    return { originText: messageText(m, ctors), toolResultsSince };
+  }
+  return { originText: '', toolResultsSince };
 }
 
 /**
@@ -271,7 +354,11 @@ module.exports = {
   fnv1a,
   SMOKE_MIME,
   USAGE_MIME,
+  MAX_LOOP_ROUNDS,
   makeNonce,
+  signatureBytesForRound,
+  makeSignature,
+  signatureIntact,
   roleName,
   classifyPart,
   messageText,
@@ -279,6 +366,8 @@ module.exports = {
   scanRoundTrips,
   parseCommand,
   parseToolArgs,
+  parseLoopArgs,
+  loopProgress,
   describeKeys,
   estimateTokens,
 };
