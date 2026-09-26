@@ -1,0 +1,220 @@
+{
+ "alias": "manual-run-01",
+ "runId": "0511-7d58e1",
+ "startedAt": "2026-09-26T05:11:02.667Z",
+ "finishedAt": "2026-09-26T05:11:15.964Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-6-sol",
+   "token_conversion_rate": {
+    "completion": 1.2375,
+    "prompt": 0.275
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T6",
+   "T17"
+  ],
+  "matrix": [],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 53880,
+   "left": 146120
+  },
+  "after": {
+   "used": 53968,
+   "left": 146032
+  }
+ },
+ "spentEstimate": 93.10000000000001,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T6",
+   "title": "GPT-5-class models on Chat Completions",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "cases": {
+     "max_tokens": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "openai-error invalid_request_error: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.",
+      "stop": null,
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "max_completion_tokens": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-6-sol-2026-09-22",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "reasoning_effort=low": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-6-sol-2026-09-22",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "temperature=0.2": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 10,
+      "think": 7,
+      "served": "gpt-6-sol-2026-09-22",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "tools": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "openai-error invalid_request_error: Function tools with reasoning_effort are not supported for gpt-6-sol in /v1/chat/completions. To use function tools, use /v1/responses or set reasoning_effort to 'none'.",
+      "stop": null,
+      "toolCalls": [],
+      "reasoningFields": 0
+     }
+    }
+   },
+   "exchanges": 5
+  },
+  {
+   "id": "T17",
+   "title": "prompt_cache_key, prompt_cache_retention and unknown parameters",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "parameters": {
+     "CC prompt_cache_key + prompt_cache_retention=24h": "accepted",
+     "R prompt_cache_key + prompt_cache_retention=24h": {
+      "accepted": true,
+      "echoed": {
+       "prompt_cache_key": "probe-0511-7d58e1-T17",
+       "prompt_cache_retention": "24h"
+      }
+     },
+     "CC unknown top-level parameter": "accepted (stripped or ignored)",
+     "R unknown top-level parameter": "accepted (stripped or ignored)",
+     "M unknown top-level parameter": "anthropic-error api_error: Provider request failed"
+    }
+   },
+   "exchanges": 5
+  }
+ ],
+ "measurements": [],
+ "usageFields": {
+  "CC non-stream": {
+   "count": 5,
+   "fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "latency_checkpoint",
+    "latency_checkpoint.engine_tbt_ms",
+    "latency_checkpoint.engine_ttft_ms",
+    "latency_checkpoint.engine_ttlt_ms",
+    "latency_checkpoint.pre_inference_ms",
+    "latency_checkpoint.service_tbt_ms",
+    "latency_checkpoint.service_ttft_ms",
+    "latency_checkpoint.service_ttlt_ms",
+    "latency_checkpoint.user_visible_ttft_ms",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "R non-stream": {
+   "count": 2,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "gpt-6-sol",
+   "served": "gpt-6-sol-2026-09-22",
+   "count": 5
+  },
+  {
+   "requested": "gpt-6-sol",
+   "served": "gpt-6-sol",
+   "count": 2
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}

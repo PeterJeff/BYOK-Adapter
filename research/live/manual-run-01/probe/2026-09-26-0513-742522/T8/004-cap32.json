@@ -1,0 +1,146 @@
+{
+ "test": "T8",
+ "seq": 4,
+ "label": "cap32",
+ "kind": "CC",
+ "model": "gpt-5.6-sol",
+ "resolvedModel": "gpt-5.6-sol-2026-07-09",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:13:49.488Z",
+ "ms": 1442,
+ "ttftMs": 1442,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.6-sol",
+   "max_completion_tokens": 32,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 1500 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 32,
+  "prompt_tokens": 23,
+  "total_tokens": 55,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 32,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 10,
+   "engine_ttft_ms": 251,
+   "engine_ttlt_ms": 565,
+   "pre_inference_ms": 170,
+   "service_tbt_ms": 10,
+   "service_ttft_ms": 521,
+   "service_ttlt_ms": 831,
+   "user_visible_ttft_ms": 350
+  }
+ },
+ "normalized": {
+  "inputUncached": 23,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 32,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 91.85,
+  "full": 91.85,
+  "inverse": 54.75,
+  "inputTokens": 23,
+  "outputTokens": 32
+ },
+ "body": {
+  "id": "chatcmpl-ESF1KevuZZ8oQGQrlLLxplcvYNiCF",
+  "choices": [
+   {
+    "finish_reason": "length",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": "",
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": null
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790399630,
+  "model": "gpt-5.6-sol-2026-07-09",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 32,
+   "prompt_tokens": 23,
+   "total_tokens": 55,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 32,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 10,
+    "engine_ttft_ms": 251,
+    "engine_ttlt_ms": 565,
+    "pre_inference_ms": 170,
+    "service_tbt_ms": 10,
+    "service_ttft_ms": 521,
+    "service_ttlt_ms": 831,
+    "user_visible_ttft_ms": 350
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260914164813-61565221-prefill-r14-dp0-prefill"
+  }
+ }
+}

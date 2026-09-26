@@ -1,0 +1,181 @@
+{
+ "test": "T8",
+ "seq": 5,
+ "label": "cap32",
+ "kind": "R",
+ "model": "gpt-5.6-sol",
+ "resolvedModel": "gpt-5.6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T05:13:50.933Z",
+ "ms": 1285,
+ "ttftMs": 1284,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.6-sol",
+   "store": false,
+   "max_output_tokens": 32,
+   "input": "Write about 1500 words about rivers: their sources, courses and deltas."
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 23,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 32,
+  "output_tokens_details": {
+   "reasoning_tokens": 32
+  },
+  "total_tokens": 55
+ },
+ "normalized": {
+  "inputUncached": 23,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 32,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 91.85,
+  "full": 91.85,
+  "inverse": 54.75,
+  "inputTokens": 23,
+  "outputTokens": 32
+ },
+ "body": {
+  "id": "resp_0271165d6f174fa0016ab7548f5a448197bddf1a8d7943b565",
+  "created_at": 1790399631,
+  "error": null,
+  "incomplete_details": {
+   "reason": "max_output_tokens"
+  },
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-5.6-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_0271165d6f174fa0016ab7548ff0f08197aa02c366e1eadb78",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABqt1SQIgPWRd_Lwm69_9idrhkKN6tZmRgi5bslhX5oH5VHZ0BizR1xyAWfx_hImE020WM4RcKAZNvgzu0LwYqHgfP0AcIIIAxnjmU9zGJYLN9m7hZIZ8h6ImgT7P5NGE6T97T9DDZP6KoffEqRRAGFeVW9OEJKa3GfJiKmGNtBA0E-Rh_Va6ztHgU5jhLZPzeQVj1ay2RaYiI_sw-EwFafGUhn3wTofxgrZRuV4uUX3mOULj8EdB7qvuf29PRN8KLSpEIAxNJLPocNmsgJoyDNlqQHmhpdw9qtAMnGRkg1PoKECBQUXJ0s0vzXmexA9KkwDRF2dvJewxylgJGIzn-RUPuzn1EQARxHfJvs68V1nBDwpBTSMkAdK4XA1wQ8j73LZfAYWG3J9XPFr-MNmDqw3RH3qIl1g8Bfy_lSdTHPHIQVgaPSC7wREnTjUrOZgskhJZ0XN5-1Rlk657weVMU9NCQurEwitIrpSOZiIlq1OrQZfr9atZpwSQEXBOwzNGqaG4195jsHA5RZdFHakm27yqtxjIKFYiPQNGb_ril0PvrJ3Mus_1UuWe43Isilx85lZ9bSCHzmRbzuL7sj4aSpoRl1mhlUjL65wgDIvAbrrytUxGE5HiI6mgFOOOpeyKwIzubBc4OyHbrnDLkJ0SYTedsYSOKAQJbZx0qTxqOBtfRMZ6-iel9WCqdflMlLPzMQgIaxBs-iYICMc9PmB9c7cP-e_lcJ-3_EeW5FTx5Te_Y5bQ05XBxqdmkXaJ4b1naUrtLl9GQ7qKejFdH_XfKcXkTKJgq656bp-vPZedRKikdat43E0fYZQ1C96irsiYcPPxsAi7Oox-z-NrTcKbtYkqsZdYXJ-_bZA-hKBzQpCfMiCZdg1F2J0HOYFOTEWUoevq9cQ5VMe9OHxDw_aBZUwiKvaaq_12FUxe0jGLH8lsGLJZKud8oB2YIIFl1l1fp1iyH172cfekoyRLUoDt9CnQIkNZYKcp3mheny5oU5v-H9USwr7G7GhG-gJHPsLHXpqq-1BD2--N2yPcHk0AsOKXljOsLUSpLefgbdPUHEuM2EkHjcOklxIeFQFeX5gqXp093IsN-P-ArRHMrLw08mrgl0zjirNza-si4Cs-ikVUY5KU6z52jJ7NFV1c02AHCozXV4Ls8BACIx6t4r_DAf3yiHu5NcChKhZsHZPpfItxp9TfOv5w1zrps34QsKCu_LSV4s1bADfqtL_11CozrFpUKiA4b0Q592Yxo9jWdsZXJRxHkx-tIeNwzgQDAUYahBpRra",
+    "status": null
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": null,
+  "conversation": null,
+  "max_output_tokens": 32,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "incomplete",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 23,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 32,
+   "output_tokens_details": {
+    "reasoning_tokens": 32
+   },
+   "total_tokens": 55
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 849,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 113,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

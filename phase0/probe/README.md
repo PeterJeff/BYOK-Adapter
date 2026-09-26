@@ -58,13 +58,13 @@ T1–T21 run once per role on the cheapest matching model. That is right for end
 | `partners` | Grok 4.20 reasoning, Grok 4.6 (Bedrock), Mistral Large 3, gpt-oss-120b | what the plan routes through CC by default |
 | `small` | Haiku 4.5, GPT-5.4 nano, GPT-6 Luna, GPT-4.1 mini, 3.1 Flash Lite Gov | cheap baseline per family |
 
-Suggested order after the default run, each with `--dry-run` first. The dry run prints a pessimistic estimate per model (every allowed output token billed); actual spend is usually well below it.
+Suggested order after the default run, each with `--dry-run` first. The dry run prints a pessimistic estimate per model: every allowed output token billed, at the tokenizer's billed rate when `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL` are set (free calls, made even in a dry run), else the catalog rate × 1.3. Input-heavy runs come close to the estimate; output caps are rarely used up.
 
 ```sh
-node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix small,partners,gemini   # ~22k estimate
-node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix flagship --max-spend 80000
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix small,partners,gemini   # ~28k estimate
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix flagship --max-spend 90000   # ~81k: pick models instead, e.g. google-claude-sonnet-5,gpt-6-sol@R (~12k)
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix hosts
-node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix premium --max-spend 100000   # optional
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix premium --max-spend 100000   # optional, ~75k
 ```
 
 What the matrix does not cover, and how to fill it with role overrides:

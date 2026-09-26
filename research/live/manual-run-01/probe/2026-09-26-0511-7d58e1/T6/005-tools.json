@@ -1,0 +1,79 @@
+{
+ "test": "T6",
+ "seq": 5,
+ "label": "tools",
+ "kind": "CC",
+ "model": "gpt-6-sol",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:11:08.369Z",
+ "ms": 347,
+ "ttftMs": 347,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+    }
+   ],
+   "tools": [
+    {
+     "type": "function",
+     "function": {
+      "name": "get_weather",
+      "description": "Current weather for a city.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "city": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ]
+      }
+     }
+    }
+   ],
+   "tool_choice": "auto",
+   "max_completion_tokens": 512
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "openai-error",
+  "status": "invalid_request_error",
+  "message": "Function tools with reasoning_effort are not supported for gpt-6-sol in /v1/chat/completions. To use function tools, use /v1/responses or set reasoning_effort to 'none'."
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "message": "Function tools with reasoning_effort are not supported for gpt-6-sol in /v1/chat/completions. To use function tools, use /v1/responses or set reasoning_effort to 'none'.",
+   "type": "invalid_request_error",
+   "code": "invalid_request_error",
+   "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+   "ref": "ERR-068B8396"
+  }
+ }
+}

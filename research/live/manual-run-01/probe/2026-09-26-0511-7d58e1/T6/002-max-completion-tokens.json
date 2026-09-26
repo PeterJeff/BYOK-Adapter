@@ -1,0 +1,146 @@
+{
+ "test": "T6",
+ "seq": 2,
+ "label": "max_completion_tokens",
+ "kind": "CC",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol-2026-09-22",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:11:04.963Z",
+ "ms": 1033,
+ "ttftMs": 1033,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_completion_tokens": 256
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 4,
+  "prompt_tokens": 13,
+  "total_tokens": 17,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 0,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 6,
+   "engine_ttft_ms": 222,
+   "engine_ttlt_ms": 251,
+   "pre_inference_ms": 113,
+   "service_tbt_ms": 8,
+   "service_ttft_ms": 432,
+   "service_ttlt_ms": 465,
+   "user_visible_ttft_ms": 319
+  }
+ },
+ "normalized": {
+  "inputUncached": 13,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 4,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 8.53,
+  "full": 8.53,
+  "inverse": 50.51,
+  "inputTokens": 13,
+  "outputTokens": 4
+ },
+ "body": {
+  "id": "chatcmpl-ESEyfgsRQoBq04FcQMmafaaOAjd4n",
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": "OK",
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": null
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790399465,
+  "model": "gpt-6-sol-2026-09-22",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 13,
+   "total_tokens": 17,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 6,
+    "engine_ttft_ms": 222,
+    "engine_ttlt_ms": 251,
+    "pre_inference_ms": 113,
+    "service_tbt_ms": 8,
+    "service_ttft_ms": 432,
+    "service_ttlt_ms": 465,
+    "user_visible_ttft_ms": 319
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260922205203-d98100e7-prefill-r8-dp0-prefill"
+  }
+ }
+}

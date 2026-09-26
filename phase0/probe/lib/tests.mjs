@@ -10,7 +10,6 @@ import { outputOf, estimate } from './usage.mjs';
 import { summarizeUser } from './redact.mjs';
 import { readBudget } from './budget.mjs';
 import { cacheRule } from './billing.mjs';
-import { tokenizerRates } from './webrates.mjs';
 import { entryEstimate, impliedMultiplier, isOpenAIReasoning, MATRIX_CAPS, MATRIX_PREFIX } from './matrix.mjs';
 
 /** @typedef {import('./client.mjs').Exchange} Exchange */
@@ -34,6 +33,7 @@ import { entryEstimate, impliedMultiplier, isOpenAIReasoning, MATRIX_CAPS, MATRI
  * @property {{ call: (o: CallOptions) => Promise<Exchange>, token: () => Promise<string>, tokenExchange: () => Exchange | null }} client
  * @property {(o: { pollMs?: number, maxMs?: number }) => void} setSettle
  * @property {Record<string, any>} shared                 results earlier tests leave for later ones
+ * @property {(m: CatalogModel) => Promise<import('./rates.mjs').BilledRate | null>} billedRate  tokenizer rate, else catalog x1.3; cached
  */
 
 /**
@@ -930,7 +930,7 @@ export const TESTS = [
       const rates = {};
       for (const e of entries) {
         const id = e.model.id;
-        rates[id] = await billedRates(ctx, e.model);
+        rates[id] = await ctx.billedRate(e.model);
         for (const f of e.flavors) {
           const label = `${id}@${f}`;
           ctx.log(`  T22 ${label}`);
@@ -961,37 +961,6 @@ export const DEFAULT_ORDER = ['T0', 'T19', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', '
 const isOpenAI = (id) => /^(aws-bedrock-)?gpt-(?!oss)/i.test(id);
 /** @param {string} id @param {number} cap */
 const capCC = (id, cap) => (isOpenAI(id) ? { max_completion_tokens: cap } : { max_tokens: cap });
-
-/**
- * The model's billed rates from the free tokenizer conversion (PLAN §3.1); falls back to the
- * catalog rate × 1.3 (the usual markup) when the tokenizer is unreachable.
- * @param {Ctx} ctx @param {CatalogModel} model
- * @returns {Promise<{ prompt: number | null, completion: number | null, source: string }>}
- */
-async function billedRates(ctx, model) {
-  const tok = async (/** @type {Record<string, any>} */ body) => {
-    const ex = await ctx.call({ label: 'tokenizer', kind: 'server', path: '/server/tokenizer', body: { model: model.id, ...body } }, { record: false });
-    const v = Number(/** @type {any} */ (ex.body)?.response);
-    if (ex.error || !Number.isFinite(v)) throw new Error(ex.error ? ex.error.message : `HTTP ${ex.status}`);
-    return v;
-  };
-  try {
-    const big = filler(hash(model.id), 2000);
-    const est = 1000000;
-    const r = tokenizerRates({
-      tokens: await tok({ content: big }),
-      oneTokens: await tok({ content: 'x' }),
-      asBig: await tok({ content: big, convert_to_asksage: true }),
-      asOne: await tok({ content: 'x', convert_to_asksage: true }),
-      asCompletion: await tok({ content: 'x', convert_to_asksage: true, completion_estimate: est }),
-      completionEstimate: est,
-    });
-    return { prompt: r.prompt, completion: r.completion, source: 'tokenizer' };
-  } catch (e) {
-    const c = model.token_conversion_rate;
-    return { prompt: c?.prompt ? c.prompt * 1.3 : null, completion: c?.completion ? c.completion * 1.3 : null, source: `get-models x1.3 (tokenizer failed: ${/** @type {Error} */ (e).message.slice(0, 80)})` };
-  }
-}
 
 /**
  * Cache repeat for one model and flavor: A writes (or primes) the prefix, B repeats it. Reports
@@ -1115,8 +1084,16 @@ async function matrixLoop(ctx, id, f) {
     }
   } else if (f === 'CC') {
     const u = { role: 'user', content: ASK_WEATHER };
-    const body = { model: id, tools: [WEATHER_CC], ...capCC(id, cap), ...(isOpenAIReasoning(id) ? { reasoning_effort: 'medium' } : {}) };
-    const c1 = await cc(ctx, `${label} loop r1`, { ...body, messages: [u] });
+    /** @type {Record<string, any>} */
+    let body = { model: id, tools: [WEATHER_CC], ...capCC(id, cap), ...(isOpenAIReasoning(id) ? { reasoning_effort: 'medium' } : {}) };
+    let c1 = await cc(ctx, `${label} loop r1`, { ...body, messages: [u] });
+    // GPT-6 Sol rejects function tools with any reasoning on CC ("use /v1/responses or set
+    // reasoning_effort to 'none'", 2026-09-26); record that and retry the way the error suggests.
+    if (!okEx(c1) && /reasoning_effort/i.test(errText(c1))) {
+      row.reasoning = `tools with reasoning rejected on CC: ${errText(c1).slice(0, 120)}`;
+      body = { ...body, reasoning_effort: 'none' };
+      c1 = await cc(ctx, `${label} loop r1 reasoning_effort none`, { ...body, messages: [u] });
+    }
     const k1 = outputOf('CC', c1);
     const msg = /** @type {any} */ (c1.body)?.choices?.[0]?.message;
     const calls = msg?.tool_calls || [];

@@ -95,8 +95,12 @@ test('--matrix alone selects T0 and T22; with --tests it adds T22; planCost pric
   const { models } = pickModels(CATALOG);
   const matrix = resolveMatrix('gpt-5.6-sol@R', CATALOG).entries;
   const plan = planCost(selectTests(['T22'], [], true), models, { prefixTokens: 6000, ttlWaitS: 0, measure: true, matrix });
-  // 2 × (2540 in at 0.55 + 256 out at 2.75) + 3 × (400 in at 0.55 + 768 out at 2.75)
-  assert.equal(plan.total, Math.round(2 * (2540 * 0.55 + 256 * 2.75) + 3 * (400 * 0.55 + 768 * 2.75)));
+  // Catalog rates x1.3 when no tokenizer rate is known: 2 × (2540 in + 256 out) + 3 × (400 in + 768 out).
+  const cost = (/** @type {number} */ p, /** @type {number} */ c) => 2 * (2540 * p + 256 * c) + 3 * (400 * p + 768 * c);
+  assert.equal(plan.total, Math.round(cost(0.55 * 1.3, 2.75 * 1.3)));
+  // With a tokenizer rate it is used as is.
+  const billed = { 'gpt-5.6-sol': { prompt: 0.7, completion: 3, source: 'tokenizer' } };
+  assert.equal(planCost(selectTests(['T22'], [], true), models, { prefixTokens: 6000, ttlWaitS: 0, measure: true, matrix }, billed).total, Math.round(cost(0.7, 3)));
 });
 
 // ---------------------------------------------------------------- whole run against a fake server

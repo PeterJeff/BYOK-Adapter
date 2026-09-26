@@ -1,0 +1,188 @@
+{
+ "test": "T17",
+ "seq": 7,
+ "label": "R retention 24h",
+ "kind": "R",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T05:11:09.679Z",
+ "ms": 1204,
+ "ttftMs": 1204,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "store": false,
+   "input": "Reply with the single word OK.",
+   "max_output_tokens": 256,
+   "prompt_cache_key": "probe-0511-7d58e1-T17",
+   "prompt_cache_retention": "24h"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 13,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 5,
+  "output_tokens_details": {
+   "reasoning_tokens": 0
+  },
+  "total_tokens": 18
+ },
+ "normalized": {
+  "inputUncached": 13,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 5,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 9.76,
+  "full": 9.76,
+  "inverse": 51.31,
+  "inputTokens": 13,
+  "outputTokens": 5
+ },
+ "body": {
+  "id": "resp_012f22b17a4d653a016ab753ee018c8196b0a3a9d7376f3aa2",
+  "created_at": 1790399470,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "msg_012f22b17a4d653a016ab753eea87481968dea19f405166da5",
+    "content": [
+     {
+      "annotations": [],
+      "text": "OK",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790399470,
+  "conversation": null,
+  "max_output_tokens": 256,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": "probe-0511-7d58e1-T17",
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 13,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 18
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 808,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 2,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

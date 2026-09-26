@@ -89,7 +89,7 @@ The extension's job:
 ### 2.1 Cache pricing
 Cache prices are **multiples of the same model's prompt price**, so they do not depend on the absolute rate scale (§3.1). Measured on the test tenant, 2026-09-25 (`research/rate-sources-investigation.md` §3); provisional for other tenants until Phase 0c.
 - **Rule per host, from the response's own usage fields** (constants in code, not a per-model table):
-  - Claude through M (Vertex `google-claude-*`, Bedrock `aws-bedrock-claude-*`): read **0.1×**, 5-minute write **1.25×**, 1-hour write **2×**. Measured on Haiku 4.5, Sonnet 4.5 and Sonnet 4.6. The web app's table gives lower read multipliers for Fable 5.1 (0.025×) and Opus 5.5 (0.05×), not yet measured.
+  - Claude through M (Vertex `google-claude-*`, Bedrock `aws-bedrock-claude-*`): read **0.1×**, 5-minute write **1.25×**, 1-hour write **2×**. Measured on Haiku 4.5, Sonnet 4.5 and Sonnet 4.6. **Except Opus 5.5, which reads at 0.05× (measured 2026-09-26), as the web app's table says; the table's 0.025× for Fable 5.1 is not yet measured.** So the read multiplier is per model, not a host constant.
   - OpenAI on Azure through CC or R: read **0.1×** on every GPT tested, including GPT-4.1-nano and GPT-5.4-nano, which the web app's table lists with no cache rate; write **1.25×** only where the response reports `cache_write_tokens` (GPT-5.6/6), with no write charge otherwise.
   - No discount: Gemini through G (the implicit cache hits, `cachedContentTokenCount` is reported, the bill is full), Bedrock-hosted GPT-5.6, N.
   - Claude through CC: every request logged and billed 0 (an Ask Sage billing bug, §3.1). Never route Claude through CC.
@@ -108,7 +108,7 @@ Overridable per model in settings.
 | Family | Default | Fallback |
 |---|---|---|
 | Claude (all hosts) | **M**, always | none: CC gives no reliable Claude caching |
-| GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC. Note that CC drops reasoning between tool rounds, which hurts agentic quality. |
+| GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC, with no reasoning between tool rounds. On GPT-6 Sol CC rejects tools unless `reasoning_effort: "none"` (measured), so CC means no reasoning at all there. |
 | GPT-4.1, 5, 5.1, 5.2, o-series | R for reasoning models, CC for 4.1 | cache reads are discounted on both (measured on 4.1-nano and 5.4-nano) |
 | Bedrock-hosted GPT (`aws-bedrock-gpt-*`) | CC | no caching at all (measured): prefer the Azure-hosted model for agent work |
 | Gemini | **Not offered for agent mode yet:** on the id tested, G returned no thought signature and rejected round 2, and CC rejected the `-gov` id (T18, `research/live/FINDINGS.md`). Ask mode through G | none. No cache discount through G (measured), so it is expensive for long loops anyway |

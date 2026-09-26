@@ -34,6 +34,7 @@ import { estTokens } from './lib/filler.mjs';
 import { pickModels, parseModelOverride, ROLES } from './lib/models.mjs';
 import { TESTS, DEFAULT_ORDER, closest, usageFieldReport } from './lib/tests.mjs';
 import { PRESETS, resolveMatrix, entryEstimate } from './lib/matrix.mjs';
+import { catalogRate, fetchBilledRate } from './lib/rates.mjs';
 import { renderSummary } from './lib/summary.mjs';
 
 /** Pessimistic rate for a model the catalog does not price. */
@@ -127,13 +128,24 @@ export function selectTests(only, skip, measure) {
 }
 
 /**
- * Pessimistic plan: every input token at the prompt rate, every allowed output token at the
- * completion rate.
+ * The rate a model is billed at: the tokenizer's when known, else the catalog's x1.3 (the catalog
+ * rate alone under-estimated an input-heavy run by 26%, 2026-09-26), else a pessimistic default.
+ * @param {import('./lib/models.mjs').CatalogModel | null | undefined} model
+ * @param {Record<string, import('./lib/rates.mjs').BilledRate>} [billed]
+ */
+export function planRate(model, billed = {}) {
+  return (model && billed[model.id]) || catalogRate(model) || UNPRICED;
+}
+
+/**
+ * Pessimistic plan: every input token at the billed prompt rate, every allowed output token at
+ * the billed completion rate.
  * @param {import('./lib/tests.mjs').TestDef[]} tests
  * @param {Record<string, import('./lib/models.mjs').CatalogModel | null>} models
  * @param {{ prefixTokens: number, ttlWaitS: number, measure: boolean, dataset?: string }} options
+ * @param {Record<string, import('./lib/rates.mjs').BilledRate>} [billed] tokenizer rates by model id
  */
-export function planCost(tests, models, options) {
+export function planCost(tests, models, options, billed = {}) {
   const rows = [];
   let total = 0;
   for (const t of tests) {
@@ -145,8 +157,8 @@ export function planCost(tests, models, options) {
     let cost = 0;
     const est = t.estimate(models, /** @type {any} */ (options));
     for (const e of est) {
-      const rate = (e.model ? e.model.token_conversion_rate : e.role ? models[e.role]?.token_conversion_rate : null) || UNPRICED;
-      cost += e.inTokens * (rate.prompt || UNPRICED.prompt) + e.outTokens * (rate.completion || UNPRICED.completion);
+      const rate = planRate(e.model || (e.role ? models[e.role] : null), billed);
+      cost += e.inTokens * rate.prompt + e.outTokens * rate.completion;
     }
     total += cost;
     rows.push({ id: t.id, title: t.title, requests: est.length, cost: Math.round(cost), note: '' });
@@ -174,7 +186,7 @@ const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g
  * @param {{ args: ReturnType<typeof parseArgs>, apiKey: string, email: string, noAuthHeaders?: boolean,
  *   catalog: import('./lib/models.mjs').CatalogModel[], fetchImpl?: typeof fetch,
  *   sleep?: (ms: number) => Promise<void>, outDir: string, log?: (s: string) => void,
- *   runId?: string }} p
+ *   runId?: string, billedRates?: Record<string, import('./lib/rates.mjs').BilledRate> }} p
  */
 export async function runProbe(p) {
   const { args } = p;
@@ -187,6 +199,9 @@ export async function runProbe(p) {
   const redactor = createRedactor({ secrets: [p.apiKey, p.email], hosts: [args.api, args.api.replace(/^api\./, 'chat.'), args.api.replace(/^api\./, '')], alias: args.alias });
   const client = createClient({ apiBase: `https://${args.api}`, apiKey: p.apiKey, email: p.email, fetchImpl: p.fetchImpl, noAuthHeaders: p.noAuthHeaders });
   const rateOf = (/** @type {string | undefined} */ id) => (id ? p.catalog.find((m) => m.id === id)?.token_conversion_rate : null) || null;
+  /** Billed rates for the spend cap: tokenizer when fetched, else catalog x1.3. */
+  const billed = { ...(p.billedRates || {}) };
+  const billRate = (/** @type {string | undefined} */ id) => planRate(id ? p.catalog.find((m) => m.id === id) || { id, token_conversion_rate: null } : null, billed);
   mkdirSync(p.outDir, { recursive: true });
 
   /** @type {import('./lib/client.mjs').Exchange[]} */
@@ -246,14 +261,14 @@ export async function runProbe(p) {
   const call = async (o, extra = {}) => {
     const billable = ['M', 'CC', 'R', 'G', 'N'].includes(o.kind) && o.auth !== 'bad' && !/count_tokens$/.test(o.path);
     if (billable) {
-      const pre = preEstimate(o.body, rateOf(o.model));
+      const pre = preEstimate(o.body, billRate(o.model));
       if (spent + pre > args.maxSpend) throw new SpendCapError(`spend cap: estimated ${Math.round(spent)} spent + ${Math.round(pre)} for "${o.label}" exceeds --max-spend ${args.maxSpend}`);
     }
     const ex = await client.call(o);
     redactor.addSecret(client.currentToken());
     if (billable) {
-      const est = ex.norm ? estimate(ex.norm, rateOf(o.model) || UNPRICED) : null;
-      spent += est ? est.full : ex.error || ex.transportError ? 0 : preEstimate(o.body, rateOf(o.model));
+      const est = ex.norm ? estimate(ex.norm, billRate(o.model)) : null;
+      spent += est ? est.full : ex.error || ex.transportError ? 0 : preEstimate(o.body, billRate(o.model));
     }
     exchanges.push(ex);
     if (extra.transform) extra.transform(ex);
@@ -298,6 +313,17 @@ export async function runProbe(p) {
     client,
     setSettle: (o) => (settleOpts = { ...settleOpts, ...o }),
     shared,
+    async billedRate(model) {
+      if (billed[model.id]?.source === 'tokenizer') return billed[model.id];
+      try {
+        billed[model.id] = await fetchBilledRate((o) => client.call(o), model.id);
+      } catch (e) {
+        const c = catalogRate(model);
+        if (!c) return null;
+        billed[model.id] = { ...c, source: `${c.source} (tokenizer failed: ${redactor.text(/** @type {Error} */ (e).message).slice(0, 80)})` };
+      }
+      return billed[model.id];
+    },
   };
 
   const budgetBefore = args.measure ? await safeBudget(client) : null;
@@ -355,6 +381,7 @@ export async function runProbe(p) {
     options: { tests: tests.map((t) => t.id), matrix: matrix.map((e) => `${e.model.id}@${e.flavors.join('+')}`), maxSpend: args.maxSpend, prefixTokens: args.prefixTokens, ttlWaitS: args.ttlWaitS, measure: args.measure, allowNonCui: args.allowNonCui, dataset: args.dataset ? '<given>' : null },
     budget: args.measure ? { before: budgetBefore, after: budgetAfter } : null,
     spentEstimate: spent,
+    billedRates: billed,
     maxSpend: args.maxSpend,
     results,
     measurements,
@@ -435,6 +462,45 @@ function ask(prompt, hidden) {
   });
 }
 
+/**
+ * The key and email, read without printing either.
+ * @param {ReturnType<typeof parseArgs>} args
+ */
+function readCredentials(args) {
+  const keySource = (args.keyFile ? readFileSync(args.keyFile, 'utf8') : process.env.ASKSAGE_API_KEY || '').trim();
+  const emailSource = (args.email || process.env.ASKSAGE_EMAIL || '').trim();
+  return { keySource, emailSource, noAuthHeaders: args.noAuthHeaders || !keySource };
+}
+
+/**
+ * Billed rates for the models the plan will call, from the free tokenizer conversion when a key
+ * and email are available (it needs an access token); otherwise the catalog x1.3.
+ * @param {ReturnType<typeof parseArgs>} args
+ * @param {ReturnType<typeof readCredentials>} creds
+ * @param {import('./lib/tests.mjs').TestDef[]} tests
+ * @param {Record<string, import('./lib/models.mjs').CatalogModel | null>} models
+ * @param {import('./lib/matrix.mjs').MatrixEntry[]} matrix
+ */
+async function planRates(args, creds, tests, models, matrix) {
+  /** @type {Record<string, import('./lib/rates.mjs').BilledRate>} */
+  const rates = {};
+  const ids = new Set(matrix.map((e) => e.model.id));
+  for (const t of tests) for (const e of t.estimate(models, /** @type {any} */ ({ ...args, matrix }))) if (e.role && models[e.role]) ids.add(/** @type {any} */ (models[e.role]).id);
+  const fallback = 'Rates: catalog x1.3, the usual gap to the bill; some models are billed 0.65x to 3.6x their catalog rate. Set ASKSAGE_API_KEY and ASKSAGE_EMAIL to price the plan at billed rates (free tokenizer calls).';
+  if (creds.noAuthHeaders || !creds.emailSource || !ids.size) return { rates, note: fallback };
+  const client = createClient({ apiBase: `https://${args.api}`, apiKey: creds.keySource, email: creds.emailSource });
+  const failed = [];
+  for (const id of ids) {
+    try {
+      rates[id] = await fetchBilledRate((o) => client.call(o), id);
+    } catch {
+      failed.push(id);
+    }
+  }
+  const note = `Rates: billed rates from the tokenizer (free) for ${Object.keys(rates).length} model(s)${failed.length ? `; catalog x1.3 for ${failed.join(', ')}` : ''}.`;
+  return { rates, note };
+}
+
 /** Presets for --matrix, for --list-matrix. */
 export function describePresets() {
   const out = ['Presets for --matrix (combine with commas; add @M, @CC, @R, @G or @R+CC to a model id to pick flavors):', ''];
@@ -450,22 +516,30 @@ async function main() {
   const { models, notes } = pickModels(catalog, { overrides: args.models, allowNonCui: args.allowNonCui });
   const matrix = args.matrix ? resolveMatrix(args.matrix, catalog, { allowNonCui: args.allowNonCui }) : null;
   const tests = selectTests(args.tests, args.skip, args.measure);
-  const plan = planCost(tests, models, { ...args, matrix: matrix?.entries || [] });
+  const creds = readCredentials(args);
+  const billed = await planRates(args, creds, tests, models, matrix?.entries || []);
+  const plan = planCost(tests, models, { ...args, matrix: matrix?.entries || [] }, billed.rates);
 
   const out = [];
   out.push(`Ask Sage API probe, tenant <${args.alias}>`, '', 'Models:');
-  for (const [role, m] of Object.entries(models)) out.push(`  ${role.padEnd(9)} ${m ? `${m.id} (prompt ${m.token_conversion_rate?.prompt ?? '?'}, completion ${m.token_conversion_rate?.completion ?? '?'})` : '-'}   ${ROLES[role].purpose}`);
+  const shown = (/** @type {import('./lib/models.mjs').CatalogModel} */ m) => {
+    const r = planRate(m, billed.rates);
+    return `billed prompt ${+r.prompt.toFixed(4)}, completion ${+r.completion.toFixed(4)}${billed.rates[m.id] ? '' : ` (${r === UNPRICED ? 'unpriced' : 'catalog x1.3'})`}`;
+  };
+  for (const [role, m] of Object.entries(models)) out.push(`  ${role.padEnd(9)} ${m ? `${m.id} (${shown(m)})` : '-'}   ${ROLES[role].purpose}`);
   for (const nte of notes) out.push(`  note: ${nte}`);
   if (matrix) {
     out.push('', 'Model matrix (T22), pessimistic estimate per model:');
     for (const e of matrix.entries) {
-      const cost = entryEstimate(e, args).reduce((s, q) => s + q.inTokens * (e.model.token_conversion_rate?.prompt || UNPRICED.prompt) + q.outTokens * (e.model.token_conversion_rate?.completion || UNPRICED.completion), 0);
-      out.push(`  ${String(Math.round(cost)).padStart(8)}  ${e.model.id} @ ${e.flavors.join('+')}${e.preset ? `  (${e.preset})` : ''}`);
+      const r = planRate(e.model, billed.rates);
+      const cost = entryEstimate(e, args).reduce((s, q) => s + q.inTokens * r.prompt + q.outTokens * r.completion, 0);
+      out.push(`  ${String(Math.round(cost)).padStart(8)}  ${e.model.id} @ ${e.flavors.join('+')}${e.preset ? `  (${e.preset})` : ''}  [${shown(e.model)}]`);
     }
     for (const nte of matrix.notes) out.push(`  note: ${nte}`);
     if (!matrix.entries.length) throw new Error('--matrix resolved to no models; see the notes above (or --list-matrix)');
   }
-  out.push('', 'Tests (pessimistic Ask Sage token estimate):');
+  out.push('', billed.note);
+  out.push('', 'Tests (pessimistic Ask Sage token estimate: every allowed output token billed):');
   for (const r of plan.rows) out.push(`  ${r.id.padEnd(4)} ${String(r.cost).padStart(8)}  ${r.requests ? `${r.requests} billed request(s)` : ''} ${r.title}${r.note ? ` [${r.note}]` : ''}`);
   out.push(`  total ${plan.total} (cap --max-spend ${args.maxSpend})`);
   if (args.measure) out.push('', 'Budget measurement is on: each measured step polls the counters until they settle (slow; --no-measure to skip).', 'Do not use Ask Sage elsewhere (web app, other windows) while this runs; it would pollute the deltas.');
@@ -481,8 +555,7 @@ async function main() {
       return;
     }
   }
-  const keySource = (args.keyFile ? readFileSync(args.keyFile, 'utf8') : process.env.ASKSAGE_API_KEY || '').trim();
-  const noAuthHeaders = args.noAuthHeaders || !keySource;
+  const { keySource, noAuthHeaders } = creds;
   let apiKey = '';
   let email = '';
   if (noAuthHeaders) {
@@ -508,7 +581,7 @@ async function main() {
   const date = new Date().toISOString().slice(0, 10);
   const probeRunId = `${new Date().toISOString().slice(11, 16).replace(':', '')}-${randomBytes(3).toString('hex')}`;
   const outDir = resolve(args.out || join('research', 'live', args.alias, 'probe', `${date}-${probeRunId}`));
-  const { summaryPath, run } = await runProbe({ args, apiKey, email, noAuthHeaders, catalog, outDir, runId: probeRunId });
+  const { summaryPath, run } = await runProbe({ args, apiKey, email, noAuthHeaders, catalog, outDir, runId: probeRunId, billedRates: billed.rates });
   const counts = { pass: 0, fail: 0, other: 0 };
   for (const r of run.results) for (const c of r.checks) c.result === 'pass' ? counts.pass++ : c.result === 'fail' ? counts.fail++ : counts.other++;
   console.log(`\nDone. ${counts.pass} pass, ${counts.fail} fail, ${counts.other} informational. Estimated spend ${Math.round(run.spentEstimate)}.`);

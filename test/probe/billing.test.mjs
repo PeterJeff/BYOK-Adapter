@@ -20,6 +20,8 @@ test('cacheRule follows the measured hosts', () => {
   assert.deepEqual(cacheRule('M', 'google-claude-45-haiku'), { read: 0.1, write5m: 1.25, write1h: 2 });
   assert.ok(cacheRule('CC', 'gpt-4.1-nano'));
   assert.equal(cacheRule('CC', 'aws-bedrock-gpt-5-6-luna-gov'), null);
+  assert.equal(cacheRule('M', 'google-claude-opus-5-5')?.read, 0.05, 'measured 2026-09-26');
+  assert.equal(cacheRule('M', 'aws-bedrock-claude-fable-5-1-gov')?.read, 0.025, 'web table, unmeasured');
   assert.equal(cacheRule('G', 'google-gemini-2.5-flash'), null);
   assert.equal(cacheRule('N', 'x'), null);
 });

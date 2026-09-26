@@ -1,0 +1,474 @@
+{
+ "test": "T16",
+ "seq": 8,
+ "label": "far: 50 blocks, intermediate breakpoint kept",
+ "kind": "M",
+ "model": "google-claude-opus-5-5",
+ "resolvedModel": "claude-opus-5-5",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T05:23:13.559Z",
+ "ms": 1750,
+ "ttftMs": 1750,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-opus-5-5",
+   "tools": [
+    {
+     "name": "lookup",
+     "description": "Look a term up.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "q": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "q"
+      ]
+     }
+    }
+   ],
+   "max_tokens": 8,
+   "messages": [
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "<elided chars=25945 sha256=88c94778b8fb2a2d>",
+       "cache_control": {
+        "type": "ephemeral"
+       }
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_0",
+       "name": "lookup",
+       "input": {
+        "q": "term 0"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_1",
+       "name": "lookup",
+       "input": {
+        "q": "term 1"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_2",
+       "name": "lookup",
+       "input": {
+        "q": "term 2"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_3",
+       "name": "lookup",
+       "input": {
+        "q": "term 3"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_4",
+       "name": "lookup",
+       "input": {
+        "q": "term 4"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_5",
+       "name": "lookup",
+       "input": {
+        "q": "term 5"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_6",
+       "name": "lookup",
+       "input": {
+        "q": "term 6"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_7",
+       "name": "lookup",
+       "input": {
+        "q": "term 7"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_8",
+       "name": "lookup",
+       "input": {
+        "q": "term 8"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_9",
+       "name": "lookup",
+       "input": {
+        "q": "term 9"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_10",
+       "name": "lookup",
+       "input": {
+        "q": "term 10"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_11",
+       "name": "lookup",
+       "input": {
+        "q": "term 11"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_12",
+       "name": "lookup",
+       "input": {
+        "q": "term 12"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_13",
+       "name": "lookup",
+       "input": {
+        "q": "term 13"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_14",
+       "name": "lookup",
+       "input": {
+        "q": "term 14"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_15",
+       "name": "lookup",
+       "input": {
+        "q": "term 15"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_16",
+       "name": "lookup",
+       "input": {
+        "q": "term 16"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_17",
+       "name": "lookup",
+       "input": {
+        "q": "term 17"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_18",
+       "name": "lookup",
+       "input": {
+        "q": "term 18"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_19",
+       "name": "lookup",
+       "input": {
+        "q": "term 19"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_20",
+       "name": "lookup",
+       "input": {
+        "q": "term 20"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_21",
+       "name": "lookup",
+       "input": {
+        "q": "term 21"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_22",
+       "name": "lookup",
+       "input": {
+        "q": "term 22"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_23",
+       "name": "lookup",
+       "input": {
+        "q": "term 23"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16inter_24",
+       "name": "lookup",
+       "input": {
+        "q": "term 24"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_0",
+       "content": "result 0"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_1",
+       "content": "result 1"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_2",
+       "content": "result 2"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_3",
+       "content": "result 3"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_4",
+       "content": "result 4"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_5",
+       "content": "result 5"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_6",
+       "content": "result 6"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_7",
+       "content": "result 7"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_8",
+       "content": "result 8"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_9",
+       "content": "result 9"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_10",
+       "content": "result 10"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_11",
+       "content": "result 11"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_12",
+       "content": "result 12"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_13",
+       "content": "result 13"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_14",
+       "content": "result 14"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_15",
+       "content": "result 15"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_16",
+       "content": "result 16"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_17",
+       "content": "result 17"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_18",
+       "content": "result 18"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_19",
+       "content": "result 19"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_20",
+       "content": "result 20"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_21",
+       "content": "result 21"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_22",
+       "content": "result 22"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_23",
+       "content": "result 23"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16inter_24",
+       "content": "result 24",
+       "cache_control": {
+        "type": "ephemeral"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 1861
+  },
+  "cache_creation_input_tokens": 1861,
+  "cache_read_input_tokens": 6641,
+  "inference_geo": null,
+  "input_tokens": 2,
+  "output_tokens": 8,
+  "output_tokens_details": {
+   "thinking_tokens": 8
+  },
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 2,
+  "cacheRead": 6641,
+  "cacheWrite5m": 1861,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 8,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 667.12,
+  "full": 1879.68,
+  "inverse": 38661.82,
+  "inputTokens": 8504,
+  "outputTokens": 8
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRVVBBgKibSwmrxL7dBg",
+  "container": null,
+  "content": [
+   {
+    "signature": "CAQS4AQKEggSEAIYAjgBQgh0aGlua2luZxIMfnsgyY0Q9aR17d9zGgxjyxrHuKufZmsEIEciMGHoZrRAoBcvZX2i1+hrzWFh2yf6+9BYh8nlwLfdNpwLJJHkZkQSWxk4fGRR7GqiXSr7A9UEukQ84+7kOTcWigHPnplk9+loQ74xcg5sv/f1AIGtY/OdG7g1HE5ukYjvl9H63fytgkaaR4duMmEP78FpZWnDKCGKFD7eav1LE4up/eznEom3Htim0iWUWoxPtf6ghICSHv06bqlqbFsVj6tT17yGtF+AaLS54CpHvJRZeS3LgpWWdLPFg2ccTJeQWrVvJ1hfdvMXQlxorc8Hg1o7l2g9hnlX1/gaXOhfPQCYMQluUS/nc8irY/P/ZJjSnPqOuaISidqUG+obPo51J9W7qUknuZmSs+Q2glJypuT3pNOQJLm5hkHKzX0zTgTBtmQ+4owmhMGHk5ZCFueKQOeCJLPru7TY0S/xTS61GdoZjSLqd9Ur4ZkS42BxlkXcB2trMDl1Ji/Iug3+iPNuAtreiIVmVF1eOUns6M2AgqTyqybmN1fiOiV8QRGhmYHiesuI5944K9Z1dJ7I6wqi0gLuKiY92tgKuw30yNbS8E828FOA0F6y+zAJyFg2l+KANMbcOB31CREHaLxQcCX3lhe0nr+rj/EzND4apASYY6o1L+PymUelp3bbmW9NRNmCu9o1JMzg0BszNLyYJF+55blohqrjffxzDIngOKIVmdSL3g0Eh56TtU5pOcn/JXj0B17Sb89W85aANEUQ3ioL1maWh39veKhaUF16+kejFBgB",
+    "thinking": "",
+    "type": "thinking"
+   }
+  ],
+  "model": "claude-opus-5-5",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "max_tokens",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1861
+   },
+   "cache_creation_input_tokens": 1861,
+   "cache_read_input_tokens": 6641,
+   "inference_geo": null,
+   "input_tokens": 2,
+   "output_tokens": 8,
+   "output_tokens_details": {
+    "thinking_tokens": 8
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

@@ -1,0 +1,390 @@
+{
+ "alias": "manual-run-01",
+ "runId": "0516-f56b8c",
+ "startedAt": "2026-09-26T05:16:14.523Z",
+ "finishedAt": "2026-09-26T05:23:19.675Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-opus-5-5",
+   "token_conversion_rate": {
+    "completion": 1.1,
+    "prompt": 0.22
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T15",
+   "T16"
+  ],
+  "matrix": [],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 59623,
+   "left": 140377
+  },
+  "after": {
+   "used": 83907,
+   "left": 116093
+  }
+ },
+ "spentEstimate": 17991.600000000002,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T15",
+   "title": "1-hour and mixed cache TTLs, with and without the beta header",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "1h TTL accepted without beta header",
+     "result": "pass",
+     "detail": "1h writes 6237"
+    },
+    {
+     "name": "1h TTL accepted with beta header",
+     "result": "pass",
+     "detail": "1h writes 6270"
+    },
+    {
+     "name": "mixed TTL reports a 1h/5m split",
+     "result": "pass",
+     "detail": "{\"ephemeral_1h_input_tokens\":6276,\"ephemeral_5m_input_tokens\":6234}"
+    },
+    {
+     "name": "A billing (1h write, expected 2×)",
+     "result": "info",
+     "detail": "measured 3581 AS tokens; estimate discounted 2752.2, full 1380.06, inverse 28426.36; closest: discounted"
+    },
+    {
+     "name": "C billing (mixed write)",
+     "result": "info",
+     "detail": "measured 5832 AS tokens; estimate discounted 4483.27, full 2759.68, inverse 56930.91; closest: discounted"
+    },
+    {
+     "name": "1h entry survives the wait; 5m entry does not",
+     "result": "pass",
+     "detail": "read 6276, 1h written 6276, input 12524"
+    },
+    {
+     "name": "D billing",
+     "result": "info",
+     "detail": "measured 2333 AS tokens; estimate discounted 1859.9, full 2759.68, inverse 56930.91; closest: full"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 16,
+      "read": 0,
+      "write": 6237,
+      "w1h": 6237,
+      "out": 4,
+      "think": 0,
+      "served": "claude-opus-5-5",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 6237,
+       "ephemeral_5m_input_tokens": 0
+      }
+     },
+     "B": {
+      "ok": true,
+      "in": 16,
+      "read": 0,
+      "write": 6270,
+      "w1h": 6270,
+      "out": 4,
+      "think": 0,
+      "served": "claude-opus-5-5",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 6270,
+       "ephemeral_5m_input_tokens": 0
+      }
+     },
+     "C": {
+      "ok": true,
+      "in": 14,
+      "read": 0,
+      "write": 12510,
+      "w1h": 6276,
+      "out": 4,
+      "think": 0,
+      "served": "claude-opus-5-5",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 6276,
+       "ephemeral_5m_input_tokens": 6234
+      }
+     }
+    },
+    "afterWait": {
+     "waitedS": 360,
+     "D": {
+      "ok": true,
+      "in": 14,
+      "read": 6276,
+      "write": 6234,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-opus-5-5",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 6234
+      }
+     }
+    }
+   },
+   "exchanges": 4
+  },
+  {
+   "id": "T16",
+   "title": "Cache hit when a round adds more than 20 blocks (lookback window)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": ">20 blocks past the last breakpoint misses",
+     "result": "info",
+     "detail": "read 6633 (seed wrote 6633)"
+    },
+    {
+     "name": "keeping the older breakpoint recovers the hit",
+     "result": "pass",
+     "detail": "read 6641, seed wrote 6641"
+    },
+    {
+     "name": "within 20 blocks the lookback finds the seed",
+     "result": "pass",
+     "detail": "read 6622, seed wrote 6622"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "seedFar": {
+      "ok": true,
+      "in": 4,
+      "read": 0,
+      "write": 6633,
+      "w1h": 0,
+      "out": 0,
+      "think": 8,
+      "served": "claude-opus-5-5"
+     },
+     "far": {
+      "ok": true,
+      "in": 2,
+      "read": 6633,
+      "write": 1861,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": "claude-opus-5-5"
+     },
+     "seedInter": {
+      "ok": true,
+      "in": 4,
+      "read": 0,
+      "write": 6641,
+      "w1h": 0,
+      "out": 0,
+      "think": 8,
+      "served": "claude-opus-5-5"
+     },
+     "inter": {
+      "ok": true,
+      "in": 2,
+      "read": 6641,
+      "write": 1861,
+      "w1h": 0,
+      "out": 0,
+      "think": 8,
+      "served": "claude-opus-5-5"
+     },
+     "seedNear": {
+      "ok": true,
+      "in": 4,
+      "read": 0,
+      "write": 6622,
+      "w1h": 0,
+      "out": 0,
+      "think": 8,
+      "served": "claude-opus-5-5"
+     },
+     "near": {
+      "ok": true,
+      "in": 2,
+      "read": 6622,
+      "write": 381,
+      "w1h": 0,
+      "out": 0,
+      "think": 8,
+      "served": "claude-opus-5-5"
+     }
+    }
+   },
+   "exchanges": 6
+  }
+ ],
+ "measurements": [
+  {
+   "test": "T15",
+   "label": "T15 A 1h, no beta header",
+   "usedDelta": 3581,
+   "leftDelta": 3581,
+   "settled": true,
+   "firstMoveMs": 5634,
+   "est": {
+    "discounted": 2752.2,
+    "full": 1380.06,
+    "inverse": 28426.36
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5634,
+     "used": 63204,
+     "left": 136796
+    },
+    {
+     "tMs": 11116,
+     "used": 63204,
+     "left": 136796
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 B 1h, beta header",
+   "usedDelta": 3599,
+   "leftDelta": 3599,
+   "settled": true,
+   "firstMoveMs": 5483,
+   "est": {
+    "discounted": 2766.72,
+    "full": 1387.32,
+    "inverse": 28576.36
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5483,
+     "used": 66803,
+     "left": 133197
+    },
+    {
+     "tMs": 10969,
+     "used": 66803,
+     "left": 133197
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 C mixed 1h + 5m",
+   "usedDelta": 5832,
+   "leftDelta": 5832,
+   "settled": true,
+   "firstMoveMs": 5553,
+   "est": {
+    "discounted": 4483.27,
+    "full": 2759.68,
+    "inverse": 56930.91
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5553,
+     "used": 72635,
+     "left": 127365
+    },
+    {
+     "tMs": 11083,
+     "used": 72635,
+     "left": 127365
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 D after wait",
+   "usedDelta": 2333,
+   "leftDelta": 2333,
+   "settled": true,
+   "firstMoveMs": 5490,
+   "est": {
+    "discounted": 1859.9,
+    "full": 2759.68,
+    "inverse": 56930.91
+   },
+   "closest": "full",
+   "polls": [
+    {
+     "tMs": 5490,
+     "used": 74968,
+     "left": 125032
+    },
+    {
+     "tMs": 11047,
+     "used": 74968,
+     "left": 125032
+    }
+   ]
+  }
+ ],
+ "usageFields": {
+  "M non-stream": {
+   "count": 10,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "inference_geo",
+    "input_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.thinking_tokens",
+    "server_tool_use",
+    "service_tier"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-claude-opus-5-5",
+   "served": "claude-opus-5-5",
+   "count": 10
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}
