@@ -6,8 +6,9 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 
 - **Plain JavaScript only.** CommonJS (`require`/`module.exports`) for extension code, `// @ts-check` at the top of every file, types in JSDoc. No TypeScript sources, no transpiling, no bundling, no build step.
 - **No npm, no dependencies.** Only Node built-ins and the `vscode` API. Never add a `package.json` dependency, `devDependency` or lockfile, and never vendor third-party code (and never copy from `asksageclient`, which is proprietary).
-- **Scripts run on VS Code's bundled Node** (`ELECTRON_RUN_AS_NODE=1 <Code executable> script.mjs`), so they must work on the Node version inside current VS Code (Node 22) and on Windows paths. Standalone scripts are ES modules (`.mjs`).
+- **Scripts run on VS Code's bundled Node** (`ELECTRON_RUN_AS_NODE=1 <Code executable> script.mjs`), so they must work on the Node inside current VS Code (Node 22 or newer; VS Code 1.139 bundles Node 24.20) and on Windows paths. Standalone scripts are ES modules (`.mjs`).
 - **Manual loading.** The extension is side-loaded: a `.vsix` built by `scripts/pack-vsix.mjs`, an unpacked folder, or `--extensionDevelopmentPath`. Nothing may assume the Marketplace.
+- **No Copilot sign-in, ever.** The target machine and the dev machine are never signed in to GitHub Copilot. The extension relies on VS Code ≥1.122 letting extension-provided models work with no GitHub account or Copilot plan, so never design or test around a signed-in Copilot account, and never require one.
 - **Stable VS Code API only.** Proposed APIs and Copilot internals (`LanguageModelThinkingPart`, `modelOptions._conversationId`, the `usage` data part) are feature-detected and must degrade silently.
 
 ## Security rules (PLAN.md §6)
@@ -25,8 +26,10 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - `scripts/run-tests.mjs`: runs every `test/**/*.test.{js,mjs}` with `node:test`.
 - `test/helpers/vscode-stub.js`: minimal `vscode` module for driving extension code under `node:test`.
 - `phase0/probe/catalog-audit.mjs`: public, unauthenticated model-catalog audit for an instance (pure checks in `phase0/probe/lib/catalog.mjs`).
+- `phase0/probe/rate-sources.mjs` (free): compares `get-models` rates, the web app's table and the tokenizer's billed conversion. `phase0/probe/billing-probe.mjs` (spends tokens): exact per-request bills from the prompt log. Findings: `research/rate-sources-investigation.md`.
 - `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T21 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first. With no key set (or `--no-auth-headers`), it sends no client credential and assumes a gateway in front of `--api` authenticates requests instead.
 - `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
+- `TODO.md`: the open-work list. `research/handoff/`: briefing notes for other Claude instances (for example the cloud session's rates investigation).
 - `requirements/REQUIREMENTS.md`: expectations (hard constraints, security rules, LIVE-TEST assumptions, phase acceptance criteria) vs. what's actually built and verified. Update it in the same commit that changes a status.
 
 ## Commands

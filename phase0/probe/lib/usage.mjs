@@ -104,20 +104,27 @@ export function normalize(flavor, u) {
     z.thinkingUnknown = true;
     return z;
   }
+  // Claude served through CC answers with Anthropic-shaped usage (measured 2026-09-25).
+  if (flavor === 'CC' && u.prompt_tokens === undefined && u.input_tokens !== undefined) return normalize('M', u);
   if (flavor === 'CC') {
     const cached = n(u.prompt_tokens_details?.cached_tokens);
+    // GPT-5.6/6 report cache writes separately; Ask Sage bills them at 1.25x (measured 2026-09-25).
+    const written = n(u.prompt_tokens_details?.cache_write_tokens);
     const reasoning = n(u.completion_tokens_details?.reasoning_tokens);
     z.cacheRead = cached;
-    z.inputUncached = Math.max(0, n(u.prompt_tokens) - cached);
+    z.cacheWriteUnsplit = written;
+    z.inputUncached = Math.max(0, n(u.prompt_tokens) - cached - written);
     z.thinking = reasoning;
     z.visibleOutput = Math.max(0, n(u.completion_tokens) - reasoning);
     return z;
   }
   if (flavor === 'R') {
     const cached = n(u.input_tokens_details?.cached_tokens);
+    const written = n(u.input_tokens_details?.cache_write_tokens);
     const reasoning = n(u.output_tokens_details?.reasoning_tokens);
     z.cacheRead = cached;
-    z.inputUncached = Math.max(0, n(u.input_tokens) - cached);
+    z.cacheWriteUnsplit = written;
+    z.inputUncached = Math.max(0, n(u.input_tokens) - cached - written);
     z.thinking = reasoning;
     z.visibleOutput = Math.max(0, n(u.output_tokens) - reasoning);
     return z;

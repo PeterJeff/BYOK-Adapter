@@ -13,3 +13,4 @@ research/live/**/raw/
 # Editor and OS noise
 .DS_Store
 Thumbs.db
+.claude/settings.json
