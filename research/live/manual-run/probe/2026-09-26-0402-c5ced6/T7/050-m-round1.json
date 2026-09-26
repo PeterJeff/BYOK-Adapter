@@ -1,0 +1,140 @@
+{
+ "test": "T7",
+ "seq": 50,
+ "label": "M round1",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": "claude-haiku-4-5-20251001",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T04:04:49.187Z",
+ "ms": 1492,
+ "ttftMs": 1492,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "max_tokens": 2048,
+   "thinking": {
+    "type": "enabled",
+    "budget_tokens": 1024
+   },
+   "tools": [
+    {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "inference_geo": null,
+  "input_tokens": 606,
+  "output_tokens": 107,
+  "output_tokens_details": {
+   "thinking_tokens": 51
+  },
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 606,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 107,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 62.76,
+  "full": 62.76,
+  "inverse": 11407.27,
+  "inputTokens": 606,
+  "outputTokens": 107
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRPWPyDH9VnB1rN8FMqL",
+  "container": null,
+  "content": [
+   {
+    "signature": "ErkDCoMBCBIQAhgCKkAJJjqH3biSQDHBb7SUkM94xpxvn67Y2mCwRGgL0KCwdTHFebGHB0xABX3nfP8bsF17QUGSHkavxWTnT730w89JMhljbGF1ZGUtaGFpa3UtNC01LTIwMjUxMDAxOABCCHRoaW5raW5nWgs3NDIyMTQ5ODUxMagB4ojd1QYSDK+0NgZ6tUkNZnij7xoMpmbZALEzlrVz8GW4IjBCwDFIvVN4pKYiJLg6eV2RKrtnCEk+9Bvkbk116YER+urmJ6VOwfD/obzJ9zCASSIq4gG/Jiw47N2L8CHHOslxVfnt8fkfZDUmqEq0lSr7k9qNrorQmFqQ31HCN/pWGjI+68tUXaHnR5aqAKPKwsxumGfL6/OIiB9H0Qk/bjGzhFg9fiGWG5cqEzKuAUyhrUS2/eojVo6YhJDE7bO740yheSk36XaHIr22XTtzZ7oh7fDiR3knlbZ1WPq7xR6omKeXfJwQ02IxXZSE6xuplCWaGixzedvflcjhy9MjcbUK+EwjgAfrXzUYbLlZQZgL7ffu1dCpJaFe9zWRu/scKIlILRujo+QLaoTZKivOKTTROfdrSVX2GAE=",
+    "thinking": "The user is asking for the weather in Paris and specifically instructing me to use the get_weather tool and not to guess. I have all the required parameters - the city is \"Paris\". Let me make the function call.",
+    "type": "thinking"
+   },
+   {
+    "id": "toolu_vrtx_01TwKmk52F2McewpWGrjWsRf",
+    "input": {
+     "city": "Paris"
+    },
+    "name": "get_weather",
+    "type": "tool_use"
+   }
+  ],
+  "model": "claude-haiku-4-5-20251001",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 606,
+   "output_tokens": 107,
+   "output_tokens_details": {
+    "thinking_tokens": 51
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

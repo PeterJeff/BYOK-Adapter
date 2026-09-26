@@ -111,7 +111,7 @@ Overridable per model in settings.
 | GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC. Note that CC drops reasoning between tool rounds, which hurts agentic quality. |
 | GPT-4.1, 5, 5.1, 5.2, o-series | R for reasoning models, CC for 4.1 | cache reads are discounted on both (measured on 4.1-nano and 5.4-nano) |
 | Bedrock-hosted GPT (`aws-bedrock-gpt-*`) | CC | no caching at all (measured): prefer the Azure-hosted model for agent work |
-| Gemini | CC (Ask Sage's own choice), only if T18 shows thought signatures survive the CC shim | G. No cache discount on either path (measured on G), so it is expensive for long agent loops |
+| Gemini | **Not offered for agent mode yet:** on the id tested, G returned no thought signature and rejected round 2, and CC rejected the `-gov` id (T18, `research/live/FINDINGS.md`). Ask mode through G | none. No cache discount through G (measured), so it is expensive for long loops anyway |
 | Everything else (partner-hosted, Grok, DeepSeek, Mistral, Llama) | CC | – |
 | Datasets, personas or live search wanted | **N**, as a separate opt-in "Ask Sage (datasets)" model variant in Ask mode only | – |
 
@@ -154,7 +154,7 @@ The APIs count tokens differently. A pure `normalize/` module converts every fla
 | G | `promptTokenCount` **includes** `cachedContentTokenCount` | `cachedContentTokenCount` | `candidatesTokenCount` excludes `thoughtsTokenCount` (separate) |
 | N | best-effort from response fields or `/tokenizer` | none | best-effort |
 
-**Claude thinking.** Claude reports no separate thinking count. If the rate table gives Claude a thinking rate different from its completion rate, the extension cannot compute it from usage. Default: price all Claude output at the completion rate, record `thinkingUnknown: true`, and let reconciliation (§3.6) measure the error.
+**Claude thinking.** Vertex Claude reports `output_tokens_details.thinking_tokens` inside `output_tokens` (T7, `research/live/FINDINGS.md`); use it when present. Other hosts may report no separate thinking count. If the rate table gives Claude a thinking rate different from its completion rate, the extension cannot compute it from usage. Default: price all Claude output at the completion rate, record `thinkingUnknown: true`, and let reconciliation (§3.6) measure the error.
 
 ### 3.3 Budget signals (verified endpoints)
 
@@ -193,7 +193,7 @@ Usage is also reported to Copilot through a `LanguageModelDataPart` with MIME ty
 - **Budget mode (experimental).** Advertise a smaller `maxInputTokens` (32k, 64k, 128k or the model maximum). Copilot compacts history at about 80% of the window. This is **not assumed to save money**: compaction is itself a model call, and the rewritten history forces a cold cache turn. A small window means frequent compactions. Phase 3 measures it against normal mode before it is recommended.
 - **Output caps.** Always send an explicit maximum output size. Never rely on server defaults.
 - **Retries.** Never auto-retry after any output has streamed (it double-bills). Retry once only for auth refresh or transport failure before the first token. Detect errors inside SSE streams as well as in HTTP 200 bodies.
-- **Cancellation.** Billing of cancelled streams is **LIVE-TEST** (T9). Until known, the ledger estimates cost from input plus streamed output and marks the record.
+- **Cancellation (T9, measured).** A cancelled stream is billed for somewhat more output than had arrived (the model runs on briefly upstream), far less than the cap. The ledger estimates from input plus streamed output, marks the record, and takes the exact bill from the prompt log (§3.6).
 - **Burn-rate forecast** in the status bar tooltip, e.g. "at this week's rate you run out on the 19th".
 
 ### 3.6 Checking the numbers against real billing
@@ -236,7 +236,7 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
   Never place a breakpoint on thinking blocks; put it on the `tool_result` block.
 - **Mixed TTLs.** Human pauses between user turns often exceed 5 minutes. When T15 confirms support, breakpoints 1–2 (the stable tools+system prefix) use the 1-hour TTL and breakpoints 3–4 use 5 minutes. Longer TTLs must come before shorter ones. Test with and without the `extended-cache-ttl-2025-04-11` beta header, since hosts may differ. A setting chooses 5m-only, mixed, or 1h-only; the ledger's TTL-expiry attribution shows which pays off.
 - **Minimum length.** Each model has a minimum cacheable prefix (roughly 1–4k tokens). Breakpoints below it silently don't cache. The placer skips them, and the health check reports them.
-- **Lookback window.** A cache lookup only checks about 20 content blocks back from a breakpoint. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.
+- **Lookback window.** Anthropic documents that a cache lookup only checks about 20 content blocks back from a breakpoint, but T16 read the whole cached prefix from 50 blocks past it (Vertex Haiku 4.5, `research/live/FINDINGS.md`). The rule below is kept as cheap insurance, not as a correctness requirement. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.
 - **Thinking config is pinned per conversation.** Turning thinking on or off, or changing its budget or effort, invalidates the message cache. The provider keeps the first request's thinking config for the life of the conversation unless the user explicitly changes it (logged via `thinkingConfigHash`).
 
 ### 4.2 CC and R
@@ -328,7 +328,7 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 - **`#asksageCodebase`.** A local vector index built with `/server/openai/v1/embeddings`, stored on disk per workspace and searched with cosine similarity in plain JS.
   - Rough cost for a 50k-line C++ repo: about 0.6M model tokens to build (times the embedding rate), then about 10–40k a day to re-embed changes. The index is about 12 MB, and a search takes under 10 ms.
   - Only text chunks go to the embeddings endpoint, subject to the workspace policy (§6).
-  - Which balance embeddings charge (inference or training) is **LIVE-TEST** (T20).
+  - Embeddings charge the **training** balance, not inference (T20: `text-embedding-3-small`, not in the catalog, 1,536 dimensions).
 - **`#asksageDocs`.** Query an existing Ask Sage dataset. No documented endpoint returns search results on their own, so this runs `/query` with `dataset`, a cheap model and a minimal reply, and parses the `references` string (about 2–7k inference tokens per search). Two leads for results-only search, the `/get <text>` chat command and `/get-dataset-results`, are **LIVE-TEST** (T21).
 - **Datasets economics.** Training tokens are charged once, at ingestion, from their own monthly balance. Retrieval costs inference tokens, because the retrieved chunks enter the prompt. There is no update operation: a changed file must be deleted and re-uploaded, which charges the full file again. Datasets suit stable docs, not a fast-changing codebase.
 

@@ -1,0 +1,65 @@
+{
+ "test": "T10",
+ "seq": 69,
+ "label": "unknown-model-stream",
+ "kind": "M",
+ "model": "probe-no-such-model",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": true,
+ "startedAt": "2026-09-26T04:05:39.365Z",
+ "ms": 209,
+ "ttftMs": 208,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "probe-no-such-model",
+   "max_tokens": 8,
+   "stream": true,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "text/event-stream; charset=utf-8",
+ "headers": {
+  "content-type": "text/event-stream; charset=utf-8"
+ },
+ "error": {
+  "shape": "anthropic-error (in stream)",
+  "status": "invalid_request_error",
+  "message": "Unsupported model: probe-no-such-model"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "events": [
+  {
+   "event": "error",
+   "data": {
+    "type": "error",
+    "error": {
+     "type": "invalid_request_error",
+     "message": "Unsupported model: probe-no-such-model"
+    }
+   }
+  }
+ ]
+}

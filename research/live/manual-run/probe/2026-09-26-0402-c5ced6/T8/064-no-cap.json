@@ -1,0 +1,145 @@
+{
+ "test": "T8",
+ "seq": 64,
+ "label": "no-cap",
+ "kind": "CC",
+ "model": "gpt-5.4-nano",
+ "resolvedModel": "gpt-5.4-nano-2026-03-17",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T04:05:03.412Z",
+ "ms": 20741,
+ "ttftMs": 20741,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 1500 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 2720,
+  "prompt_tokens": 23,
+  "total_tokens": 2743,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 0,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": null,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 7,
+   "engine_ttft_ms": 22,
+   "engine_ttlt_ms": 19734,
+   "pre_inference_ms": 160,
+   "service_tbt_ms": 7,
+   "service_ttft_ms": 255,
+   "service_ttlt_ms": 19963,
+   "user_visible_ttft_ms": 94
+  }
+ },
+ "normalized": {
+  "inputUncached": 23,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 2720,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 187.25,
+  "full": 187.25,
+  "inverse": 41654.55,
+  "inputTokens": 23,
+  "outputTokens": 2720
+ },
+ "body": {
+  "id": "chatcmpl-ESDwlqIPGYPVbIq4WshTVfJUjXjDR",
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": "Rivers shape the surface of the Earth in ways that are both visible and profound. They are living systems driven by gravity and powered by water, yet their forms are also records of climate, geology, vegetation, and time. From the moment rain seeps into the ground or snowmelt gathers in a mountain hollow, a river begins a journey that may travel hundreds or thousands of kilometers before it reaches the sea. Along the way it carves valleys, carries sediment, builds fertile floodplains, and eventually spreads across coastal lowlands in sprawling deltas. Understanding rivers—how they start, how they flow, and how they end—reveals not only the mechanics of moving water but also the long-term history of landscapes.\n\n## Sources: Where Rivers Begin\n\nEvery river has a source, though the “source” is not always a single place. Often it is a region where water begins to concentrate and flow downhill. The origin of river water depends on climate and local conditions. The most common sources are precipitation, groundwater, glaciers, and seasonal snow.\n\n### Precipitation and Surface Runoff\nIn many regions, rainfall provides the initial water. When rain falls on the land, some infiltrates into the soil, some evaporates, and some becomes surface runoff. In wetter climates or during intense storms, runoff gathers in small channels—streams that merge into larger ones. These tiny beginnings may be intermittent, flowing only after storms, yet they can still be crucial feeders for a river system. As channels converge, water becomes more continuous and the river gains its characteristic flow.\n\n### Groundwater Springs\nIn other places, rivers rise from springs where groundwater surfaces. Groundwater forms when rain or melting snow infiltrates the earth and fills porous layers of rock. Pressure forces that water toward the surface, often where the land intersects water-bearing strata. A spring can supply a river with relatively steady flow, even when rainfall is low. Rivers fed by springs often have clearer, more constant discharge and may support rich ecosystems due to stable temperatures and chemistry.\n\n### Snowmelt and Seasonal Ice\nIn mountainous regions, snow is a major source. Winter snowfall accumulates in high elevations and then melts gradually. This melting process can create strong seasonal patterns: rivers swell in spring and early summer and shrink later in the year. Because the release of snowmelt depends on temperature, these rivers are tightly linked to climate cycles. In years with heavy snow or cool springs, flow may remain high longer; in warmer winters, the timing and magnitude can shift.\n\n### Glacial Meltwater\nSome rivers begin with glaciers. Glaciers store water as ice and release it through melt during warmer seasons. Glacial-fed rivers can have cold temperatures and high sediment loads because moving ice grinds rock into fine particles. Even as glaciers shrink over time in many parts of the world, meltwater still contributes to rivers, though long-term changes may alter flow patterns and reduce summer supplies once glaciers retreat.\n\n### Headwaters and Drainage Networks\nMost rivers are not born from a single outlet; they form through a branching network. Headwaters—small streams at the upper reaches—collect water from a catchment area. As water flows downhill, small tributaries join it, increasing both volume and drainage area. The layout of this network is influenced by the slope of the land, rock structure, and vegetation. A river’s ultimate shape reflects the way its watershed gathers water and channels it toward the main trunk.\n\n## Courses: How Rivers Move and Transform Landscapes\n\nOnce a river begins, it does not simply travel in a straight line. It meanders, braids, splits, joins, and changes direction as it erodes the land and deposits sediment. The course of a river can be described in broad stages, often referred to in terms of upper, middle, and lower courses. These stages are not fixed everywhere, but they offer a use<truncated chars=14013>",
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": null
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790395503,
+  "model": "gpt-5.4-nano-2026-03-17",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 2720,
+   "prompt_tokens": 23,
+   "total_tokens": 2743,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 7,
+    "engine_ttft_ms": 22,
+    "engine_ttlt_ms": 19734,
+    "pre_inference_ms": 160,
+    "service_tbt_ms": 7,
+    "service_ttft_ms": 255,
+    "service_ttlt_ms": 19963,
+    "user_visible_ttft_ms": 94
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260920154030-61e5201a-default-r0-dp0-default"
+  }
+ }
+}

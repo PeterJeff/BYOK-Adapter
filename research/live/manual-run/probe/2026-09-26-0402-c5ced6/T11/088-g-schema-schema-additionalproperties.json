@@ -1,0 +1,86 @@
+{
+ "test": "T11",
+ "seq": 88,
+ "label": "G schema $schema+additionalProperties",
+ "kind": "G",
+ "model": "google-gemini-3.1-flash-lite-gov",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/google/v1beta/models/google-gemini-3.1-flash-lite-gov:generateContent",
+ "stream": false,
+ "startedAt": "2026-09-26T04:05:50.964Z",
+ "ms": 258,
+ "ttftMs": 258,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-goog-api-key",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-goog-api-key"
+  ],
+  "headers": {},
+  "body": {
+   "contents": [
+    {
+     "role": "user",
+     "parts": [
+      {
+       "text": "Reply with the single word OK."
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "functionDeclarations": [
+      {
+       "name": "probe_schema",
+       "description": "Schema probe.",
+       "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+         "q": {
+          "type": "string"
+         }
+        },
+        "additionalProperties": false
+       }
+      }
+     ]
+    }
+   ],
+   "toolConfig": {
+    "functionCallingConfig": {
+     "mode": "NONE"
+    }
+   },
+   "generationConfig": {
+    "maxOutputTokens": 256
+   }
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "gemini-error",
+  "status": 400,
+  "message": "Invalid request"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "code": 400,
+   "message": "Invalid request",
+   "status": "INVALID_ARGUMENT"
+  }
+ }
+}

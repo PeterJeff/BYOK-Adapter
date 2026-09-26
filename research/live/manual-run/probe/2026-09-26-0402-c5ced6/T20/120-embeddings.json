@@ -1,0 +1,74 @@
+{
+ "test": "T20",
+ "seq": 120,
+ "label": "embeddings",
+ "kind": "CC",
+ "model": "text-embedding-3-small",
+ "resolvedModel": "text-embedding-3-small",
+ "method": "POST",
+ "path": "/server/openai/v1/embeddings",
+ "stream": false,
+ "startedAt": "2026-09-26T04:12:39.902Z",
+ "ms": 1086,
+ "ttftMs": 1085,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "text-embedding-3-small",
+   "input": [
+    "probe embedding text one",
+    "probe embedding text two"
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "prompt_tokens": 8,
+  "total_tokens": 8
+ },
+ "normalized": {
+  "inputUncached": 8,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": null,
+ "body": {
+  "data": [
+   {
+    "embedding": "<1536 floats>",
+    "index": 0,
+    "object": "embedding"
+   },
+   {
+    "embedding": "<1536 floats>",
+    "index": 1,
+    "object": "embedding"
+   }
+  ],
+  "model": "text-embedding-3-small",
+  "object": "list",
+  "usage": {
+   "prompt_tokens": 8,
+   "total_tokens": 8
+  }
+ }
+}

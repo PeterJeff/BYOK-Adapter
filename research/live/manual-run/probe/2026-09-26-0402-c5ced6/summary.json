@@ -1,0 +1,2421 @@
+{
+ "alias": "manual-run",
+ "runId": "0402-c5ced6",
+ "startedAt": "2026-09-26T04:02:29.220Z",
+ "finishedAt": "2026-09-26T04:13:18.821Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T0",
+   "T19",
+   "T1",
+   "T2",
+   "T3",
+   "T4",
+   "T5",
+   "T6",
+   "T7",
+   "T8",
+   "T9",
+   "T10",
+   "T11",
+   "T12",
+   "T14",
+   "T15",
+   "T16",
+   "T17",
+   "T18",
+   "T20"
+  ],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 45330,
+   "left": 154670
+  },
+  "after": {
+   "used": 53880,
+   "left": 146120
+  }
+ },
+ "spentEstimate": 9557.175,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T0",
+   "title": "Auth and budget endpoints (free)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "bad auth is HTTP 200 + error envelope on every flavor",
+     "result": "pass",
+     "detail": "{\"bad-auth M\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth CC\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth R\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth G\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":4"
+    },
+    {
+     "name": "rate unit (tokenizer vs get-models prompt rate)",
+     "result": "info",
+     "detail": "ratio 0.07288317256162916 matches neither 0.055 nor its inverse"
+    }
+   ],
+   "observations": {
+    "accessToken": "<redacted:object>",
+    "budgetEndpoints": {
+     "used GET (jwt)": {
+      "response": 45330,
+      "type": "number",
+      "status": 200
+     },
+     "used POST {} (jwt)": {
+      "response": 45330,
+      "type": "number",
+      "status": 200
+     },
+     "used POST app_name=byok-adapter-probe (jwt)": {
+      "response": 45330,
+      "type": "number",
+      "status": 200
+     },
+     "left-with-org (jwt)": {
+      "response": 154670,
+      "type": "number",
+      "status": 200
+     },
+     "teach used GET (jwt)": {
+      "response": 0,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as x-access-tokens)": {
+      "response": 45330,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as bearer)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     }
+    },
+    "fullUser": {
+     "summary": {
+      "bot_settings": "string(empty)",
+      "cac_auth": "boolean",
+      "cac_found": "boolean",
+      "company": "string",
+      "country": "string",
+      "custom_intro_prompt": {
+       "type": "string(empty)",
+       "chars": 0
+      },
+      "datasets_with_permissions": "array(12)",
+      "email": "<redacted>",
+      "enabled_models": "null",
+      "first_name": "<redacted>",
+      "force_models": [],
+      "force_post_check": "null",
+      "id": "number",
+      "is_cui_mfa_authorized": false,
+      "last_name": "<redacted>",
+      "max_tokens": 200000,
+      "max_train_tokens": 200000,
+      "mfa_auth": "boolean",
+      "mfa_required": "boolean",
+      "mfa_secret": "string",
+      "new_password_required": "boolean",
+      "organization_id": "<redacted>",
+      "paid": true,
+      "persona_source_list": "array(0)",
+      "phone": "<redacted>",
+      "plan_type": "string",
+      "plugin_source_list": "array(0)",
+      "role": "developer",
+      "stripe_customer_id": "string",
+      "token_scopes": "null",
+      "type": "string"
+     }
+    },
+    "authenticatedCatalog": {
+     "count": 105,
+     "publicCount": 105,
+     "onlyAuthenticated": [],
+     "onlyPublic": []
+    },
+    "badAuth": {
+     "bad-auth M": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth CC": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth R": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth G": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth server": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     }
+    },
+    "countTokens": {
+     "key": {
+      "input_tokens": 14
+     },
+     "jwt": {
+      "input_tokens": 14
+     }
+    },
+    "tokenizer": {
+     "model": "google-claude-45-haiku",
+     "tokens": 933,
+     "asksage": 68,
+     "ratio": 0.0729,
+     "getModelsPromptRate": 0.055
+    }
+   },
+   "exchanges": 19
+  },
+  {
+   "id": "T19",
+   "title": "Budget counter lag and granularity",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "counter moves after one request",
+     "result": "pass",
+     "detail": "first change seen at ~2 s"
+    },
+    {
+     "name": "which pricing hypothesis fits",
+     "result": "info",
+     "detail": "measured 381; ×rate 291.23, ÷rate 95923.64 → discounted"
+    }
+   ],
+   "observations": {
+    "lag": {
+     "before": {
+      "used": 45330,
+      "left": 154670
+     },
+     "readings": [
+      {
+       "s": 2,
+       "used": 45711,
+       "left": 154289
+      },
+      {
+       "s": 5,
+       "used": 45711,
+       "left": 154289
+      },
+      {
+       "s": 10,
+       "used": 45711,
+       "left": 154289
+      }
+     ],
+     "firstMoveS": 2,
+     "usedDelta": 381,
+     "leftDelta": 381,
+     "estimate": {
+      "discounted": 291.23,
+      "full": 291.23,
+      "inverse": 95923.64,
+      "inputTokens": 5275,
+      "outputTokens": 4
+     },
+     "usage": {
+      "ok": true,
+      "in": 5275,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     }
+    },
+    "counterTypes": {
+     "usedIsInteger": true,
+     "leftIsInteger": true
+    },
+    "granularity": {
+     "estimate": {
+      "discounted": 1.87,
+      "full": 1.87,
+      "inverse": 269.09,
+      "inputTokens": 14,
+      "outputTokens": 4
+     },
+     "usedDelta": 4,
+     "leftDelta": 4
+    }
+   },
+   "exchanges": 2
+  },
+  {
+   "id": "T1",
+   "title": "Caching and billing, Anthropic Messages (M)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "A reports a cache write",
+     "result": "pass",
+     "detail": "cache_creation 5244 of 5257 input"
+    },
+    {
+     "name": "B reads what A wrote",
+     "result": "pass",
+     "detail": "read 5244, A wrote 5244"
+    },
+    {
+     "name": "C without cache_control neither reads nor writes",
+     "result": "pass",
+     "detail": "read 0 write 0"
+    },
+    {
+     "name": "A billing (write)",
+     "result": "info",
+     "detail": "measured 474 AS tokens; estimate discounted 362.34, full 290.24, inverse 95596.36; closest: discounted"
+    },
+    {
+     "name": "B billing (read)",
+     "result": "info",
+     "detail": "measured 42 AS tokens; estimate discounted 30.66, full 290.24, inverse 95596.36; closest: discounted"
+    },
+    {
+     "name": "C billing (uncached control)",
+     "result": "info",
+     "detail": "measured 380 AS tokens; estimate discounted 290.24, full 290.24, inverse 95596.36; closest: discounted"
+    },
+    {
+     "name": "M cache read discounted",
+     "result": "pass",
+     "detail": "measured 42; discounted 30.66 vs full 290.24"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 5244,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "B": {
+      "ok": true,
+      "in": 13,
+      "read": 5244,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "C": {
+      "ok": true,
+      "in": 5257,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     }
+    }
+   },
+   "exchanges": 3
+  },
+  {
+   "id": "T2",
+   "title": "Caching and billing, Chat Completions (CC); also Claude through CC",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "CC reports cached_tokens on a repeat",
+     "result": "pass",
+     "detail": "cached 4864 of 5185"
+    },
+    {
+     "name": "CC reports no cache writes (expected)",
+     "result": "info",
+     "detail": "usage keys: completion_tokens, prompt_tokens, total_tokens, completion_tokens_details, prompt_tokens_details, latency_checkpoint"
+    },
+    {
+     "name": "A billing (first request: are writes billed?)",
+     "result": "info",
+     "detail": "measured 77 AS tokens; estimate discounted 57.31, full 57.31, inverse 471421.82; closest: discounted"
+    },
+    {
+     "name": "B billing (cached repeat)",
+     "result": "info",
+     "detail": "measured 15 AS tokens; estimate discounted 9.16, full 57.31, inverse 471421.82; closest: discounted"
+    },
+    {
+     "name": "CC cache read discounted",
+     "result": "pass",
+     "detail": "measured 15; discounted 9.16 vs full 57.31"
+    },
+    {
+     "name": "Claude through CC honours cache_control",
+     "result": "info",
+     "detail": "cached 5290: CC may be usable for Claude caching"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 5185,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17"
+     },
+     "B": {
+      "ok": true,
+      "in": 321,
+      "read": 4864,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17"
+     }
+    },
+    "claudeViaCC": {
+     "A": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 5290,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "B": {
+      "ok": true,
+      "in": 13,
+      "read": 5290,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "usageKeys": [
+      "cache_creation",
+      "cache_creation_input_tokens",
+      "cache_read_input_tokens",
+      "inference_geo",
+      "input_tokens",
+      "output_tokens",
+      "output_tokens_details",
+      "server_tool_use",
+      "service_tier"
+     ]
+    }
+   },
+   "exchanges": 4
+  },
+  {
+   "id": "T3",
+   "title": "Caching and billing, Responses (R)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "R reports cached_tokens on a repeat",
+     "result": "pass",
+     "detail": "cached 4864"
+    },
+    {
+     "name": "A billing",
+     "result": "info",
+     "detail": "measured 76 AS tokens; estimate discounted 57.28, full 57.28, inverse 470618.18; closest: discounted"
+    },
+    {
+     "name": "B billing (cached repeat)",
+     "result": "info",
+     "detail": "measured 15 AS tokens; estimate discounted 9.13, full 57.28, inverse 470618.18; closest: discounted"
+    },
+    {
+     "name": "R cache read discounted (decides the GPT-5.x default, §2.2)",
+     "result": "pass",
+     "detail": "measured 15; discounted 9.13 vs full 57.28"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 5176,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 5,
+      "think": 0,
+      "served": "gpt-5.4-nano"
+     },
+     "B": {
+      "ok": true,
+      "in": 312,
+      "read": 4864,
+      "write": 0,
+      "w1h": 0,
+      "out": 5,
+      "think": 0,
+      "served": "gpt-5.4-nano"
+     }
+    },
+    "echoedFields": {
+     "store": false,
+     "prompt_cache_key": "probe-0402-c5ced6-T3",
+     "prompt_cache_retention": "in_memory",
+     "reasoning": {
+      "context": "current_turn",
+      "effort": "none",
+      "generate_summary": null,
+      "mode": "standard",
+      "summary": null
+     },
+     "max_output_tokens": 512,
+     "service_tier": "default"
+    }
+   },
+   "exchanges": 2
+  },
+  {
+   "id": "T4",
+   "title": "Caching and billing, Gemini (G); also Gemini through CC",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "G implicit cache hit on repeat",
+     "result": "info",
+     "detail": "cachedContentTokenCount 0 / 0"
+    },
+    {
+     "name": "B billing",
+     "result": "info",
+     "detail": "measured 95 AS tokens; estimate discounted 71.46, full 71.46, inverse 377539.39; closest: discounted"
+    },
+    {
+     "name": "C billing",
+     "result": "info",
+     "detail": "measured 95 AS tokens; estimate discounted 71.46, full 71.46, inverse 377539.39; closest: discounted"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 5191,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 1,
+      "think": 0,
+      "served": "gemini-3.1-flash-lite"
+     },
+     "B": {
+      "ok": true,
+      "in": 5191,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 1,
+      "think": 0,
+      "served": "gemini-3.1-flash-lite"
+     },
+     "C": {
+      "ok": true,
+      "in": 5191,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 1,
+      "think": 0,
+      "served": "gemini-3.1-flash-lite"
+     }
+    },
+    "geminiViaCC": {
+     "A": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "openai-error invalid_request_error: Unsupported model: google-gemini-3.1-flash-lite-gov"
+     },
+     "B": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "openai-error invalid_request_error: Unsupported model: google-gemini-3.1-flash-lite-gov"
+     },
+     "usageKeys": []
+    }
+   },
+   "exchanges": 5
+  },
+  {
+   "id": "T5",
+   "title": "Server-side prompt injection",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "M input tokens match count_tokens",
+     "result": "pass",
+     "detail": "count_tokens 14, billed usage 14 (a tiny prompt is ~10–20 tokens; much more means injection)"
+    },
+    {
+     "name": "M minimal prompt input size",
+     "result": "pass",
+     "detail": "14 input tokens for \"Reply with the single word OK.\""
+    },
+    {
+     "name": "CC minimal prompt input size",
+     "result": "pass",
+     "detail": "13 input tokens for \"Reply with the single word OK.\""
+    },
+    {
+     "name": "R minimal prompt input size",
+     "result": "pass",
+     "detail": "13 input tokens for \"Reply with the single word OK.\""
+    },
+    {
+     "name": "G minimal prompt input size",
+     "result": "pass",
+     "detail": "7 input tokens for \"Reply with the single word OK.\""
+    }
+   ],
+   "observations": {
+    "minimalPromptInputTokens": {
+     "M": {
+      "countTokens": 14,
+      "billedInput": 14
+     },
+     "CC": 13,
+     "R": 13,
+     "G": 7
+    },
+    "countTokensMeasured": {
+     "label": "T5 count_tokens",
+     "usedDelta": 0,
+     "leftDelta": 0,
+     "settled": false,
+     "firstMoveMs": null,
+     "est": null,
+     "closest": null
+    },
+    "echoProbe": {
+     "M": "NONE",
+     "CC": "NONE"
+    },
+    "native": {
+     "defaultPersona": {
+      "usage": {
+       "usage": {
+        "model_tokens": {
+         "completion_tokens": 4,
+         "prompt_tokens": 820,
+         "total_tokens": 824
+        },
+        "asksage_tokens": 63
+       }
+      },
+      "chunkKeys": [
+       "added_obj",
+       "citations",
+       "embedding_down",
+       "error",
+       "message",
+       "provenance",
+       "references",
+       "response",
+       "sources",
+       "status",
+       "tool_calls",
+       "tool_calls_unified",
+       "tool_responses",
+       "type",
+       "usage",
+       "uuid",
+       "vectors_down"
+      ]
+     },
+     "systemPromptOverride": {
+      "usage": {
+       "usage": {
+        "model_tokens": {
+         "completion_tokens": 4,
+         "prompt_tokens": 40,
+         "total_tokens": 44
+        },
+        "asksage_tokens": 7
+       }
+      }
+     }
+    },
+    "customIntroPromptChars": 0
+   },
+   "exchanges": 9
+  },
+  {
+   "id": "T6",
+   "title": "GPT-5-class models on Chat Completions",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "cases": {
+     "max_tokens": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "openai-error invalid_request_error: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.",
+      "stop": null,
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "max_completion_tokens": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "reasoning_effort=low": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "temperature=0.2": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "stop",
+      "toolCalls": [],
+      "reasoningFields": 0
+     },
+     "tools": {
+      "ok": true,
+      "in": 143,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 17,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "tool_calls",
+      "toolCalls": [
+       "get_weather"
+      ],
+      "reasoningFields": 0
+     }
+    }
+   },
+   "exchanges": 5
+  },
+  {
+   "id": "T7",
+   "title": "Reasoning state across tool rounds (signed thinking, encrypted reasoning)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "M round 2 with signed thinking succeeds",
+     "result": "pass"
+    },
+    {
+     "name": "M round 2 without thinking is rejected (state is required)",
+     "result": "info",
+     "detail": "accepted: the requirement is not enforced through this host"
+    },
+    {
+     "name": "M tampered signature is rejected (signatures verified end to end)",
+     "result": "pass",
+     "detail": "anthropic-error invalid_request_error: messages.1.content.0: Invalid `signature` in `thinking` block"
+    },
+    {
+     "name": "R returns encrypted reasoning with store:false",
+     "result": "fail",
+     "detail": "0 reasoning item(s)"
+    },
+    {
+     "name": "R round 2 with reasoning items succeeds",
+     "result": "pass"
+    }
+   ],
+   "observations": {
+    "M round1": {
+     "ok": true,
+     "in": 606,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 107,
+     "think": 0,
+     "served": "claude-haiku-4-5-20251001",
+     "stop": "tool_use",
+     "blocks": [
+      "thinking",
+      "tool_use"
+     ],
+     "signature": "596 chars"
+    },
+    "R round1": {
+     "ok": true,
+     "in": 61,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 18,
+     "think": 0,
+     "served": "gpt-5.4-nano",
+     "items": [
+      "function_call"
+     ],
+     "encryptedContent": []
+    },
+    "R round2": {
+     "withReasoning": {
+      "ok": true,
+      "in": 104,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 25,
+      "think": 0,
+      "served": "gpt-5.4-nano"
+     },
+     "withoutReasoning": {
+      "ok": true,
+      "in": 104,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 25,
+      "think": 0,
+      "served": "gpt-5.4-nano"
+     }
+    },
+    "CC round1": {
+     "ok": true,
+     "in": 143,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 17,
+     "think": 0,
+     "served": "gpt-5.4-nano-2026-03-17",
+     "toolCalls": 1,
+     "reasoningChars": 0,
+     "messageKeys": [
+      "content",
+      "refusal",
+      "role",
+      "annotations",
+      "audio",
+      "function_call",
+      "tool_calls"
+     ]
+    },
+    "CC round2": {
+     "ok": true,
+     "in": 185,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 21,
+     "think": 0,
+     "served": "gpt-5.4-nano-2026-03-17"
+    }
+   },
+   "exchanges": 9
+  },
+  {
+   "id": "T8",
+   "title": "Output caps and explicit max-output handling",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "cases": {
+     "M max_tokens=32": {
+      "ok": true,
+      "in": 25,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 32,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "stop": "max_tokens"
+     },
+     "M no max_tokens": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "anthropic-error api_error: Provider request failed",
+      "stop": null
+     },
+     "M max_tokens=136000 (over catalog limit)": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "anthropic-error invalid_request_error: max_tokens: 136000 > 64000, which is the maximum allowed number of output tokens for claude-haiku-4-5-20251001",
+      "stop": null
+     },
+     "CC max_completion_tokens=32": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 32,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "length"
+     },
+     "R max_output_tokens=32": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 32,
+      "think": 0,
+      "served": "gpt-5.4-nano",
+      "stop": "incomplete"
+     },
+     "CC no cap": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 2720,
+      "think": 0,
+      "served": "gpt-5.4-nano-2026-03-17",
+      "stop": "stop"
+     },
+     "G maxOutputTokens=32": {
+      "ok": true,
+      "in": 19,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 28,
+      "think": 0,
+      "served": "gemini-3.1-flash-lite",
+      "stop": "MAX_TOKENS"
+     }
+    }
+   },
+   "exchanges": 7
+  },
+  {
+   "id": "T9",
+   "title": "Streaming and cancellation metering",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "M cancelled stream billing",
+     "result": "info",
+     "detail": "billed for streamed output only: measured 43, partial 9.63, full 826.38"
+    },
+    {
+     "name": "CC cancelled stream billing",
+     "result": "info",
+     "detail": "billed for streamed output only: measured 6, partial 2.28, full 206.47"
+    }
+   ],
+   "observations": {
+    "M cancel": {
+     "aborted": true,
+     "events": 30,
+     "usageSeen": {
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_tokens": 25,
+      "output_tokens": 6
+     },
+     "partialEstimate": 9.63,
+     "fullOutputEstimate": 826.38,
+     "measured": 43,
+     "settled": true
+    },
+    "CC cancel": {
+     "aborted": true,
+     "events": 30,
+     "usageSeen": null,
+     "partialEstimate": 2.28,
+     "fullOutputEstimate": 206.47,
+     "measured": 6,
+     "settled": true
+    }
+   },
+   "exchanges": 2
+  },
+  {
+   "id": "T10",
+   "title": "Errors (including in streams) and model resolution",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "errors": {
+     "M unknown model": {
+      "http": 400,
+      "contentType": "application/json",
+      "error": {
+       "shape": "anthropic-error",
+       "status": "invalid_request_error",
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     },
+     "M unknown model (stream)": {
+      "http": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "error": {
+       "shape": "anthropic-error (in stream)",
+       "status": "invalid_request_error",
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     },
+     "M missing messages": {
+      "http": 502,
+      "contentType": "application/json",
+      "error": {
+       "shape": "anthropic-error",
+       "status": "api_error",
+       "message": "Provider request failed"
+      }
+     },
+     "CC unknown model": {
+      "http": 400,
+      "contentType": "application/json",
+      "error": {
+       "shape": "openai-error",
+       "status": "invalid_request_error",
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     },
+     "CC unknown model (stream)": {
+      "http": 200,
+      "contentType": "text/event-stream; charset=utf-8",
+      "error": {
+       "shape": "openai-error (in stream)",
+       "status": "invalid_request_error",
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     },
+     "CC malformed messages": {
+      "http": 400,
+      "contentType": "application/json",
+      "error": {
+       "shape": "openai-error",
+       "status": "invalid_request_error",
+       "message": "Invalid type for 'messages': expected an array of objects, but got a string instead."
+      }
+     },
+     "R unknown model": {
+      "http": 400,
+      "contentType": "application/json",
+      "error": {
+       "shape": "openai-error",
+       "status": "invalid_request_error",
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     },
+     "G unknown model": {
+      "http": 400,
+      "contentType": "application/json",
+      "error": {
+       "shape": "gemini-error",
+       "status": 400,
+       "message": "Unsupported model: probe-no-such-model"
+      }
+     }
+    },
+    "alias": {
+     "requested": "claude-4-5-haiku",
+     "catalogId": "google-claude-45-haiku",
+     "served": "claude-haiku-4-5-20251001"
+    }
+   },
+   "exchanges": 9
+  },
+  {
+   "id": "T11",
+   "title": "Tool-count limits and schema acceptance",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "toolCounts": {
+     "CC 128 tools": "accepted",
+     "CC 129 tools": "openai-error invalid_request_error: Invalid 'tools': array too long. Expected an array with maximum length 128, but got an array with length 129 instead.",
+     "M 129 tools": "accepted"
+    },
+    "schemas": {
+     "empty-object": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "accepted"
+     },
+     "no-type": {
+      "M": "anthropic-error invalid_request_error: tools.0.custom.input_schema.type: Field required",
+      "CC": "openai-error invalid_request_error: Invalid schema for function 'probe_schema': schema must be a JSON Schema of 'type: \"object\"', got 'type: \"None\"'.",
+      "G": "accepted"
+     },
+     "$schema+additionalProperties": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "gemini-error 400: Invalid request"
+     },
+     "anyOf": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "accepted"
+     },
+     "format-uri+default": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "accepted"
+     },
+     "array-without-items": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "accepted"
+     },
+     "type-array-nullable": {
+      "M": "accepted",
+      "CC": "accepted",
+      "G": "gemini-error 400: Invalid request"
+     }
+    }
+   },
+   "exchanges": 24
+  },
+  {
+   "id": "T12",
+   "title": "Reproduce a BYOK session as a baseline",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "manual",
+     "result": "skip",
+     "detail": "Configure VS Code's Custom Endpoint (BYOK) against Ask Sage, run one fixed multi-round agent task, and note the budget before and after. Re-run the same task with the extension in Phase 2 and compare."
+    }
+   ],
+   "observations": {},
+   "exchanges": 0
+  },
+  {
+   "id": "T14",
+   "title": "Usage fields per flavor (from every exchange in this run)",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "usageFields": {
+     "M non-stream": {
+      "count": 28,
+      "fields": [
+       "cache_creation",
+       "cache_creation.ephemeral_1h_input_tokens",
+       "cache_creation.ephemeral_5m_input_tokens",
+       "cache_creation_input_tokens",
+       "cache_read_input_tokens",
+       "inference_geo",
+       "input_tokens",
+       "output_tokens",
+       "output_tokens_details",
+       "output_tokens_details.thinking_tokens",
+       "server_tool_use",
+       "service_tier"
+      ],
+      "checks": {}
+     },
+     "M stream": {
+      "count": 2,
+      "fields": [
+       "cache_creation",
+       "cache_creation.ephemeral_1h_input_tokens",
+       "cache_creation.ephemeral_5m_input_tokens",
+       "cache_creation_input_tokens",
+       "cache_read_input_tokens",
+       "input_tokens",
+       "output_tokens"
+      ],
+      "checks": {}
+     },
+     "CC non-stream": {
+      "count": 23,
+      "fields": [
+       "cache_creation",
+       "cache_creation.ephemeral_1h_input_tokens",
+       "cache_creation.ephemeral_5m_input_tokens",
+       "cache_creation_input_tokens",
+       "cache_read_input_tokens",
+       "completion_tokens",
+       "completion_tokens_details",
+       "completion_tokens_details.accepted_prediction_tokens",
+       "completion_tokens_details.audio_tokens",
+       "completion_tokens_details.reasoning_tokens",
+       "completion_tokens_details.rejected_prediction_tokens",
+       "inference_geo",
+       "input_tokens",
+       "latency_checkpoint",
+       "latency_checkpoint.engine_tbt_ms",
+       "latency_checkpoint.engine_ttft_ms",
+       "latency_checkpoint.engine_ttlt_ms",
+       "latency_checkpoint.pre_inference_ms",
+       "latency_checkpoint.service_tbt_ms",
+       "latency_checkpoint.service_ttft_ms",
+       "latency_checkpoint.service_ttlt_ms",
+       "latency_checkpoint.user_visible_ttft_ms",
+       "output_tokens",
+       "output_tokens_details",
+       "prompt_tokens",
+       "prompt_tokens_details",
+       "prompt_tokens_details.audio_tokens",
+       "prompt_tokens_details.cache_write_tokens",
+       "prompt_tokens_details.cached_tokens",
+       "server_tool_use",
+       "service_tier",
+       "total_tokens"
+      ],
+      "checks": {}
+     },
+     "CC stream": {
+      "count": 1,
+      "fields": [
+       "completion_tokens",
+       "completion_tokens_details",
+       "completion_tokens_details.accepted_prediction_tokens",
+       "completion_tokens_details.audio_tokens",
+       "completion_tokens_details.reasoning_tokens",
+       "completion_tokens_details.rejected_prediction_tokens",
+       "prompt_tokens",
+       "prompt_tokens_details",
+       "prompt_tokens_details.audio_tokens",
+       "prompt_tokens_details.cache_write_tokens",
+       "prompt_tokens_details.cached_tokens",
+       "total_tokens"
+      ],
+      "checks": {}
+     },
+     "R non-stream": {
+      "count": 8,
+      "fields": [
+       "input_tokens",
+       "input_tokens_details",
+       "input_tokens_details.cache_write_tokens",
+       "input_tokens_details.cached_tokens",
+       "output_tokens",
+       "output_tokens_details",
+       "output_tokens_details.reasoning_tokens",
+       "total_tokens"
+      ],
+      "checks": {}
+     },
+     "R stream": {
+      "count": 1,
+      "fields": [
+       "input_tokens",
+       "input_tokens_details",
+       "input_tokens_details.cache_write_tokens",
+       "input_tokens_details.cached_tokens",
+       "output_tokens",
+       "output_tokens_details",
+       "output_tokens_details.reasoning_tokens",
+       "total_tokens"
+      ],
+      "checks": {}
+     },
+     "G non-stream": {
+      "count": 10,
+      "fields": [
+       "candidatesTokenCount",
+       "promptTokenCount",
+       "totalTokenCount"
+      ],
+      "checks": {}
+     },
+     "G stream": {
+      "count": 1,
+      "fields": [
+       "candidatesTokenCount",
+       "promptTokenCount",
+       "totalTokenCount"
+      ],
+      "checks": {}
+     },
+     "N stream": {
+      "count": 2,
+      "fields": [
+       "usage",
+       "usage.asksage_tokens",
+       "usage.model_tokens",
+       "usage.model_tokens.completion_tokens",
+       "usage.model_tokens.prompt_tokens",
+       "usage.model_tokens.total_tokens"
+      ],
+      "checks": {}
+     }
+    }
+   },
+   "exchanges": 0
+  },
+  {
+   "id": "T15",
+   "title": "1-hour and mixed cache TTLs, with and without the beta header",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "1h TTL accepted without beta header",
+     "result": "pass",
+     "detail": "1h writes 5212"
+    },
+    {
+     "name": "1h TTL accepted with beta header",
+     "result": "pass",
+     "detail": "1h writes 5224"
+    },
+    {
+     "name": "mixed TTL reports a 1h/5m split",
+     "result": "pass",
+     "detail": "{\"ephemeral_1h_input_tokens\":5254,\"ephemeral_5m_input_tokens\":5222}"
+    },
+    {
+     "name": "A billing (1h write, expected 2×)",
+     "result": "info",
+     "detail": "measured 751 AS tokens; estimate discounted 575.14, full 288.48, inverse 95014.55; closest: discounted"
+    },
+    {
+     "name": "C billing (mixed write)",
+     "result": "info",
+     "detail": "measured 1224 AS tokens; estimate discounted 938.6, full 577.83, inverse 190669.09; closest: discounted"
+    },
+    {
+     "name": "1h entry survives the wait; 5m entry does not",
+     "result": "pass",
+     "detail": "read 5254, 1h written 5254, input 10486"
+    },
+    {
+     "name": "D billing",
+     "result": "info",
+     "detail": "measured 510 AS tokens; estimate discounted 389.56, full 577.83, inverse 190669.09; closest: full"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "A": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 5212,
+      "w1h": 5212,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 5212,
+       "ephemeral_5m_input_tokens": 0
+      }
+     },
+     "B": {
+      "ok": true,
+      "in": 13,
+      "read": 0,
+      "write": 5224,
+      "w1h": 5224,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 5224,
+       "ephemeral_5m_input_tokens": 0
+      }
+     },
+     "C": {
+      "ok": true,
+      "in": 10,
+      "read": 0,
+      "write": 10476,
+      "w1h": 5254,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 5254,
+       "ephemeral_5m_input_tokens": 5222
+      }
+     }
+    },
+    "afterWait": {
+     "waitedS": 360,
+     "D": {
+      "ok": true,
+      "in": 10,
+      "read": 5254,
+      "write": 5222,
+      "w1h": 0,
+      "out": 4,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "cacheCreation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 5222
+      }
+     }
+    }
+   },
+   "exchanges": 4
+  },
+  {
+   "id": "T16",
+   "title": "Cache hit when a round adds more than 20 blocks (lookback window)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": ">20 blocks past the last breakpoint misses",
+     "result": "info",
+     "detail": "read 5795 (seed wrote 5795)"
+    },
+    {
+     "name": "keeping the older breakpoint recovers the hit",
+     "result": "pass",
+     "detail": "read 5777, seed wrote 5777"
+    },
+    {
+     "name": "within 20 blocks the lookback finds the seed",
+     "result": "pass",
+     "detail": "read 5807, seed wrote 5807"
+    }
+   ],
+   "observations": {
+    "usage": {
+     "seedFar": {
+      "ok": true,
+      "in": 2,
+      "read": 0,
+      "write": 5795,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "far": {
+      "ok": true,
+      "in": 7,
+      "read": 5795,
+      "write": 1576,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "seedInter": {
+      "ok": true,
+      "in": 3,
+      "read": 0,
+      "write": 5777,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "inter": {
+      "ok": true,
+      "in": 7,
+      "read": 5777,
+      "write": 1577,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "seedNear": {
+      "ok": true,
+      "in": 3,
+      "read": 0,
+      "write": 5807,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     },
+     "near": {
+      "ok": true,
+      "in": 7,
+      "read": 5807,
+      "write": 337,
+      "w1h": 0,
+      "out": 8,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001"
+     }
+    }
+   },
+   "exchanges": 6
+  },
+  {
+   "id": "T17",
+   "title": "prompt_cache_key, prompt_cache_retention and unknown parameters",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "parameters": {
+     "CC prompt_cache_key + prompt_cache_retention=24h": "accepted",
+     "R prompt_cache_key + prompt_cache_retention=24h": {
+      "accepted": true,
+      "echoed": {
+       "prompt_cache_key": "probe-0402-c5ced6-T17",
+       "prompt_cache_retention": "24h"
+      }
+     },
+     "CC unknown top-level parameter": "accepted (stripped or ignored)",
+     "R unknown top-level parameter": "accepted (stripped or ignored)",
+     "M unknown top-level parameter": "anthropic-error api_error: Provider request failed"
+    }
+   },
+   "exchanges": 5
+  },
+  {
+   "id": "T18",
+   "title": "Gemini thought signatures through G and through the CC shim",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "G round 2 with thought signature succeeds",
+     "result": "fail",
+     "detail": "gemini-error 400: Invalid request. Please check your input and try again."
+    },
+    {
+     "name": "G round 2 without signature is rejected",
+     "result": "pass",
+     "detail": "gemini-error 400: Invalid request. Please check your input and try again."
+    }
+   ],
+   "observations": {
+    "G round1": {
+     "ok": true,
+     "in": 43,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 16,
+     "think": 0,
+     "served": "gemini-3.1-flash-lite",
+     "parts": [
+      "functionCall"
+     ],
+     "signature": null
+    },
+    "CC round1": {
+     "ok": false,
+     "in": 0,
+     "read": 0,
+     "write": 0,
+     "w1h": 0,
+     "out": 0,
+     "think": 0,
+     "served": null,
+     "err": "openai-error invalid_request_error: Unsupported model: google-gemini-3.1-flash-lite-gov",
+     "messageKeys": [],
+     "toolCallKeys": [],
+     "extraContent": null
+    }
+   },
+   "exchanges": 4
+  },
+  {
+   "id": "T20",
+   "title": "Embeddings endpoint and which balance it charges",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "embeddings": {
+     "model": "text-embedding-3-small",
+     "modelFromCatalog": false,
+     "ok": true,
+     "dims": 1536,
+     "usage": {
+      "prompt_tokens": 8,
+      "total_tokens": 8
+     },
+     "teachDelta": 11,
+     "inferenceDelta": 0
+    }
+   },
+   "exchanges": 1
+  }
+ ],
+ "measurements": [
+  {
+   "test": "T1",
+   "label": "T1 A write",
+   "usedDelta": 474,
+   "leftDelta": 474,
+   "settled": true,
+   "firstMoveMs": 2205,
+   "est": {
+    "discounted": 362.34,
+    "full": 290.24,
+    "inverse": 95596.36
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2205,
+     "used": 46189,
+     "left": 153811
+    },
+    {
+     "tMs": 4414,
+     "used": 46189,
+     "left": 153811
+    }
+   ]
+  },
+  {
+   "test": "T1",
+   "label": "T1 B read (stream)",
+   "usedDelta": 42,
+   "leftDelta": 42,
+   "settled": true,
+   "firstMoveMs": 2174,
+   "est": {
+    "discounted": 30.66,
+    "full": 290.24,
+    "inverse": 95596.36
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2174,
+     "used": 46231,
+     "left": 153769
+    },
+    {
+     "tMs": 4399,
+     "used": 46231,
+     "left": 153769
+    }
+   ]
+  },
+  {
+   "test": "T1",
+   "label": "T1 C control (no cache_control)",
+   "usedDelta": 380,
+   "leftDelta": 380,
+   "settled": true,
+   "firstMoveMs": 2190,
+   "est": {
+    "discounted": 290.24,
+    "full": 290.24,
+    "inverse": 95596.36
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2190,
+     "used": 46611,
+     "left": 153389
+    },
+    {
+     "tMs": 4391,
+     "used": 46611,
+     "left": 153389
+    }
+   ]
+  },
+  {
+   "test": "T2",
+   "label": "T2 A",
+   "usedDelta": 77,
+   "leftDelta": 77,
+   "settled": true,
+   "firstMoveMs": 2205,
+   "est": {
+    "discounted": 57.31,
+    "full": 57.31,
+    "inverse": 471421.82
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2205,
+     "used": 46688,
+     "left": 153312
+    },
+    {
+     "tMs": 4423,
+     "used": 46688,
+     "left": 153312
+    }
+   ]
+  },
+  {
+   "test": "T2",
+   "label": "T2 B (stream)",
+   "usedDelta": 15,
+   "leftDelta": 15,
+   "settled": true,
+   "firstMoveMs": 2202,
+   "est": {
+    "discounted": 9.16,
+    "full": 57.31,
+    "inverse": 471421.82
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2202,
+     "used": 46703,
+     "left": 153297
+    },
+    {
+     "tMs": 4387,
+     "used": 46703,
+     "left": 153297
+    }
+   ]
+  },
+  {
+   "test": "T3",
+   "label": "T3 A",
+   "usedDelta": 76,
+   "leftDelta": 76,
+   "settled": true,
+   "firstMoveMs": 2186,
+   "est": {
+    "discounted": 57.28,
+    "full": 57.28,
+    "inverse": 470618.18
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2186,
+     "used": 46779,
+     "left": 153221
+    },
+    {
+     "tMs": 4380,
+     "used": 46779,
+     "left": 153221
+    }
+   ]
+  },
+  {
+   "test": "T3",
+   "label": "T3 B (stream)",
+   "usedDelta": 15,
+   "leftDelta": 15,
+   "settled": true,
+   "firstMoveMs": 2205,
+   "est": {
+    "discounted": 9.13,
+    "full": 57.28,
+    "inverse": 470618.18
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2205,
+     "used": 46794,
+     "left": 153206
+    },
+    {
+     "tMs": 4434,
+     "used": 46794,
+     "left": 153206
+    }
+   ]
+  },
+  {
+   "test": "T4",
+   "label": "T4 A",
+   "usedDelta": 95,
+   "leftDelta": 95,
+   "settled": true,
+   "firstMoveMs": 2181,
+   "est": {
+    "discounted": 71.46,
+    "full": 71.46,
+    "inverse": 377539.39
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2181,
+     "used": 46889,
+     "left": 153111
+    },
+    {
+     "tMs": 4370,
+     "used": 46889,
+     "left": 153111
+    }
+   ]
+  },
+  {
+   "test": "T4",
+   "label": "T4 B (stream)",
+   "usedDelta": 95,
+   "leftDelta": 95,
+   "settled": true,
+   "firstMoveMs": 2170,
+   "est": {
+    "discounted": 71.46,
+    "full": 71.46,
+    "inverse": 377539.39
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2170,
+     "used": 46984,
+     "left": 153016
+    },
+    {
+     "tMs": 4357,
+     "used": 46984,
+     "left": 153016
+    }
+   ]
+  },
+  {
+   "test": "T4",
+   "label": "T4 C",
+   "usedDelta": 95,
+   "leftDelta": 95,
+   "settled": true,
+   "firstMoveMs": 2180,
+   "est": {
+    "discounted": 71.46,
+    "full": 71.46,
+    "inverse": 377539.39
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2180,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 4372,
+     "used": 47079,
+     "left": 152921
+    }
+   ]
+  },
+  {
+   "test": "T5",
+   "label": "T5 count_tokens",
+   "usedDelta": 0,
+   "leftDelta": 0,
+   "settled": false,
+   "firstMoveMs": null,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 2210,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 4386,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 6569,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 8773,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 10966,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 13156,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 15346,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 17558,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 19740,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 21909,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 24103,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 26326,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 28509,
+     "used": 47079,
+     "left": 152921
+    },
+    {
+     "tMs": 30695,
+     "used": 47079,
+     "left": 152921
+    }
+   ]
+  },
+  {
+   "test": "T9",
+   "label": "T9 M cancelled after 30 events",
+   "usedDelta": 43,
+   "leftDelta": 43,
+   "settled": true,
+   "firstMoveMs": 2516,
+   "est": {
+    "discounted": 3.03,
+    "full": 3.03,
+    "inverse": 476.36
+   },
+   "closest": "inverse",
+   "polls": [
+    {
+     "tMs": 2516,
+     "used": 47751,
+     "left": 152249
+    },
+    {
+     "tMs": 4752,
+     "used": 47751,
+     "left": 152249
+    }
+   ]
+  },
+  {
+   "test": "T9",
+   "label": "T9 CC cancelled after 30 events",
+   "usedDelta": 6,
+   "leftDelta": 6,
+   "settled": true,
+   "firstMoveMs": 2457,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 2457,
+     "used": 47757,
+     "left": 152243
+    },
+    {
+     "tMs": 4679,
+     "used": 47757,
+     "left": 152243
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 A 1h, no beta header",
+   "usedDelta": 751,
+   "leftDelta": 751,
+   "settled": true,
+   "firstMoveMs": 2403,
+   "est": {
+    "discounted": 575.14,
+    "full": 288.48,
+    "inverse": 95014.55
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2403,
+     "used": 49349,
+     "left": 150651
+    },
+    {
+     "tMs": 4628,
+     "used": 49349,
+     "left": 150651
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 B 1h, beta header",
+   "usedDelta": 752,
+   "leftDelta": 752,
+   "settled": true,
+   "firstMoveMs": 2256,
+   "est": {
+    "discounted": 576.46,
+    "full": 289.14,
+    "inverse": 95232.73
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2256,
+     "used": 50101,
+     "left": 149899
+    },
+    {
+     "tMs": 4539,
+     "used": 50101,
+     "left": 149899
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 C mixed 1h + 5m",
+   "usedDelta": 1224,
+   "leftDelta": 1224,
+   "settled": true,
+   "firstMoveMs": 2226,
+   "est": {
+    "discounted": 938.6,
+    "full": 577.83,
+    "inverse": 190669.09
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 2226,
+     "used": 51325,
+     "left": 148675
+    },
+    {
+     "tMs": 4504,
+     "used": 51325,
+     "left": 148675
+    }
+   ]
+  },
+  {
+   "test": "T15",
+   "label": "T15 D after wait",
+   "usedDelta": 510,
+   "leftDelta": 510,
+   "settled": true,
+   "firstMoveMs": 2261,
+   "est": {
+    "discounted": 389.56,
+    "full": 577.83,
+    "inverse": 190669.09
+   },
+   "closest": "full",
+   "polls": [
+    {
+     "tMs": 2261,
+     "used": 51835,
+     "left": 148165
+    },
+    {
+     "tMs": 4500,
+     "used": 51835,
+     "left": 148165
+    }
+   ]
+  },
+  {
+   "test": "T20",
+   "label": "T20 embeddings",
+   "usedDelta": 0,
+   "leftDelta": 0,
+   "settled": false,
+   "firstMoveMs": null,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 2270,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 4511,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 6757,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 9073,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 11333,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 13631,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 15892,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 18124,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 20382,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 22639,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 24957,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 27201,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 29460,
+     "used": 53880,
+     "left": 146120
+    },
+    {
+     "tMs": 31718,
+     "used": 53880,
+     "left": 146120
+    }
+   ]
+  }
+ ],
+ "usageFields": {
+  "M non-stream": {
+   "count": 28,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "inference_geo",
+    "input_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.thinking_tokens",
+    "server_tool_use",
+    "service_tier"
+   ],
+   "checks": {}
+  },
+  "M stream": {
+   "count": 2,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "input_tokens",
+    "output_tokens"
+   ],
+   "checks": {}
+  },
+  "CC non-stream": {
+   "count": 23,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "inference_geo",
+    "input_tokens",
+    "latency_checkpoint",
+    "latency_checkpoint.engine_tbt_ms",
+    "latency_checkpoint.engine_ttft_ms",
+    "latency_checkpoint.engine_ttlt_ms",
+    "latency_checkpoint.pre_inference_ms",
+    "latency_checkpoint.service_tbt_ms",
+    "latency_checkpoint.service_ttft_ms",
+    "latency_checkpoint.service_ttlt_ms",
+    "latency_checkpoint.user_visible_ttft_ms",
+    "output_tokens",
+    "output_tokens_details",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "server_tool_use",
+    "service_tier",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "CC stream": {
+   "count": 1,
+   "fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "R non-stream": {
+   "count": 8,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "R stream": {
+   "count": 1,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "G non-stream": {
+   "count": 10,
+   "fields": [
+    "candidatesTokenCount",
+    "promptTokenCount",
+    "totalTokenCount"
+   ],
+   "checks": {}
+  },
+  "G stream": {
+   "count": 1,
+   "fields": [
+    "candidatesTokenCount",
+    "promptTokenCount",
+    "totalTokenCount"
+   ],
+   "checks": {}
+  },
+  "N stream": {
+   "count": 2,
+   "fields": [
+    "usage",
+    "usage.asksage_tokens",
+    "usage.model_tokens",
+    "usage.model_tokens.completion_tokens",
+    "usage.model_tokens.prompt_tokens",
+    "usage.model_tokens.total_tokens"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "count": 31
+  },
+  {
+   "requested": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano-2026-03-17",
+   "count": 21
+  },
+  {
+   "requested": "gpt-5.4-nano",
+   "served": "gpt-5.4-nano",
+   "count": 9
+  },
+  {
+   "requested": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "count": 11
+  },
+  {
+   "requested": "claude-4-5-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "count": 1
+  },
+  {
+   "requested": "text-embedding-3-small",
+   "served": "text-embedding-3-small",
+   "count": 1
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}

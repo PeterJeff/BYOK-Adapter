@@ -1,0 +1,171 @@
+{
+ "test": "T1",
+ "seq": 23,
+ "label": "B-read-stream",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": "claude-haiku-4-5-20251001",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": true,
+ "startedAt": "2026-09-26T04:03:03.074Z",
+ "ms": 875,
+ "ttftMs": 832,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "system": [
+    {
+     "type": "text",
+     "text": "<elided chars=25987 sha256=c512efcf4e03c7db>",
+     "cache_control": {
+      "type": "ephemeral"
+     }
+    }
+   ],
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_tokens": 8,
+   "stream": true
+  }
+ },
+ "status": 200,
+ "contentType": "text/event-stream; charset=utf-8",
+ "headers": {
+  "content-type": "text/event-stream; charset=utf-8"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 5244,
+  "input_tokens": 13,
+  "output_tokens": 4
+ },
+ "normalized": {
+  "inputUncached": 13,
+  "cacheRead": 5244,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 4,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 30.66,
+  "full": 290.24,
+  "inverse": 95596.36,
+  "inputTokens": 5257,
+  "outputTokens": 4
+ },
+ "events": [
+  {
+   "event": "message_start",
+   "data": {
+    "message": {
+     "id": "msg_vrtx_011CfRPNaTGc9AqDxWHBsDLJ",
+     "container": null,
+     "content": [],
+     "model": "claude-haiku-4-5-20251001",
+     "role": "assistant",
+     "stop_details": null,
+     "stop_reason": null,
+     "stop_sequence": null,
+     "type": "message",
+     "usage": {
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5244,
+      "inference_geo": null,
+      "input_tokens": 13,
+      "output_tokens": 1,
+      "output_tokens_details": null,
+      "server_tool_use": null,
+      "service_tier": null
+     }
+    },
+    "type": "message_start"
+   }
+  },
+  {
+   "event": "content_block_start",
+   "data": {
+    "content_block": {
+     "citations": null,
+     "text": "",
+     "type": "text"
+    },
+    "index": 0,
+    "type": "content_block_start"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "OK",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_stop",
+   "data": {
+    "index": 0,
+    "type": "content_block_stop"
+   }
+  },
+  {
+   "event": "message_delta",
+   "data": {
+    "delta": {
+     "container": null,
+     "stop_details": null,
+     "stop_reason": "end_turn",
+     "stop_sequence": null
+    },
+    "type": "message_delta",
+    "usage": {
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 5244,
+     "input_tokens": 13,
+     "output_tokens": 4,
+     "output_tokens_details": null,
+     "server_tool_use": null
+    }
+   }
+  },
+  {
+   "event": "message_stop",
+   "data": {
+    "type": "message_stop"
+   }
+  }
+ ]
+}

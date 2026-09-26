@@ -17,8 +17,7 @@ Working list. The phase plan is `PLAN.md`; expectations vs. what is verified is 
 - [ ] **Run `phase0/probe/billing-probe.mjs --yes` once on the test tenant** (about 9k tokens) to validate the committed tool live; its first live run from the cloud session was blocked by Claude Code's auto-mode classifier.
 - [ ] Billing still unmeasured: Claude 1h cache after ≥60 min idle; Claude thinking (billed as output?); long-context thresholds (T13); Fable 5.1 / Opus 5.5 cache-read multipliers (table: 0.025× / 0.05×); images; embeddings (T20).
 - [ ] Switch `api-probe.mjs` budget measurement (T1–T4, T19) from counter deltas to the prompt log (`lib/billing.mjs`), and its estimates from `get-models` rates to the tokenizer's.
-- [ ] Re-run T0's bad-auth check from a path that is not behind a credential-injecting proxy (`research/live/test-tenant/README.md`).
 - [ ] Ask Ask Sage support: which rate set is billed; an endpoint for cache, thinking and long-context rates; what `-ts` and `-sec` mean (`research/model-catalog-findings.md` §5).
-- [ ] Phase 0b remainder (T1–T9, T11, T15–T18, T20, about 13k tokens) run by the author, not as an unattended batch.
+- [ ] **Phase 0b follow-up** (about 1–2k tokens, author-run, dry run first): `--tests T7,T18 --model gemini=google-gemini-3-flash-com`. T7 R was inconclusive (the model did no reasoning at `effort: low`); T18 got no thought signature from `google-gemini-3.1-flash-lite-gov` and round 2 failed (`research/live/FINDINGS.md`).
 - [ ] Open decisions in `PLAN.md` §12 (data-handling policy, terms for third-party clients, one user or shared).
-- [ ] Phase 1 (`src/`) starts once 0b findings exist (0a passed on the dev machine, 2026-09-25).
+- [ ] **Phase 1** (`src/`): 0a passed and 0b findings exist (`research/live/FINDINGS.md`), so it can start.

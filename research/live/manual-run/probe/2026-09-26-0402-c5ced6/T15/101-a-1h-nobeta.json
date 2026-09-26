@@ -1,0 +1,117 @@
+{
+ "test": "T15",
+ "seq": 101,
+ "label": "A-1h-nobeta",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": "claude-haiku-4-5-20251001",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T04:06:01.608Z",
+ "ms": 1060,
+ "ttftMs": 1060,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "system": [
+    {
+     "type": "text",
+     "text": "<elided chars=25967 sha256=5be3d6a9d9531b6a>",
+     "cache_control": {
+      "type": "ephemeral",
+      "ttl": "1h"
+     }
+    }
+   ],
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_tokens": 8
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5212,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 5212,
+  "cache_read_input_tokens": 0,
+  "inference_geo": null,
+  "input_tokens": 13,
+  "output_tokens": 4,
+  "output_tokens_details": null,
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 13,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 5212,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 4,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 575.14,
+  "full": 288.48,
+  "inverse": 95014.55,
+  "inputTokens": 5225,
+  "outputTokens": 4
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRPbkKD7ycQ5gPik5pe7",
+  "container": null,
+  "content": [
+   {
+    "citations": null,
+    "text": "OK",
+    "type": "text"
+   }
+  ],
+  "model": "claude-haiku-4-5-20251001",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 5212,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 5212,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 13,
+   "output_tokens": 4,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}
