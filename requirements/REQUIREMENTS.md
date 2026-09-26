@@ -45,7 +45,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 | §2.1 (new) | Cache TTLs: Claude 5m / 1h; OpenAI retention | T15 | 🔶 Claude 5m expired after 8 min idle; 1h held after 28 min (≥60 min not measured); OpenAI hits at 6 min, misses at 20 min; `prompt_cache_retention: "24h"` accepted but no effect. `research/live/test-tenant/billing/2026-09-25/measurements.json` |
 | §2 (new) | Claude through CC is billed | measurement | ❌ **billed 0** on 9 requests of every shape (Ask Sage bug): report to support; never route Claude through CC |
 | §3.5 | Billing behavior of a cancelled stream | T9 | ⛔ not run |
-| §5 | The stable VS Code API hands thinking parts / private-MIME `LanguageModelDataPart`s back to a third-party provider in later requests | E4 | 🔶 **thinking part round-trips inside a tool loop; data part never; thinking dropped between turns.** Dev machine, VS Code 1.139.1, development host: plain replies thinking 0/5, data 0/5; tool-loop reply (thinking + text + data part + tool call) came back with thinking, id and metadata intact, no data part. Then a 3-round loop from a folder install (`smoke:loop`, `research/live/test-tenant/phase0a-e4-loop.md`): all 3 thinking parts back with id and metadata, signatures of 1, 8 and 64 KB returned unchanged, data part never. Not yet: 5+ rounds, the target machine. Design effect: PLAN §5, signature rides in the thinking part's metadata, side cache is the fallback |
+| §5 | The stable VS Code API hands thinking parts / private-MIME `LanguageModelDataPart`s back to a third-party provider in later requests | E4 | ✅ answered by fixture: **thinking part round-trips inside a tool loop; data part never; thinking dropped between turns.** Dev machine, VS Code 1.139.1, development host: plain replies thinking 0/5, data 0/5; tool-loop reply (thinking + text + data part + tool call) came back with thinking, id and metadata intact, no data part. Then 3- and 6-round loops from a folder install (`smoke:loop`, `research/live/test-tenant/phase0a-e4-loop.md`): every round's thinking part back with id and metadata, signatures of 1, 8 and 64 KB returned unchanged, data part never. Design effect: PLAN §5, signature rides in the thinking part's metadata, side cache is the fallback |
 | §8 | Which balance (inference or training) embeddings charge | T20 | ⛔ not run |
 | §8 | `/get <text>` or `/get-dataset-results` give results-only dataset search | T21 | ⛔ not run (opt-in; needs `--dataset`) |
 
@@ -55,11 +55,11 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Test | Question | Status |
 |---|---|---|
-| E1 | Extension-contributed models appear in the chat model picker **signed out** (no GitHub/Copilot; VS Code ≥1.122). Also: does any org policy/MDM bind a signed-out machine | ✅ on the dev machine, 2026-09-25 (VS Code 1.139.1, signed out); ⛔ target machine. Caveat: on 1.139.0 the chat asked for a sign-in and no model was selectable; fixed by updating, cause unestablished. Docs corrected: they previously assumed a signed-in Copilot plan |
-| E2 | Agent mode uses the model and passes it tools | ✅ on the dev machine (51–52 tools; a provider-emitted tool call ran and its result came back); ⛔ target machine |
-| E3 | Side-loading is permitted (a local install: folder via "Developer: Install Extension from Location...", or a `.vsix`) | 🔶 **dev machine: PASS** (folder install, 2026-09-25, `research/live/test-tenant/phase0a-e4-loop.md`), but its `extensions.allowed` is `*`, so it does not show the target's policy. The earlier dev-host PASS did not count (it skips install policy). Target machine still to run |
-| E4 | Thinking parts / private-MIME data parts round-trip through history | 🔶 tool loop: thinking yes (id, metadata intact; 3 rounds, up to 64 KB), data part no; between turns neither (see §3) |
-| E5 | Extension host `fetch` reaches the tenant host through local proxy/TLS inspection | ✅ on the dev machine (no proxy, HTTP 200 via `fetch` and `https`); ⛔ target machine, the one that matters |
+| E1 | Extension-contributed models appear in the chat model picker **signed out** (no GitHub/Copilot; VS Code ≥1.122). Also: does any org policy/MDM bind a signed-out machine | ✅ on the dev machine, 2026-09-25 (VS Code 1.139.1, signed out); target: beta use only (PLAN §9). Caveat: on 1.139.0 the chat asked for a sign-in and no model was selectable; fixed by updating, cause unestablished. Docs corrected: they previously assumed a signed-in Copilot plan |
+| E2 | Agent mode uses the model and passes it tools | ✅ on the dev machine (51–52 tools; a provider-emitted tool call ran and its result came back); target: beta use only |
+| E3 | Side-loading is permitted (a local install: folder via "Developer: Install Extension from Location...", or a `.vsix`) | ✅ **dev machine** (folder install, 2026-09-25, `research/live/test-tenant/phase0a-e4-loop.md`; `extensions.allowed` is `*` here). The earlier dev-host PASS did not count (it skips install policy). Target: beta use only |
+| E4 | Thinking parts / private-MIME data parts round-trip through history | ✅ for what the design needs: in a tool loop the thinking part comes back with id and metadata, 6 rounds, signatures up to 64 KB unchanged (`research/live/test-tenant/phase0a-e4-loop.md`). Data part never; between turns neither (see §3) |
+| E5 | Extension host `fetch` reaches the tenant host through local proxy/TLS inspection | ✅ on the dev machine (no proxy, HTTP 200 via `fetch` and `https`); target: beta use only, so network failures there must produce a clear on-machine error (PLAN §9) |
 
 **Exit (`research/live/<tenant-alias>/phase0a-report.md`): `research/live/test-tenant/phase0a-report.md` covers the dev machine only; the target-machine run is not done.**
 
@@ -75,7 +75,7 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 ### 0c — target-tenant subset
 
-⛔ Not started. Contingent on the open decision "which tenant is the day-to-day target" (§5 below).
+— Dropped 2026-09-25: no data returns from the target environment. Test-tenant findings are the development reference; tenant differences are handled by runtime calibration (PLAN §2.3, §9).
 
 ### Catalog audit (public, unauthenticated — separate from T0–T21)
 
@@ -89,9 +89,9 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 
 | Phase | Acceptance | Status |
 |---|---|---|
-| 0a | E1–E5 all pass, or the plan is revised | 🔶 dev machine: E1, E2, E3 (folder install), E5 pass; E4 passes in a tool loop (thinking metadata, 3 rounds, up to 64 KB; plan §5: signature in thinking metadata, side cache as fallback), data parts never come back. Still to run: 5+ rounds and the target machine |
+| 0a | E1–E5 all pass, or the plan is revised | ✅ on the dev machine, the reference environment (PLAN §9, revised 2026-09-25): E1, E2, E3 (folder install), E5 pass; E4 passes in a tool loop (6 rounds, signatures up to 64 KB in thinking metadata; plan §5: signature in thinking metadata, side cache as fallback), data parts never come back. The target gets beta builds; no data returns from it |
 | 0b | `research/live/FINDINGS.md` with default flavor table, cache policy, normalization rules confirmed/corrected | ⛔ not run |
-| 0c | T0, T1–T6, T7, T15–T19 re-run on the day-to-day tenant if it differs from the test tenant | ⛔ not started |
+| 0c | T0, T1–T6, T7, T15–T19 re-run on the day-to-day tenant if it differs from the test tenant | — dropped 2026-09-25: no data returns from the target (PLAN §9) |
 | 1 | Claude (M) and GPT-5.x (CC) stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; spend cap stops a synthetic runaway loop | ⛔ not started (no `src/`) |
 | 2 | ≥80% cache reads from round 2 on ≥1 Claude and ≥1 GPT-5.x model in a multi-step agent task; Claude+thinking completes a 5+ round tool loop with no errors; estimate accuracy within ±10% (per-request or batch, per T19) | ⛔ not started |
 | 3 | Pre-flight estimate/warnings/hard stop, budget-mode experiment, burn-rate forecast, request-tokens command, cache-health/fallback alarms, reconciliation display | ⛔ not started |
@@ -104,10 +104,10 @@ Per `PLAN.md` line 14 and §13: every assumption marked **LIVE-TEST** must be co
 | Decision | Status |
 |---|---|
 | Data-handling policy for code sent to the API; default `asksage.workspacePolicy` | ⛔ unresolved |
-| Which tenant is the day-to-day target; whether Phase 0c is needed | ⛔ unresolved |
-| VS Code version and policy on the target machine | ⛔ unresolved (answered by Phase 0a, not yet run) |
+| Which tenant is the day-to-day target; whether Phase 0c is needed | ✅ closed 2026-09-25: the test tenant is the development reference; Phase 0c dropped (no data returns from the target) |
+| VS Code version and policy on the target machine | — not measurable; found out by beta use. The extension must fail with a clear on-machine message |
 | Ask Sage's terms for third-party clients | ⛔ unresolved |
 | Whether the extension is for one user or shared | ⛔ unresolved |
 | Whether the optional web-app rate refresher is acceptable | ✅ closed 2026-09-25: dropped. Rates come from the API at runtime, with calibration (PLAN §3.1) |
-| Which rate set Ask Sage bills (API multipliers vs the web app's table) | ✅ resolved on the test tenant 2026-09-25: the tokenizer's conversion (= the table on 99 of 105 models); not `get-models`. Re-check per tenant in Phase 0c; ask support whether it is the supported source |
-| Does a Copilot Business/Enterprise BYOK policy or MDM bind a machine that is not signed in | ⛔ unresolved (answered by E1) |
+| Which rate set Ask Sage bills (API multipliers vs the web app's table) | ✅ resolved on the test tenant 2026-09-25: the tokenizer's conversion (= the table on 99 of 105 models); not `get-models`. Calibrate per tenant at runtime; ask support whether it is the supported source |
+| Does a Copilot Business/Enterprise BYOK policy or MDM bind a machine that is not signed in | 🔶 not on the dev machine (E1); elsewhere found out by beta use |

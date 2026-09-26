@@ -121,7 +121,7 @@ The picker can list the same model under several flavors (e.g. "GPT-5.5 (Respons
 Tenants can route the same model name to different upstream hosts and regions. Hosts lag each other on features: caching parameters, the 1-hour TTL, extended retention, newer models and reasoning round-trips. Therefore:
 - The catalog, rate table, default-flavor table and Phase 0 fixtures are all keyed by tenant.
 - The picker is never built from `get-models` alone. The public catalogs are not filtered per instance: the FedRAMP instance lists `cui_capable: false` models (`research/model-catalog-findings.md`). Intersect with the organization's `force_models`, hide `cui_capable: false` models on government-like instances by default, and treat undocumented suffixes (`-ts`, `-sec`) as unknown data handling. Always send exact `get-models` IDs, never bare public IDs or aliases, which the server resolves per environment. `phase0/probe/catalog-audit.mjs` audits an instance.
-- Findings from the test tenant are **provisional** for any other tenant until the Phase 0c subset is re-run there (§9).
+- The test tenant is the **development reference**. No measurements come back from other tenants (§9), so anything tenant-specific the extension depends on (rates, cache behavior, feature support) is detected or calibrated at runtime on each tenant and degrades safely when it differs.
 - The ledger records tenant on every request.
 
 ---
@@ -263,7 +263,7 @@ v2's "per-request state only" principle is relaxed, because reasoning models nee
 
 **First choice:** emit reasoning as a part VS Code preserves in history and read it back from the incoming messages: a thinking part with the signature in its id or metadata (a `LanguageModelDataPart` with a private MIME type turned out not to come back; see E4 below).
 
-**E4 results (2026-09-25, dev machine, VS Code 1.139.1, dev host; `research/live/test-tenant/phase0a-report.md`).** Between turns, a plain reply's thinking part is **not** handed back (0 of 5) and neither is a private-MIME data part (0 of 5): only the text is. **Inside a tool loop the thinking part does come back, with its id and metadata intact** (the reply that carried thinking + text + data part + tool call was seen again on the request carrying the tool result: thinking, id and metadata yes, data part no). One sample, one tool round, a small metadata object, from the development host. That is the case that matters: Claude needs its signed thinking block back only during the tool loop, and Gemini thought signatures and OpenAI encrypted reasoning items are needed in the same place. So the first choice is now viable: carry the signature in the thinking part's metadata (feature-detected `LanguageModelThinkingPart`, which exported at runtime with no proposal check, confirmed on a folder-installed copy), and never rely on a data part. **Multi-round follow-up (2026-09-25, folder install, `research/live/test-tenant/phase0a-e4-loop.md`):** a three-round tool loop with signatures of 1 KB, 8 KB and 64 KB in the thinking metadata. Every round's thinking part came back with its id and metadata, and every signature came back byte-for-byte; the data part again never did. Still to show: 5+ rounds (Phase 2's target) and the target machine.
+**E4 results (2026-09-25, dev machine, VS Code 1.139.1, dev host; `research/live/test-tenant/phase0a-report.md`).** Between turns, a plain reply's thinking part is **not** handed back (0 of 5) and neither is a private-MIME data part (0 of 5): only the text is. **Inside a tool loop the thinking part does come back, with its id and metadata intact** (the reply that carried thinking + text + data part + tool call was seen again on the request carrying the tool result: thinking, id and metadata yes, data part no). One sample, one tool round, a small metadata object, from the development host. That is the case that matters: Claude needs its signed thinking block back only during the tool loop, and Gemini thought signatures and OpenAI encrypted reasoning items are needed in the same place. So the first choice is now viable: carry the signature in the thinking part's metadata (feature-detected `LanguageModelThinkingPart`, which exported at runtime with no proposal check, confirmed on a folder-installed copy), and never rely on a data part. **Multi-round follow-up (2026-09-25, folder install, `research/live/test-tenant/phase0a-e4-loop.md`):** a three-round tool loop with signatures of 1 KB, 8 KB and 64 KB in the thinking metadata. Every round's thinking part came back with its id and metadata, and every signature came back byte-for-byte; the data part again never did. A six-round loop then passed the same way (four 64 KB signatures in one history), covering Phase 2's 5+ round target on the VS Code side.
 
 **Fallback (needed if the thinking part is absent on the target, drops the metadata or size-limits it): a bounded in-memory side cache in `state/`:**
 - keyed by tool-call ID (and response item ID for R), which appears in the history VS Code sends back (E2 confirmed the provider's own call id returns on the tool result)
@@ -336,8 +336,12 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 
 ## 9. Phases
 
-### Phase 0a: environment smoke test (target machine, no API)
-A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as a `.vsix` (built with `scripts/pack-vsix.mjs`) or as an unpacked folder on the machine where the extension will actually be used. It costs nothing and is the go/no-go gate.
+**Where things are verified (revised 2026-09-25).** The dev machine and the public test tenant (`api.asksage.ai`) are the reference environment: every phase is built and accepted there. The target environment is close enough that it is not measured separately. It receives beta builds (alpha at worst), and **no data comes back from it**: feedback is at most a written description of a failure, with environment details left out. Two consequences:
+- Each build must be diagnosable on the machine it runs on: clear error messages, feature detection that reports what it found, and a local diagnostics report (like the smoke extension's) that the person there can read and describe in their own words.
+- Tenant differences are handled at runtime (§2.3): calibrate what can be calibrated and degrade safely instead of relying on a measured per-tenant table.
+
+### Phase 0a: environment smoke test (dev machine, no API)
+A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as an unpacked folder or a `.vsix` (built with `scripts/pack-vsix.mjs`). It costs nothing and is the go/no-go gate. It can also be installed on the target as a first beta: whether it works there is the useful signal, not its numbers.
 - **E1:** extension-contributed models appear in the chat model picker **with no GitHub or Copilot sign-in** (the state on the target machine), on VS Code 1.122 or later. Also record whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting applies to a signed-out machine (unverified in the research).
 - **E2:** agent mode will use an extension-contributed model and pass it tools.
 - **E3:** `.vsix` side-loading is permitted (`extensions.allowed` and related policy).
@@ -373,8 +377,8 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 
 Estimated cost: about 200–350k Ask Sage tokens. **Exit:** `research/live/FINDINGS.md`, with the default flavor table, cache policy and normalization rules confirmed or corrected for the test tenant.
 
-### Phase 0c: target-tenant subset
-If the tenant used day to day differs from the test tenant: re-run T0, T1–T6, T7, T15–T19 there before any default is relied on. Findings are recorded under that tenant's alias. Test-tenant results never silently apply to another tenant.
+### Phase 0c: target-tenant subset (dropped)
+Dropped 2026-09-25: no measurements come back from the target environment. Test-tenant findings are the development reference; per-tenant differences are handled by runtime calibration and safe degradation (§2.3), and checked by beta use on the target.
 
 ### Phase 1: skeleton with M and CC, ledger and spend cap
 Tenant and key setup with scoped settings; the catalog from bundled tables and rates; M and CC transports with streaming; the error normalizer (bodies and SSE events); the usage normalizer; the ledger and the `usage` DataPart; the session spend cap; a status bar showing remaining budget and the last request's cost.
@@ -434,12 +438,12 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 
 ## 12. Open decisions
 - Data-handling policy for code sent to the API, and the default `asksage.workspacePolicy`.
-- Which tenant is the day-to-day target, and whether Phase 0c is needed.
-- VS Code version and policy on the target machine (answered by Phase 0a).
+- ~~Which tenant is the day-to-day target, and whether Phase 0c is needed~~: the test tenant is the development reference; Phase 0c is dropped because no data comes back from the target (§9).
+- VS Code version and policy on the target machine: not measured; found out by beta use there. The extension must work on the oldest VS Code it declares and say clearly when something it needs is missing.
 - Ask Sage's terms for third-party clients.
 - Whether the extension is for one user or shared.
-- ~~Which rate set Ask Sage bills~~: settled by measurement on the test tenant (§3.1): the tokenizer's conversion; neither `get-models` nor, on six models, the web app's table. Re-check per tenant (Phase 0c) and ask Ask Sage support whether the tokenizer's conversion is the supported source. (The web-app rate refresher question is closed: dropped.)
-- Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in (answered by E1).
+- ~~Which rate set Ask Sage bills~~: settled by measurement on the test tenant (§3.1): the tokenizer's conversion; neither `get-models` nor, on six models, the web app's table. Calibrate per tenant at runtime (§2.3) and ask Ask Sage support whether the tokenizer's conversion is the supported source. (The web-app rate refresher question is closed: dropped.)
+- Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in: not binding on the dev machine (E1); elsewhere found out by beta use.
 
 ---
 

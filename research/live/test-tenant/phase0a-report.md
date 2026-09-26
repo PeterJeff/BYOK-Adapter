@@ -2,7 +2,7 @@
 
 Run 2026-09-25 with `phase0/smoke-extension` 0.1.0 loaded through `--extensionDevelopmentPath` in a throwaway VS Code profile (fresh user-data and extensions directories), no GitHub or Copilot sign-in. The smoke extension's own report was generated 2026-09-26T01:11Z.
 
-**This is the developer's test machine, not the target machine.** Its results are provisional for the target until E1–E5 are rerun there, from an installed `.vsix` (see `TODO.md`). E5 is a property of this machine's network. The tenant alias `test-tenant` is `api.asksage.ai`.
+**This is the developer's test machine, the reference environment** (PLAN §9, revised 2026-09-25: the target gets beta builds and no data comes back from it). E5 is a property of this machine's network. The tenant alias `test-tenant` is `api.asksage.ai`.
 
 ## Verdicts
 
