@@ -106,3 +106,10 @@ test('list(): warns once per distinct force_models mismatch', async () => {
   await catalog.list({ forceModels: ['gpt-4.1-nano'] });
   assert.equal(warnings.length, 2);
 });
+
+test('list(): a network failure or an unexpected body says why, instead of "did not return a model list" alone', async () => {
+  const down = createCatalog({ apiBase: 'https://api.test', fetchImpl: /** @type {any} */ (async () => { throw new TypeError('fetch failed', { cause: new Error('getaddrinfo ENOTFOUND api.test') }); }) });
+  await assert.rejects(down.list(), /get-models failed: fetch failed \(getaddrinfo ENOTFOUND api\.test\)/);
+  const odd = createCatalog({ apiBase: 'https://api.test', fetchImpl: async () => jsonResponse({ message: 'maintenance' }) });
+  await assert.rejects(odd.list(), /did not return a model list \(HTTP 200, application\/json, keys: message\)/);
+});

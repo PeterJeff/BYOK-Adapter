@@ -7,7 +7,7 @@
 // short-lived access token is refreshed on expiry or on a "Token is invalid" response, with one
 // retry, and only before any output has streamed.
 
-const { request } = require('../transport/httpClient');
+const { request, describeFailure } = require('../transport/httpClient');
 const { isAuthInvalid } = require('../errors');
 
 /**
@@ -28,8 +28,9 @@ function createAccessTokenService(opts) {
       fetchImpl: opts.fetchImpl,
     });
     const token = /** @type {any} */ (res.body)?.response?.access_token;
-    if (res.error || typeof token !== 'string' || !token) {
-      throw new Error(`Ask Sage: token exchange failed${res.error ? `: ${res.error.message}` : ''}`);
+    const failure = describeFailure(res);
+    if (failure || typeof token !== 'string' || !token) {
+      throw new Error(`Ask Sage: token exchange failed: ${failure || `no access_token in the response (HTTP ${res.status})`}`);
     }
     jwt = token;
     return jwt;

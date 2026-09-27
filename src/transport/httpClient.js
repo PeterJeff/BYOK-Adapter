@@ -108,4 +108,20 @@ function findError(result) {
   return null;
 }
 
-module.exports = { request, findError };
+/**
+ * Why a request failed, for an error message: the detected error, else the network error with
+ * its cause (Node's fetch says only "fetch failed" and puts ENOTFOUND/ECONNREFUSED in `cause`).
+ * Null when the request succeeded. `error` alone misses network failures, which leave no body.
+ * @param {Result} result
+ * @returns {string | null}
+ */
+function describeFailure(result) {
+  if (result.error) return result.error.message;
+  const t = result.transportError;
+  if (!t) return null;
+  const cause = /** @type {any} */ (t).cause;
+  const detail = cause && (cause.message || cause.code);
+  return detail && detail !== t.message ? `${t.message} (${detail})` : t.message;
+}
+
+module.exports = { request, findError, describeFailure };

@@ -7,7 +7,7 @@
 // counter does not move). Falls back to the catalog's token_conversion_rate x 1.3, flagged
 // unverified, only when the tokenizer is unreachable and there is no last-good copy.
 
-const { request } = require('../transport/httpClient');
+const { request, describeFailure } = require('../transport/httpClient');
 
 const CATALOG_MARKUP = 1.3;
 const TTL_MS = 24 * 60 * 60 * 1000;
@@ -48,7 +48,8 @@ function createTokenizerRates(opts) {
         request({ url: `${opts.apiBase}/server/tokenizer`, headers: { 'x-access-tokens': token }, body: { model: id, ...body }, fetchImpl: opts.fetchImpl })
       );
       const v = Number(/** @type {any} */ (result.body)?.response);
-      if (result.error || !Number.isFinite(v)) throw new Error(result.error ? result.error.message : 'tokenizer: no numeric response');
+      const failure = describeFailure(result);
+      if (failure || !Number.isFinite(v)) throw new Error(failure || 'tokenizer: no numeric response');
       return v;
     };
     const tokens = await tok({ content: big });

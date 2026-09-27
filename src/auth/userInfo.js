@@ -5,7 +5,7 @@
 // The same response carries the organization's force_models (PLAN.md §2.3), which the catalog
 // intersects with get-models.
 
-const { request } = require('../transport/httpClient');
+const { request, describeFailure } = require('../transport/httpClient');
 
 const FORCE_MODELS_TTL_MS = 60 * 60 * 1000;
 const FAILURE_BACKOFF_MS = 60 * 1000;
@@ -42,7 +42,8 @@ function createUserInfoService(opts) {
         fetchImpl: opts.fetchImpl,
       })
     );
-    if (result.error) throw new Error(`Ask Sage: validate_token_with_full_user failed: ${result.error.message}`);
+    const failure = describeFailure(result);
+    if (failure) throw new Error(`Ask Sage: validate_token_with_full_user failed: ${failure}`);
     const user = /** @type {any} */ (result.body)?.response;
     const maxTokens = user?.max_tokens;
     const forceModels = parseForceModels(user?.force_models);

@@ -7,7 +7,7 @@
 // transports, so only models whose default flavor is CC or R are offered; Claude (M) and
 // Gemini (G) models are left out rather than silently misrouted through the wrong endpoint.
 
-const { request } = require('../transport/httpClient');
+const { request, describeFailure } = require('../transport/httpClient');
 
 /**
  * @typedef {{ id: string, vendor?: string, cui_capable?: boolean, aliases?: string[],
@@ -73,13 +73,17 @@ function createCatalog(opts) {
       body: {},
       fetchImpl: opts.fetchImpl,
     });
-    if (res.error) throw new Error(`Ask Sage: get-models failed: ${res.error.message}`);
+    const failure = describeFailure(res);
+    if (failure) throw new Error(`Ask Sage: get-models failed: ${failure}`);
     const body = /** @type {any} */ (res.body);
     // Observed shapes across tenants (research/model-catalog-findings.md, phase0/probe/catalog-audit.mjs,
     // phase0/probe/api-probe.mjs's loadCatalog): a bare array on some hosts, {response: [...]} or
     // {data: [...]} on others.
     const list = Array.isArray(body) ? body : body?.response || body?.data || body?.models;
-    if (!Array.isArray(list)) throw new Error('Ask Sage: get-models?format=full did not return a model list');
+    if (!Array.isArray(list)) {
+      const shape = body && typeof body === 'object' ? `keys: ${Object.keys(body).slice(0, 5).join(', ') || 'none'}` : typeof body;
+      throw new Error(`Ask Sage: get-models?format=full did not return a model list (HTTP ${res.status}, ${res.contentType || 'no content type'}, ${shape})`);
+    }
     return /** @type {CatalogModel[]} */ (list);
   }
 

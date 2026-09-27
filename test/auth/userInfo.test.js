@@ -47,3 +47,11 @@ test('getForceModels: a failure is rethrown without refetching for a while', asy
   await assert.rejects(svc.getForceModels(), /email is not set/);
   assert.equal(calls, 1);
 });
+
+test('getForceModels: a network failure is an error, never cached as "no restriction"', async () => {
+  const fetchImpl = /** @type {any} */ (async () => {
+    throw new TypeError('fetch failed', { cause: new Error('connect ECONNREFUSED') });
+  });
+  const svc = createUserInfoService({ apiBase: 'https://api.test', accessToken, fetchImpl });
+  await assert.rejects(svc.getForceModels(), /validate_token_with_full_user failed: fetch failed \(connect ECONNREFUSED\)/);
+});
