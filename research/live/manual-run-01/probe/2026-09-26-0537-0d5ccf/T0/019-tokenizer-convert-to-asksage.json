@@ -1,0 +1,45 @@
+{
+ "test": "T0",
+ "seq": 19,
+ "label": "tokenizer convert_to_asksage",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/tokenizer",
+ "stream": false,
+ "startedAt": "2026-09-26T05:38:01.131Z",
+ "ms": 143,
+ "ttftMs": 142,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-access-tokens"
+  ],
+  "headers": {},
+  "body": {
+   "content": "<elided chars=4397 sha256=efd95d8dddf2450d>",
+   "model": "google-claude-45-haiku",
+   "convert_to_asksage": true,
+   "app_name": "byok-adapter-probe"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": "68",
+  "status": 200
+ }
+}

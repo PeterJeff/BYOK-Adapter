@@ -76,6 +76,9 @@ test('splitSepStream unescapes the delimiter; detectError knows every shape', ()
 test('normalize follows PLAN §3.2 per flavor; estimate prices three hypotheses', () => {
   const m = normalize('M', { input_tokens: 10, cache_read_input_tokens: 1000, cache_creation_input_tokens: 200, cache_creation: { ephemeral_5m_input_tokens: 150, ephemeral_1h_input_tokens: 50 }, output_tokens: 5 });
   assert.deepEqual([m?.inputUncached, m?.cacheRead, m?.cacheWrite5m, m?.cacheWrite1h, m?.thinkingUnknown], [10, 1000, 150, 50, true]);
+  // Vertex Claude splits thinking out of output_tokens (T7 fixture, 2026-09-26).
+  const mt = normalize('M', { input_tokens: 606, output_tokens: 107, output_tokens_details: { thinking_tokens: 51 } });
+  assert.deepEqual([mt?.visibleOutput, mt?.thinking, mt?.thinkingUnknown], [56, 51, false]);
   const c = normalize('CC', { prompt_tokens: 1200, prompt_tokens_details: { cached_tokens: 1024 }, completion_tokens: 50, completion_tokens_details: { reasoning_tokens: 40 } });
   assert.deepEqual([c?.inputUncached, c?.cacheRead, c?.visibleOutput, c?.thinking], [176, 1024, 10, 40]);
   const g = normalize('G', { promptTokenCount: 100, cachedContentTokenCount: 60, candidatesTokenCount: 5, thoughtsTokenCount: 7 });

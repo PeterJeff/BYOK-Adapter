@@ -1,0 +1,58 @@
+{
+ "test": "T6",
+ "seq": 1,
+ "label": "max_tokens",
+ "kind": "CC",
+ "model": "gpt-6-sol",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:11:03.642Z",
+ "ms": 1316,
+ "ttftMs": 1316,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_tokens": 256
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "openai-error",
+  "status": "invalid_request_error",
+  "message": "Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead."
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "message": "Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.",
+   "type": "invalid_request_error",
+   "code": "invalid_request_error",
+   "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+   "ref": "ERR-04F2357A"
+  }
+ }
+}

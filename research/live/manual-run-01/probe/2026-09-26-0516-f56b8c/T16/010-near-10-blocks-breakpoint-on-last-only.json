@@ -1,0 +1,211 @@
+{
+ "test": "T16",
+ "seq": 10,
+ "label": "near: 10 blocks, breakpoint on last only",
+ "kind": "M",
+ "model": "google-claude-opus-5-5",
+ "resolvedModel": "claude-opus-5-5",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T05:23:16.975Z",
+ "ms": 2036,
+ "ttftMs": 2036,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-opus-5-5",
+   "tools": [
+    {
+     "name": "lookup",
+     "description": "Look a term up.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "q": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "q"
+      ]
+     }
+    }
+   ],
+   "max_tokens": 8,
+   "messages": [
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "<elided chars=25945 sha256=4dd5b10f0307b334>"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16near_0",
+       "name": "lookup",
+       "input": {
+        "q": "term 0"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16near_1",
+       "name": "lookup",
+       "input": {
+        "q": "term 1"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16near_2",
+       "name": "lookup",
+       "input": {
+        "q": "term 2"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16near_3",
+       "name": "lookup",
+       "input": {
+        "q": "term 3"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16near_4",
+       "name": "lookup",
+       "input": {
+        "q": "term 4"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16near_0",
+       "content": "result 0"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16near_1",
+       "content": "result 1"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16near_2",
+       "content": "result 2"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16near_3",
+       "content": "result 3"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16near_4",
+       "content": "result 4",
+       "cache_control": {
+        "type": "ephemeral"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 381
+  },
+  "cache_creation_input_tokens": 381,
+  "cache_read_input_tokens": 6622,
+  "inference_geo": null,
+  "input_tokens": 2,
+  "output_tokens": 8,
+  "output_tokens_details": {
+   "thinking_tokens": 8
+  },
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 2,
+  "cacheRead": 6622,
+  "cacheWrite5m": 381,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 8,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 259.7,
+  "full": 1549.9,
+  "inverse": 31848.18,
+  "inputTokens": 7005,
+  "outputTokens": 8
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRVVRdqTY17YCS3JhHry",
+  "container": null,
+  "content": [
+   {
+    "signature": "CAQS8QMKEggSEAIYAjgBQgh0aGlua2luZxIMfNshtGS49fYE2i5QGgwCu6T2OUXiiP3vxt4iMC4tJCwUyQfchutjZEf++JrpdDNLn1UiHumaSNiXAfjIhJhnnpNSqGe7sZ70etfHSSqMA43VdsbR+OUVMDsj4lQznBaIv6MKlMS/d40m1Ow4cMD/Bwlyh8j8//iFq2go8gOPtDZtCYPowpf9VXf7izsO/2qFJeOyrhHeSKEGdo1kJhNxoNWvS5zunNazafUBadRPqEj3t1x5kh0lMzQc8tEZ05t2a0snJYB08Cv2Nlw11XftJBDtWILwLDskuszdI7diFkaqaR81NQ81lLHAUZV7+8E6+lap+AmiaTXie7ntG0nANVX0+E4acaEVGq/ZS0Tms3Jv7hy2g8H0U34OZmzYqr8woJSsNd5THS+0qcBoeNiIesX7Z62erxifo3AtBzzIFhF/GkTc6nT7Xy9ksviJuncplnko7QL7h9frDuQt+O8jS8EYMcBarQM07J5mM7PHAxma+A3XqpswVun9ViLaDBXpvktqys/tpuUfY0TLJzgHteABaaLhftcFpWJyJSrIBlQyDe2xV0hgNQ12W5w/xunbi2s2TDTx9ai2foI9OobY8gHc01vUrbVcrYvf3tUBFK99nH4iMRvPzVjEsxgB",
+    "thinking": "",
+    "type": "thinking"
+   }
+  ],
+  "model": "claude-opus-5-5",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "max_tokens",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 381
+   },
+   "cache_creation_input_tokens": 381,
+   "cache_read_input_tokens": 6622,
+   "inference_geo": null,
+   "input_tokens": 2,
+   "output_tokens": 8,
+   "output_tokens_details": {
+    "thinking_tokens": 8
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

@@ -1,0 +1,465 @@
+{
+ "test": "T16",
+ "seq": 6,
+ "label": "far: 50 blocks, breakpoint on last only",
+ "kind": "M",
+ "model": "google-claude-opus-5-5",
+ "resolvedModel": "claude-opus-5-5",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T05:23:10.048Z",
+ "ms": 1696,
+ "ttftMs": 1696,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-opus-5-5",
+   "tools": [
+    {
+     "name": "lookup",
+     "description": "Look a term up.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "q": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "q"
+      ]
+     }
+    }
+   ],
+   "max_tokens": 8,
+   "messages": [
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "text",
+       "text": "<elided chars=25947 sha256=c8fb82585904c631>"
+      }
+     ]
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_0",
+       "name": "lookup",
+       "input": {
+        "q": "term 0"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_1",
+       "name": "lookup",
+       "input": {
+        "q": "term 1"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_2",
+       "name": "lookup",
+       "input": {
+        "q": "term 2"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_3",
+       "name": "lookup",
+       "input": {
+        "q": "term 3"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_4",
+       "name": "lookup",
+       "input": {
+        "q": "term 4"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_5",
+       "name": "lookup",
+       "input": {
+        "q": "term 5"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_6",
+       "name": "lookup",
+       "input": {
+        "q": "term 6"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_7",
+       "name": "lookup",
+       "input": {
+        "q": "term 7"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_8",
+       "name": "lookup",
+       "input": {
+        "q": "term 8"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_9",
+       "name": "lookup",
+       "input": {
+        "q": "term 9"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_10",
+       "name": "lookup",
+       "input": {
+        "q": "term 10"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_11",
+       "name": "lookup",
+       "input": {
+        "q": "term 11"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_12",
+       "name": "lookup",
+       "input": {
+        "q": "term 12"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_13",
+       "name": "lookup",
+       "input": {
+        "q": "term 13"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_14",
+       "name": "lookup",
+       "input": {
+        "q": "term 14"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_15",
+       "name": "lookup",
+       "input": {
+        "q": "term 15"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_16",
+       "name": "lookup",
+       "input": {
+        "q": "term 16"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_17",
+       "name": "lookup",
+       "input": {
+        "q": "term 17"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_18",
+       "name": "lookup",
+       "input": {
+        "q": "term 18"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_19",
+       "name": "lookup",
+       "input": {
+        "q": "term 19"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_20",
+       "name": "lookup",
+       "input": {
+        "q": "term 20"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_21",
+       "name": "lookup",
+       "input": {
+        "q": "term 21"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_22",
+       "name": "lookup",
+       "input": {
+        "q": "term 22"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_23",
+       "name": "lookup",
+       "input": {
+        "q": "term 23"
+       }
+      },
+      {
+       "type": "tool_use",
+       "id": "toolu_probe_T16far_24",
+       "name": "lookup",
+       "input": {
+        "q": "term 24"
+       }
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_0",
+       "content": "result 0"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_1",
+       "content": "result 1"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_2",
+       "content": "result 2"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_3",
+       "content": "result 3"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_4",
+       "content": "result 4"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_5",
+       "content": "result 5"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_6",
+       "content": "result 6"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_7",
+       "content": "result 7"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_8",
+       "content": "result 8"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_9",
+       "content": "result 9"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_10",
+       "content": "result 10"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_11",
+       "content": "result 11"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_12",
+       "content": "result 12"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_13",
+       "content": "result 13"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_14",
+       "content": "result 14"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_15",
+       "content": "result 15"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_16",
+       "content": "result 16"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_17",
+       "content": "result 17"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_18",
+       "content": "result 18"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_19",
+       "content": "result 19"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_20",
+       "content": "result 20"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_21",
+       "content": "result 21"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_22",
+       "content": "result 22"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_23",
+       "content": "result 23"
+      },
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_probe_T16far_24",
+       "content": "result 24",
+       "cache_control": {
+        "type": "ephemeral"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 1861
+  },
+  "cache_creation_input_tokens": 1861,
+  "cache_read_input_tokens": 6633,
+  "inference_geo": null,
+  "input_tokens": 2,
+  "output_tokens": 0,
+  "output_tokens_details": null,
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 2,
+  "cacheRead": 6633,
+  "cacheWrite5m": 1861,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 0,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 658.14,
+  "full": 1869.12,
+  "inverse": 38618.18,
+  "inputTokens": 8496,
+  "outputTokens": 0
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRVUvJjRqpJKE4LoxFqW",
+  "container": null,
+  "content": [],
+  "model": "claude-opus-5-5",
+  "role": "assistant",
+  "stop_details": {
+   "category": "cyber",
+   "explanation": "This request triggered restrictions on violative cyber content and was blocked under Anthropic's Usage Policy. To learn more, see https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback.",
+   "type": "refusal"
+  },
+  "stop_reason": "refusal",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 1861
+   },
+   "cache_creation_input_tokens": 1861,
+   "cache_read_input_tokens": 6633,
+   "inference_geo": null,
+   "input_tokens": 2,
+   "output_tokens": 0,
+   "output_tokens_details": null,
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

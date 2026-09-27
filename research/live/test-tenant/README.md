@@ -13,4 +13,4 @@ This is the "Independent / Personal Use / API Testing" account PLAN.md calls the
 - §3.3's `app_name` tagging on `POST /server/count-monthly-tokens` does **not** change the returned count — the same value (411) came back tagged and untagged. Per-app usage attribution via this parameter doesn't work as PLAN.md hoped.
 - T19: the budget-used counter moved after a single request, first seen at ~2s. Per-request reconciliation (§3.6) is resolvable for this tenant — the batch-mode fallback isn't needed here.
 
-**Not yet run:** T1–T9, T11, T15–T18, T20 (the caching/billing/reasoning battery, ~13k Ask Sage tokens estimated) — see `requirements/REQUIREMENTS.md` §4 for why and what's needed to finish it.
+**Superseded 2026-09-26:** the rest of the battery (T1–T9, T11, T15–T18, T20) was run by the author from the desktop, `research/live/manual-run/`, and the follow-ups in `research/live/manual-run-01/`. Results: `research/live/FINDINGS.md`.

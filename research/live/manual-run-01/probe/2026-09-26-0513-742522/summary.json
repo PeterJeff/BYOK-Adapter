@@ -1,0 +1,355 @@
+{
+ "alias": "manual-run-01",
+ "runId": "0513-742522",
+ "startedAt": "2026-09-26T05:13:46.647Z",
+ "finishedAt": "2026-09-26T05:14:54.408Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.6-sol",
+   "token_conversion_rate": {
+    "completion": 2.475,
+    "prompt": 0.55
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T8",
+   "T9"
+  ],
+  "matrix": [],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 53968,
+   "left": 146032
+  },
+  "after": {
+   "used": 59623,
+   "left": 140377
+  }
+ },
+ "spentEstimate": 13760.83,
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T8",
+   "title": "Output caps and explicit max-output handling",
+   "status": "ok",
+   "checks": [],
+   "observations": {
+    "cases": {
+     "M max_tokens=32": {
+      "ok": true,
+      "in": 25,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 32,
+      "think": 0,
+      "served": "claude-haiku-4-5-20251001",
+      "stop": "max_tokens"
+     },
+     "M no max_tokens": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "anthropic-error api_error: Provider request failed",
+      "stop": null
+     },
+     "M max_tokens=136000 (over catalog limit)": {
+      "ok": false,
+      "in": 0,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 0,
+      "served": null,
+      "err": "anthropic-error invalid_request_error: max_tokens: 136000 > 64000, which is the maximum allowed number of output tokens for claude-haiku-4-5-20251001",
+      "stop": null
+     },
+     "CC max_completion_tokens=32": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 32,
+      "served": "gpt-5.6-sol-2026-07-09",
+      "stop": "length"
+     },
+     "R max_output_tokens=32": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 0,
+      "think": 32,
+      "served": "gpt-5.6-sol",
+      "stop": "incomplete"
+     },
+     "CC no cap": {
+      "ok": true,
+      "in": 23,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 2395,
+      "think": 67,
+      "served": "gpt-5.6-sol-2026-07-09",
+      "stop": "stop"
+     },
+     "G maxOutputTokens=32": {
+      "ok": true,
+      "in": 19,
+      "read": 0,
+      "write": 0,
+      "w1h": 0,
+      "out": 28,
+      "think": 0,
+      "served": "gemini-3.1-flash-lite",
+      "stop": "MAX_TOKENS"
+     }
+    }
+   },
+   "exchanges": 7
+  },
+  {
+   "id": "T9",
+   "title": "Streaming and cancellation metering",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "M cancelled stream billing",
+     "result": "info",
+     "detail": "billed for streamed output only: measured 51, partial 9.63, full 826.38"
+    },
+    {
+     "name": "CC cancelled stream billing",
+     "result": "info",
+     "detail": "billed for streamed output only: measured 136, partial 85.25, full 7436"
+    }
+   ],
+   "observations": {
+    "M cancel": {
+     "aborted": true,
+     "events": 30,
+     "usageSeen": {
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "input_tokens": 25,
+      "output_tokens": 6
+     },
+     "partialEstimate": 9.63,
+     "fullOutputEstimate": 826.38,
+     "measured": 51,
+     "settled": true
+    },
+    "CC cancel": {
+     "aborted": true,
+     "events": 30,
+     "usageSeen": null,
+     "partialEstimate": 85.25,
+     "fullOutputEstimate": 7436,
+     "measured": 136,
+     "settled": true
+    }
+   },
+   "exchanges": 2
+  }
+ ],
+ "measurements": [
+  {
+   "test": "T9",
+   "label": "T9 M cancelled after 30 events",
+   "usedDelta": 51,
+   "leftDelta": 51,
+   "settled": true,
+   "firstMoveMs": 5442,
+   "est": {
+    "discounted": 3.03,
+    "full": 3.03,
+    "inverse": 476.36
+   },
+   "closest": "inverse",
+   "polls": [
+    {
+     "tMs": 5442,
+     "used": 59487,
+     "left": 140513
+    },
+    {
+     "tMs": 10923,
+     "used": 59487,
+     "left": 140513
+    }
+   ]
+  },
+  {
+   "test": "T9",
+   "label": "T9 CC cancelled after 30 events",
+   "usedDelta": 136,
+   "leftDelta": 136,
+   "settled": true,
+   "firstMoveMs": 5678,
+   "est": null,
+   "closest": null,
+   "polls": [
+    {
+     "tMs": 5678,
+     "used": 59623,
+     "left": 140377
+    },
+    {
+     "tMs": 11406,
+     "used": 59623,
+     "left": 140377
+    }
+   ]
+  }
+ ],
+ "usageFields": {
+  "M non-stream": {
+   "count": 1,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "inference_geo",
+    "input_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "server_tool_use",
+    "service_tier"
+   ],
+   "checks": {}
+  },
+  "CC non-stream": {
+   "count": 2,
+   "fields": [
+    "completion_tokens",
+    "completion_tokens_details",
+    "completion_tokens_details.accepted_prediction_tokens",
+    "completion_tokens_details.audio_tokens",
+    "completion_tokens_details.reasoning_tokens",
+    "completion_tokens_details.rejected_prediction_tokens",
+    "latency_checkpoint",
+    "latency_checkpoint.engine_tbt_ms",
+    "latency_checkpoint.engine_ttft_ms",
+    "latency_checkpoint.engine_ttlt_ms",
+    "latency_checkpoint.pre_inference_ms",
+    "latency_checkpoint.service_tbt_ms",
+    "latency_checkpoint.service_ttft_ms",
+    "latency_checkpoint.service_ttlt_ms",
+    "latency_checkpoint.user_visible_ttft_ms",
+    "prompt_tokens",
+    "prompt_tokens_details",
+    "prompt_tokens_details.audio_tokens",
+    "prompt_tokens_details.cache_write_tokens",
+    "prompt_tokens_details.cached_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "R non-stream": {
+   "count": 1,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  },
+  "G non-stream": {
+   "count": 1,
+   "fields": [
+    "candidatesTokenCount",
+    "promptTokenCount",
+    "totalTokenCount"
+   ],
+   "checks": {}
+  },
+  "M stream": {
+   "count": 1,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "input_tokens",
+    "output_tokens"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-claude-45-haiku",
+   "served": "claude-haiku-4-5-20251001",
+   "count": 2
+  },
+  {
+   "requested": "gpt-5.6-sol",
+   "served": "gpt-5.6-sol-2026-07-09",
+   "count": 2
+  },
+  {
+   "requested": "gpt-5.6-sol",
+   "served": "gpt-5.6-sol",
+   "count": 1
+  },
+  {
+   "requested": "google-gemini-3.1-flash-lite-gov",
+   "served": "gemini-3.1-flash-lite",
+   "count": 1
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}

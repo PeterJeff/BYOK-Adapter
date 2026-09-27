@@ -1,0 +1,145 @@
+{
+ "test": "T8",
+ "seq": 6,
+ "label": "no-cap",
+ "kind": "CC",
+ "model": "gpt-5.6-sol",
+ "resolvedModel": "gpt-5.6-sol-2026-07-09",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T05:13:52.223Z",
+ "ms": 33179,
+ "ttftMs": 33179,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.6-sol",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 1500 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 2462,
+  "prompt_tokens": 23,
+  "total_tokens": 2485,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 67,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 13,
+   "engine_ttft_ms": 148,
+   "engine_ttlt_ms": 31930,
+   "pre_inference_ms": 166,
+   "service_tbt_ms": 13,
+   "service_ttft_ms": 411,
+   "service_ttlt_ms": 32189,
+   "user_visible_ttft_ms": 246
+  }
+ },
+ "normalized": {
+  "inputUncached": 23,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 2395,
+  "thinking": 67,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 6106.1,
+  "full": 6106.1,
+  "inverse": 1036.57,
+  "inputTokens": 23,
+  "outputTokens": 2462
+ },
+ "body": {
+  "id": "chatcmpl-ESF1MZ1DBnLpOcQvaABCsHibbe3jO",
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": "# Rivers: Their Sources, Courses and Deltas\n\nRivers are among the most important natural features on Earth. They shape landscapes, support ecosystems, provide water for agriculture and industry, and have influenced the growth of human civilizations for thousands of years. From small mountain streams to enormous waterways such as the Nile, Amazon and Mississippi, rivers form dynamic systems that connect the land with lakes, seas and oceans. Every river has a beginning, known as its source, and follows a course shaped by gravity, geology, climate and human activity. Many rivers end by forming deltas, where sediment is deposited as the water enters a sea or lake.\n\n## The Sources of Rivers\n\nThe source of a river is the place where it begins. It is sometimes called the river’s headwater. A river does not always have one obvious starting point. In many cases, numerous small streams combine to create a larger channel. Geographers generally identify the source as the point in the drainage system that is farthest from the river’s mouth, although local traditions may use a different definition.\n\nMany rivers begin in highland areas such as mountains, hills and plateaus. These regions often receive large amounts of rain or snow. Because water flows downhill under the force of gravity, it gathers in hollows and channels, forming small streams. As these streams join, their combined discharge increases and a recognizable river develops.\n\nSome rivers are fed by springs. Rainwater can soak into permeable soil and rock, where it becomes groundwater. This underground water moves slowly through cracks and spaces until it reaches the surface. The point at which groundwater emerges is called a spring. If the flow is steady enough, the spring may become the source of a stream or river. Rivers supplied by groundwater may continue flowing during dry periods because underground reserves release water gradually.\n\nOther rivers originate from melting snow and glaciers. In high mountains and polar regions, snow accumulates during cold seasons and may become compressed into ice. When temperatures rise, meltwater flows from snowfields and glaciers, forming streams. The Ganges, Indus and many other major Asian rivers receive significant quantities of water from Himalayan snow and ice. Seasonal melting can increase river discharge dramatically during spring and summer.\n\nLakes and wetlands may also act as river sources. A lake receives water from rainfall, streams or groundwater, and excess water may flow out through a channel. The White Nile, for example, flows from the Lake Victoria region of East Africa. Wetlands can store water like natural sponges and release it gradually into river systems.\n\nThe amount of water reaching a river depends on its drainage basin, also called its catchment or watershed. A drainage basin is the entire area from which precipitation flows into a particular river and its tributaries. The boundary between neighboring drainage basins is known as a watershed or drainage divide. Mountain ridges commonly form such boundaries. Water falling on one side of a divide may enter one river system, while water on the other side may travel toward a completely different sea.\n\nClimate strongly influences river sources. In humid regions, rivers may flow throughout the year and are described as perennial. In deserts and semi-arid areas, some rivers flow only after heavy rain. These temporary channels are called intermittent or ephemeral streams. A river’s source is therefore not necessarily fixed in appearance: during a wet season, flowing water may extend far upstream, whereas in a drought the uppermost channels may become dry.\n\n## The Upper Course\n\nThe journey from source to mouth is called a river’s course. It is commonly divided into three stages: the upper, middle and lower courses. Although real rivers do not always fit neatly into these divisions, the model helps explain how their characteristics change downstream.\n\nThe upper course is usuall<truncated chars=12685>",
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": null
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790399632,
+  "model": "gpt-5.6-sol-2026-07-09",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 2462,
+   "prompt_tokens": 23,
+   "total_tokens": 2485,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 67,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 13,
+    "engine_ttft_ms": 148,
+    "engine_ttlt_ms": 31930,
+    "pre_inference_ms": 166,
+    "service_tbt_ms": 13,
+    "service_ttft_ms": 411,
+    "service_ttlt_ms": 32189,
+    "user_visible_ttft_ms": 246
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260914164813-61565221-prefill-r1-dp0-prefill"
+  }
+ }
+}

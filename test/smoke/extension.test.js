@@ -92,8 +92,8 @@ test('full conversation: echo, tool round trip and E4 round trip', async () => {
   );
   assert.equal(out3.filter((p) => p instanceof parts.LanguageModelToolCallPart).length, 0);
   assert.match(joinedText(out3), /Tool result received .* \*\*E2 tool round trip works\.\*\*/);
-  assert.match(joinedText(out3), new RegExp(`\\| ${nonce1} \\| yes \\| yes \\| yes \\| yes \\| yes \\|`));
-  assert.match(joinedText(out3), new RegExp(`\\| ${nonce2} \\| yes \\| yes \\| yes \\| yes \\| yes \\|`), 'the tool-call reply is tracked through the tool loop');
+  assert.match(joinedText(out3), new RegExp(`\\| ${nonce1} \\| yes \\| yes \\| yes \\| yes \\| - \\| yes \\|`));
+  assert.match(joinedText(out3), new RegExp(`\\| ${nonce2} \\| yes \\| yes \\| yes \\| yes \\| intact \\(1024 B\\) \\| yes \\|`), 'the tool-call reply is tracked through the tool loop');
 
   const md = await reportText();
   assert.match(md, /\| E1 Models in picker \| \*\*PASS\*\*/);
@@ -104,6 +104,55 @@ test('full conversation: echo, tool round trip and E4 round trip', async () => {
   assert.match(md, /`modelOptions._conversationId` seen \(plan §3\.4\): yes/);
   assert.match(md, /Tool names seen \(1\): `fake_read`/);
   assert.doesNotMatch(md, /file contents|a\.txt|hello/, 'no prompt text in the report');
+});
+
+test('smoke:loop runs N tool rounds with growing signatures, then stops', async () => {
+  const { send, reportText } = setup();
+  const tools = [{ name: 'fake_read', description: 'reads', inputSchema: { type: 'object' } }];
+  /** @type {any[]} */
+  const history = [{ role: 1, content: [text('<userRequest>smoke:loop 3 fake_read {"path":"a.txt"}</userRequest>')] }];
+  /** @type {any[]} */
+  const thinking = [];
+  for (let round = 1; round <= 3; round++) {
+    const out = await send(history, { tools });
+    const call = out.find((p) => p instanceof parts.LanguageModelToolCallPart);
+    assert.ok(call, `round ${round} calls the tool`);
+    assert.match(joinedText(out), new RegExp(`^Round ${round} of 3\\. Calling \`fake_read\``));
+    const th = out.find((p) => p instanceof parts.LanguageModelThinkingPart);
+    assert.equal(th.metadata.round, round);
+    thinking.push(th);
+    history.push({ role: 2, content: out }, { role: 1, content: [new parts.LanguageModelToolResultPart(call.callId, [text('contents')])] });
+  }
+  assert.deepEqual(thinking.map((t) => t.metadata.signature.length), [1024, 8192, 65536]);
+
+  // After the third result the loop is done: the echo report, no fourth call.
+  const done = await send(history, { tools });
+  assert.equal(done.filter((p) => p instanceof parts.LanguageModelToolCallPart).length, 0);
+  assert.match(joinedText(done), /\| intact \(65536 B\) \|/);
+
+  const md = await reportText();
+  assert.match(md, /\| E4 Parts round-trip \| \*\*PASS\*\* \| .*In tool loops \(3 tool-call replies, up to 3 rounds\): thinking back 3\/3, signature intact 3\/3 \(largest 65536 bytes\)/);
+  assert.match(md, /\| smk-\d-[a-z0-9]{6} \| asksage-smoke-echo \| 3\/3 \| ok \| ok \| disabled \| yes \| yes \| yes \| yes \| 65536 B, intact \| yes \|/);
+  assert.doesNotMatch(md, /[A-Za-z0-9+/]{200}/, 'signatures are not copied into the report');
+});
+
+test('smoke:loop where VS Code drops the metadata reports the signature as not back', async () => {
+  const { send, reportText } = setup();
+  const tools = [{ name: 't', description: '', inputSchema: {} }];
+  const ask = { role: 1, content: [text('smoke:loop 1 t {}')] };
+  const out = await send([ask], { tools });
+  const call = out.find((p) => p instanceof parts.LanguageModelToolCallPart);
+  // Keep the thinking part's text but strip its id and metadata, as a host that does not persist them would.
+  const stripped = out.map((p) => (p instanceof parts.LanguageModelThinkingPart ? new parts.LanguageModelThinkingPart(p.value) : p));
+  await send([ask, { role: 2, content: stripped }, { role: 1, content: [new parts.LanguageModelToolResultPart(call.callId, [text('r')])] }], { tools });
+  assert.match(await reportText(), /In tool loops .*thinking back 1\/1, signature intact 0\/1\./);
+});
+
+test('smoke:loop with a bad round count explains instead of calling', async () => {
+  const { send } = setup();
+  const out = await send([{ role: 1, content: [text('smoke:loop 9 t {}')] }], { tools: [{ name: 't', description: '', inputSchema: {} }] });
+  assert.equal(out.filter((p) => p instanceof parts.LanguageModelToolCallPart).length, 0);
+  assert.match(joinedText(out), /smoke:loop not run: rounds must be 1 to 6/);
 });
 
 test('smoke:tool with an unknown tool explains instead of calling', async () => {

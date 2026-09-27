@@ -53,6 +53,10 @@ export function maxLogId(response) {
 export function cacheRule(flavor, model) {
   if (flavor === 'N' || flavor === 'G') return null;
   if (/^aws-bedrock-gpt/.test(model)) return null;
+  // Opus 5.5 reads at 0.05x (measured 2026-09-26, T15 on google-claude-opus-5-5, as the web
+  // app's table says); Fable 5.1 at 0.025x per that table (not yet measured).
+  if (flavor === 'M' && /opus-5-5/.test(model)) return { read: 0.05, write5m: 1.25, write1h: 2 };
+  if (flavor === 'M' && /fable-5/.test(model)) return { read: 0.025, write5m: 1.25, write1h: 2 };
   if (flavor === 'M' || flavor === 'CC' || flavor === 'R') return { read: 0.1, write5m: 1.25, write1h: 2 };
   return null;
 }

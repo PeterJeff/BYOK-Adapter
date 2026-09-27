@@ -1,0 +1,426 @@
+{
+ "test": "T9",
+ "seq": 8,
+ "label": "M-cancel",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": "claude-haiku-4-5-20251001",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": true,
+ "startedAt": "2026-09-26T05:14:27.317Z",
+ "ms": 1412,
+ "ttftMs": 715,
+ "aborted": true,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "max_tokens": 3000,
+   "stream": true,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 2000 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "text/event-stream; charset=utf-8",
+ "headers": {
+  "content-type": "text/event-stream; charset=utf-8"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 25,
+  "output_tokens": 6
+ },
+ "normalized": {
+  "inputUncached": 25,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 6,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 3.03,
+  "full": 3.03,
+  "inverse": 476.36,
+  "inputTokens": 25,
+  "outputTokens": 6
+ },
+ "events": [
+  {
+   "event": "message_start",
+   "data": {
+    "message": {
+     "id": "msg_vrtx_011CfRUpNxGxqwoYWYhcsLAe",
+     "container": null,
+     "content": [],
+     "model": "claude-haiku-4-5-20251001",
+     "role": "assistant",
+     "stop_details": null,
+     "stop_reason": null,
+     "stop_sequence": null,
+     "type": "message",
+     "usage": {
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": null,
+      "input_tokens": 25,
+      "output_tokens": 6,
+      "output_tokens_details": null,
+      "server_tool_use": null,
+      "service_tier": null
+     }
+    },
+    "type": "message_start"
+   }
+  },
+  {
+   "event": "content_block_start",
+   "data": {
+    "content_block": {
+     "citations": null,
+     "text": "",
+     "type": "text"
+    },
+    "index": 0,
+    "type": "content_block_start"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "# Rivers: Sources,",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " Courses, and Deltas",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "\n\nRivers",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " are among the most vital",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " geographical",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " features on Earth",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": ", serving as lif",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "elines for countless ecosystems and",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " human civil",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "izations. These flowing",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " bodies",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " of water have shaped landscapes",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": ", enabled",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " transportation, provided",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " sust",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "enance, and inspired",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " countless cultures",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " throughout human",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " history. Understanding rivers requires examining",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " three",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " fundamental aspects",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " of",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " their existence",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": ": their sources, the",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " courses they follow, and the",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " deltas where",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " they meet the sea.",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "\n\n## The Sources of Rivers",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  }
+ ]
+}

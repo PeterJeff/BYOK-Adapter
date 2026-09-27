@@ -1,0 +1,58 @@
+{
+ "test": "T8",
+ "seq": 60,
+ "label": "no-cap",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T04:04:59.557Z",
+ "ms": 187,
+ "ttftMs": 187,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 1500 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 502,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "anthropic-error",
+  "status": "api_error",
+  "message": "Provider request failed"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "type": "error",
+  "error": {
+   "type": "api_error",
+   "message": "Provider request failed"
+  }
+ }
+}

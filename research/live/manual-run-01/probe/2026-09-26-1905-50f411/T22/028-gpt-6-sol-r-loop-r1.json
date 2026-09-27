@@ -1,0 +1,240 @@
+{
+ "test": "T22",
+ "seq": 28,
+ "label": "gpt-6-sol@R loop r1",
+ "kind": "R",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T19:07:03.370Z",
+ "ms": 1471,
+ "ttftMs": 1471,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "store": false,
+   "tools": [
+    {
+     "type": "function",
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "reasoning": {
+    "effort": "medium"
+   },
+   "include": [
+    "reasoning.encrypted_content"
+   ],
+   "max_output_tokens": 768,
+   "input": [
+    {
+     "role": "user",
+     "content": "Decide which city to check: if 391 is a prime number, check Paris; otherwise check Berlin. Work it out, then call the get_weather tool exactly once for that city. Do not guess the weather."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 86,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 45,
+  "output_tokens_details": {
+   "reasoning_tokens": 25
+  },
+  "total_tokens": 131
+ },
+ "normalized": {
+  "inputUncached": 86,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 20,
+  "thinking": 25,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 79.34,
+  "full": 79.34,
+  "inverse": 349.09,
+  "inputTokens": 86,
+  "outputTokens": 45
+ },
+ "body": {
+  "id": "resp_04127c337a018452016ab817d6ad1c8196a4e2466290f003b1",
+  "created_at": 1790449622,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_04127c337a018452016ab817d73ec48196a99cc13a2be83732",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABquBfXyddRSA_195YWE8u-H9oKcrXG6VsoiLdwODc3ORwgw4LJMTIZFbIMwQY78GMa1b2OGdPsyL3kq4DNxU_SI0WUDPW7B9e_qPySuE9tt9LMJXsftxipS0C3ong1s5dvKHvGw_lnWDaBVflqM4yl7XmSi--VwM7Tz3eCTNyhc6W7c6W1803L7EzLvY1G_kzWH-GjLDe35vN4TbPKTfsfUJ8xaWywumfkkXF4nU0cQgvaIY5h_6cu-7LwAo4u3oEL5IVzgLDqP9x-WGmCKrOvHWM5QbVAj1ZXewfkPx1elLVfsQIl9niW9svdzGrA5kXg44RkYv_gU3PqXPL6JLQvlz9lghJJsG6KEEp13N7zyEDnzhZ52PNrH7S8h0XWYsa-rDkCwdBTA-c6LwK2vjyrckKW6ud9lnce-5bFF51xV8RwEy-GnHEWH-w7QG-Cp-1QapnEXtxzqCvId-7l-r6LS3X6YYtHdMbfcjZMGSUcOYxMweX1k6V3RwoQ98d8PPF8xcqJcSO40m0CTA26BvmTXjMkgb9Tc93MAKHmvEu6Z9ldUs9Ssp1_FNg0T2T0S_qvXIHngWfT27_UKExbZvAG3boAP30lXP55f66LSugcIy1Dku6DNpLt_TRLZ6nvQosPuGKcM6bdGIBq20eI0v1dgy6paWsPe2SuT-MOinHXaPRW4UXwcB40T1CAsD4IbIcFHbG7vsE_HZ4aquK6qr7z10N0IVGWyXh1VmKwpl85UAdhw2VdPqWRoPKvFi4mIpkQ7jW9mtMvAZj_wRDFGCWJbCAZVfcE3l_uDSql9L8gWW0aZIqz1Ln-G6Z_XmGVRJfCucZUFY6M3DkjYk2NQInaqG24mBTTtlkb7j9PPZhfHv4RAUjBWnVaj21VSDeAkTOGMfLFm6UTqYWbZbWlpmu1gGnOKDoSKa3O_NdTAfAgTriHWfDuZ75EmvPyLNJq7cSQILvvoheu8mfxZ30p1YLvPHqThDtvTuDdWIPRfqvob9GXiVKXvwYwwC4XUxxHk-0zD-Ev50yJJw7jtvo5WOO28zVT22kYnQnXmZrKuoJikEMy-rarfw5z8scbqyQZEWfkF_KVD8U62z6cgMEgwndRGRb_3zhPn5KuF_EUpKgkUYlE_AxaQ5V4tjmxe39Ni8ro0IESB3crErvoL9gE2OKzK7gSVxknMm7osucoxrxmK-jthqo=",
+    "status": null
+   },
+   {
+    "arguments": "{\"city\":\"Berlin\"}",
+    "call_id": "call_aYPXi2XCCQ3L0JxiOWNkE9E0",
+    "name": "get_weather",
+    "type": "function_call",
+    "id": "fc_04127c337a018452016ab817d77a748196aa13eae545aec065",
+    "caller": null,
+    "namespace": null,
+    "status": "completed"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [
+   {
+    "name": "get_weather",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "city": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "city"
+     ],
+     "additionalProperties": false
+    },
+    "strict": true,
+    "type": "function",
+    "allowed_callers": null,
+    "defer_loading": null,
+    "description": "Current weather for a city.",
+    "output_schema": null
+   }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790449623,
+  "conversation": null,
+  "max_output_tokens": 768,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 86,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 45,
+   "output_tokens_details": {
+    "reasoning_tokens": 25
+   },
+   "total_tokens": 131
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 221,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 73,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

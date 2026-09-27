@@ -1,0 +1,114 @@
+{
+ "test": "T11",
+ "seq": 97,
+ "label": "G schema array-without-items",
+ "kind": "G",
+ "model": "google-gemini-3.1-flash-lite-gov",
+ "resolvedModel": "gemini-3.1-flash-lite",
+ "method": "POST",
+ "path": "/server/google/v1beta/models/google-gemini-3.1-flash-lite-gov:generateContent",
+ "stream": false,
+ "startedAt": "2026-09-26T04:05:57.827Z",
+ "ms": 986,
+ "ttftMs": 986,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-goog-api-key",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-goog-api-key"
+  ],
+  "headers": {},
+  "body": {
+   "contents": [
+    {
+     "role": "user",
+     "parts": [
+      {
+       "text": "Reply with the single word OK."
+      }
+     ]
+    }
+   ],
+   "tools": [
+    {
+     "functionDeclarations": [
+      {
+       "name": "probe_schema",
+       "description": "Schema probe.",
+       "parameters": {
+        "type": "object",
+        "properties": {
+         "a": {
+          "type": "array"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "toolConfig": {
+    "functionCallingConfig": {
+     "mode": "NONE"
+    }
+   },
+   "generationConfig": {
+    "maxOutputTokens": 256
+   }
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "promptTokenCount": 7,
+  "candidatesTokenCount": 1,
+  "totalTokenCount": 8
+ },
+ "normalized": {
+  "inputUncached": 7,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 1,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 0.18,
+  "full": 0.18,
+  "inverse": 521.21,
+  "inputTokens": 7,
+  "outputTokens": 1
+ },
+ "body": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "OK"
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP"
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 7,
+   "candidatesTokenCount": 1,
+   "totalTokenCount": 8
+  },
+  "modelVersion": "gemini-3.1-flash-lite",
+  "responseId": "pkS3aqDAHKWM0ekP1r2R0Ac"
+ }
+}

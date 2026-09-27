@@ -1,0 +1,2069 @@
+{
+ "test": "T11",
+ "seq": 77,
+ "label": "CC 128 tools",
+ "kind": "CC",
+ "model": "gpt-5.4-nano",
+ "resolvedModel": "gpt-5.4-nano-2026-03-17",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T04:05:42.407Z",
+ "ms": 1274,
+ "ttftMs": 1273,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "tools": [
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_000",
+      "description": "Probe tool 0.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_001",
+      "description": "Probe tool 1.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_002",
+      "description": "Probe tool 2.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_003",
+      "description": "Probe tool 3.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_004",
+      "description": "Probe tool 4.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_005",
+      "description": "Probe tool 5.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_006",
+      "description": "Probe tool 6.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_007",
+      "description": "Probe tool 7.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_008",
+      "description": "Probe tool 8.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_009",
+      "description": "Probe tool 9.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_010",
+      "description": "Probe tool 10.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_011",
+      "description": "Probe tool 11.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_012",
+      "description": "Probe tool 12.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_013",
+      "description": "Probe tool 13.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_014",
+      "description": "Probe tool 14.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_015",
+      "description": "Probe tool 15.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_016",
+      "description": "Probe tool 16.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_017",
+      "description": "Probe tool 17.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_018",
+      "description": "Probe tool 18.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_019",
+      "description": "Probe tool 19.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_020",
+      "description": "Probe tool 20.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_021",
+      "description": "Probe tool 21.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_022",
+      "description": "Probe tool 22.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_023",
+      "description": "Probe tool 23.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_024",
+      "description": "Probe tool 24.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_025",
+      "description": "Probe tool 25.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_026",
+      "description": "Probe tool 26.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_027",
+      "description": "Probe tool 27.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_028",
+      "description": "Probe tool 28.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_029",
+      "description": "Probe tool 29.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_030",
+      "description": "Probe tool 30.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_031",
+      "description": "Probe tool 31.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_032",
+      "description": "Probe tool 32.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_033",
+      "description": "Probe tool 33.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_034",
+      "description": "Probe tool 34.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_035",
+      "description": "Probe tool 35.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_036",
+      "description": "Probe tool 36.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_037",
+      "description": "Probe tool 37.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_038",
+      "description": "Probe tool 38.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_039",
+      "description": "Probe tool 39.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_040",
+      "description": "Probe tool 40.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_041",
+      "description": "Probe tool 41.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_042",
+      "description": "Probe tool 42.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_043",
+      "description": "Probe tool 43.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_044",
+      "description": "Probe tool 44.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_045",
+      "description": "Probe tool 45.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_046",
+      "description": "Probe tool 46.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_047",
+      "description": "Probe tool 47.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_048",
+      "description": "Probe tool 48.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_049",
+      "description": "Probe tool 49.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_050",
+      "description": "Probe tool 50.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_051",
+      "description": "Probe tool 51.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_052",
+      "description": "Probe tool 52.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_053",
+      "description": "Probe tool 53.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_054",
+      "description": "Probe tool 54.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_055",
+      "description": "Probe tool 55.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_056",
+      "description": "Probe tool 56.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_057",
+      "description": "Probe tool 57.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_058",
+      "description": "Probe tool 58.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_059",
+      "description": "Probe tool 59.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_060",
+      "description": "Probe tool 60.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_061",
+      "description": "Probe tool 61.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_062",
+      "description": "Probe tool 62.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_063",
+      "description": "Probe tool 63.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_064",
+      "description": "Probe tool 64.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_065",
+      "description": "Probe tool 65.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_066",
+      "description": "Probe tool 66.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_067",
+      "description": "Probe tool 67.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_068",
+      "description": "Probe tool 68.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_069",
+      "description": "Probe tool 69.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_070",
+      "description": "Probe tool 70.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_071",
+      "description": "Probe tool 71.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_072",
+      "description": "Probe tool 72.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_073",
+      "description": "Probe tool 73.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_074",
+      "description": "Probe tool 74.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_075",
+      "description": "Probe tool 75.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_076",
+      "description": "Probe tool 76.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_077",
+      "description": "Probe tool 77.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_078",
+      "description": "Probe tool 78.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_079",
+      "description": "Probe tool 79.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_080",
+      "description": "Probe tool 80.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_081",
+      "description": "Probe tool 81.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_082",
+      "description": "Probe tool 82.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_083",
+      "description": "Probe tool 83.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_084",
+      "description": "Probe tool 84.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_085",
+      "description": "Probe tool 85.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_086",
+      "description": "Probe tool 86.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_087",
+      "description": "Probe tool 87.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_088",
+      "description": "Probe tool 88.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_089",
+      "description": "Probe tool 89.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_090",
+      "description": "Probe tool 90.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_091",
+      "description": "Probe tool 91.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_092",
+      "description": "Probe tool 92.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_093",
+      "description": "Probe tool 93.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_094",
+      "description": "Probe tool 94.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_095",
+      "description": "Probe tool 95.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_096",
+      "description": "Probe tool 96.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_097",
+      "description": "Probe tool 97.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_098",
+      "description": "Probe tool 98.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_099",
+      "description": "Probe tool 99.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_100",
+      "description": "Probe tool 100.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_101",
+      "description": "Probe tool 101.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_102",
+      "description": "Probe tool 102.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_103",
+      "description": "Probe tool 103.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_104",
+      "description": "Probe tool 104.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_105",
+      "description": "Probe tool 105.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_106",
+      "description": "Probe tool 106.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_107",
+      "description": "Probe tool 107.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_108",
+      "description": "Probe tool 108.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_109",
+      "description": "Probe tool 109.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_110",
+      "description": "Probe tool 110.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_111",
+      "description": "Probe tool 111.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_112",
+      "description": "Probe tool 112.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_113",
+      "description": "Probe tool 113.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_114",
+      "description": "Probe tool 114.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_115",
+      "description": "Probe tool 115.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_116",
+      "description": "Probe tool 116.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_117",
+      "description": "Probe tool 117.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_118",
+      "description": "Probe tool 118.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_119",
+      "description": "Probe tool 119.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_120",
+      "description": "Probe tool 120.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_121",
+      "description": "Probe tool 121.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_122",
+      "description": "Probe tool 122.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_123",
+      "description": "Probe tool 123.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_124",
+      "description": "Probe tool 124.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_125",
+      "description": "Probe tool 125.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_126",
+      "description": "Probe tool 126.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "function",
+     "function": {
+      "name": "probe_tool_127",
+      "description": "Probe tool 127.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "q": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   ],
+   "tool_choice": "none",
+   "max_completion_tokens": 256
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 4,
+  "prompt_tokens": 2799,
+  "total_tokens": 2803,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 0,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": null,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 5,
+   "engine_ttft_ms": 68,
+   "engine_ttlt_ms": 94,
+   "pre_inference_ms": 439,
+   "service_tbt_ms": 10,
+   "service_ttft_ms": 596,
+   "service_ttlt_ms": 638,
+   "user_visible_ttft_ms": 157
+  }
+ },
+ "normalized": {
+  "inputUncached": 2799,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 4,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 31.06,
+  "full": 31.06,
+  "inverse": 254512.73,
+  "inputTokens": 2799,
+  "outputTokens": 4
+ },
+ "body": {
+  "id": "chatcmpl-ESDxPjZ3j9a1xzGQeQUYZjvegORDU",
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": "OK",
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": null
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790395543,
+  "model": "gpt-5.4-nano-2026-03-17",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 4,
+   "prompt_tokens": 2799,
+   "total_tokens": 2803,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 5,
+    "engine_ttft_ms": 68,
+    "engine_ttlt_ms": 94,
+    "pre_inference_ms": 439,
+    "service_tbt_ms": 10,
+    "service_ttft_ms": 596,
+    "service_ttlt_ms": 638,
+    "user_visible_ttft_ms": 157
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260920154030-61e5201a-default-r1-dp0-default"
+  }
+ }
+}

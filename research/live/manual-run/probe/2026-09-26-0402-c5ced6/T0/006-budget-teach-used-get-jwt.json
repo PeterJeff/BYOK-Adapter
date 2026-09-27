@@ -1,0 +1,38 @@
+{
+ "test": "T0",
+ "seq": 6,
+ "label": "budget teach used GET (jwt)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "GET",
+ "path": "/server/count-monthly-teach-tokens",
+ "stream": false,
+ "startedAt": "2026-09-26T04:02:30.612Z",
+ "ms": 172,
+ "ttftMs": 172,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "x-access-tokens"
+  ],
+  "headers": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": 0,
+  "status": 200
+ }
+}

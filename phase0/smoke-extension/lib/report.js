@@ -10,8 +10,10 @@ const MAX_TOKEN_REQUESTS = 20;
 
 /**
  * @typedef {'ok' | 'unavailable' | 'disabled' | string} EmitResult
- * @typedef {{ text: boolean, thinking: boolean, thinkingId: boolean, thinkingMetadata: boolean, data: boolean }} BackFlags
- * @typedef {{ nonce: string, at: string, model: string, emit: { thinking: EmitResult, data: EmitResult, usage: EmitResult }, back: BackFlags }} EmittedRecord
+ * @typedef {{ text: boolean, thinking: boolean, thinkingId: boolean, thinkingMetadata: boolean, signatureIntact?: boolean, data: boolean }} BackFlags
+ * @typedef {{ nonce: string, at: string, model: string, emit: { thinking: EmitResult, data: EmitResult, usage: EmitResult }, back: BackFlags,
+ *   loop?: { round: number, of: number }, signatureBytes?: number }} EmittedRecord
+ *   `loop`: the reply carried a tool call (round `round` of `of`); `signatureBytes`: size of the signature in its thinking metadata.
  */
 
 function createFindings() {
@@ -132,7 +134,7 @@ function mergeRoundTrips(f, roundTrips) {
   for (const rt of roundTrips) {
     const rec = f.e4.emitted.find((r) => r.nonce === rt.nonce);
     if (!rec) continue;
-    for (const k of /** @type {(keyof BackFlags)[]} */ (['text', 'thinking', 'thinkingId', 'thinkingMetadata', 'data'])) {
+    for (const k of /** @type {(keyof BackFlags)[]} */ (['text', 'thinking', 'thinkingId', 'thinkingMetadata', 'signatureIntact', 'data'])) {
       if (rt[k]) rec.back[k] = true;
     }
   }
@@ -202,7 +204,16 @@ function deriveStatus(f, env) {
     const thinkingBack = count((r) => r.back.thinking);
     const thinkingMeta = count((r) => r.back.thinkingMetadata);
     const dataBack = count((r) => r.back.data);
-    const detail = `Of ${checked.length} earlier response(s) seen again in history: thinking part back ${thinkingBack}/${thinkingEmitted} (metadata intact ${thinkingMeta}), private data part back ${dataBack}/${dataEmitted}.`;
+    let detail = `Of ${checked.length} earlier response(s) seen again in history: thinking part back ${thinkingBack}/${thinkingEmitted} (metadata intact ${thinkingMeta}), private data part back ${dataBack}/${dataEmitted}.`;
+    // Tool-loop replies are the case reasoning signatures need (plan §5): report them on their own.
+    const loop = checked.filter((r) => r.loop);
+    if (loop.length) {
+      const sent = loop.filter((r) => r.emit.thinking === 'ok' && r.signatureBytes);
+      const intact = sent.filter((r) => r.back.signatureIntact);
+      const largest = Math.max(0, ...intact.map((r) => r.signatureBytes || 0));
+      const rounds = Math.max(...loop.map((r) => r.loop?.of || 0));
+      detail += ` In tool loops (${loop.length} tool-call replies, up to ${rounds} rounds): thinking back ${loop.filter((r) => r.back.thinking).length}/${loop.filter((r) => r.emit.thinking === 'ok').length}, signature intact ${intact.length}/${sent.length}${intact.length ? ` (largest ${largest} bytes)` : ''}.`;
+    }
     if (thinkingMeta > 0 || dataBack > 0) e4 = { status: 'PASS', detail };
     else if (thinkingEmitted + dataEmitted === 0) e4 = { status: 'FAIL', detail: `${detail} Neither part type could be emitted in this VS Code; see "Emit results".` };
     else if (thinkingBack > 0) e4 = { status: 'PARTIAL', detail: `${detail} Thinking text survives but its metadata does not, so signatures cannot ride on it.` };
@@ -301,10 +312,13 @@ function renderReport(f, env) {
 
   L.push('', '## E4: parts round-trip', '');
   L.push(`- \`usage\` data parts seen in history: ${f.e4.usagePartsSeen}`);
-  L.push('', '| Nonce | Model | Emit thinking | Emit data | Emit usage | Text back | Thinking back | Thinking id | Thinking metadata | Data back |', '|---|---|---|---|---|---|---|---|---|---|');
-  const yn = (/** @type {boolean} */ b) => (b ? 'yes' : 'no');
+  L.push('- Tool loop: the round of a reply that carried a tool call. Signature: bytes carried in its thinking metadata, and whether they came back unchanged.');
+  L.push('', '| Nonce | Model | Tool loop | Emit thinking | Emit data | Emit usage | Text back | Thinking back | Thinking id | Thinking metadata | Signature | Data back |', '|---|---|---|---|---|---|---|---|---|---|---|---|');
+  const yn = (/** @type {boolean | undefined} */ b) => (b ? 'yes' : 'no');
   for (const r of f.e4.emitted.slice(-15)) {
-    L.push(`| ${r.nonce} | ${cell(r.model)} | ${cell(r.emit.thinking)} | ${cell(r.emit.data)} | ${cell(r.emit.usage)} | ${yn(r.back.text)} | ${yn(r.back.thinking)} | ${yn(r.back.thinkingId)} | ${yn(r.back.thinkingMetadata)} | ${yn(r.back.data)} |`);
+    const loop = r.loop ? `${r.loop.round}/${r.loop.of}` : '-';
+    const sig = r.signatureBytes ? `${r.signatureBytes} B, ${r.back.signatureIntact ? 'intact' : 'not back'}` : '-';
+    L.push(`| ${r.nonce} | ${cell(r.model)} | ${loop} | ${cell(r.emit.thinking)} | ${cell(r.emit.data)} | ${cell(r.emit.usage)} | ${yn(r.back.text)} | ${yn(r.back.thinking)} | ${yn(r.back.thinkingId)} | ${yn(r.back.thinkingMetadata)} | ${sig} | ${yn(r.back.data)} |`);
   }
 
   L.push('', '## E5: network', '');

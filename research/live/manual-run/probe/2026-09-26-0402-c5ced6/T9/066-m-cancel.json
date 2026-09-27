@@ -1,0 +1,426 @@
+{
+ "test": "T9",
+ "seq": 66,
+ "label": "M-cancel",
+ "kind": "M",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": "claude-haiku-4-5-20251001",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": true,
+ "startedAt": "2026-09-26T04:05:26.350Z",
+ "ms": 1421,
+ "ttftMs": 737,
+ "aborted": true,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-45-haiku",
+   "max_tokens": 3000,
+   "stream": true,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Write about 2000 words about rivers: their sources, courses and deltas."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "text/event-stream; charset=utf-8",
+ "headers": {
+  "content-type": "text/event-stream; charset=utf-8"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 25,
+  "output_tokens": 6
+ },
+ "normalized": {
+  "inputUncached": 25,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 6,
+  "thinking": 0,
+  "thinkingUnknown": true
+ },
+ "estimate": {
+  "discounted": 3.03,
+  "full": 3.03,
+  "inverse": 476.36,
+  "inputTokens": 25,
+  "outputTokens": 6
+ },
+ "events": [
+  {
+   "event": "message_start",
+   "data": {
+    "message": {
+     "id": "msg_vrtx_011CfRPZ8dJtYkxf68Zi2bmy",
+     "container": null,
+     "content": [],
+     "model": "claude-haiku-4-5-20251001",
+     "role": "assistant",
+     "stop_details": null,
+     "stop_reason": null,
+     "stop_sequence": null,
+     "type": "message",
+     "usage": {
+      "cache_creation": {
+       "ephemeral_1h_input_tokens": 0,
+       "ephemeral_5m_input_tokens": 0
+      },
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "inference_geo": null,
+      "input_tokens": 25,
+      "output_tokens": 6,
+      "output_tokens_details": null,
+      "server_tool_use": null,
+      "service_tier": null
+     }
+    },
+    "type": "message_start"
+   }
+  },
+  {
+   "event": "content_block_start",
+   "data": {
+    "content_block": {
+     "citations": null,
+     "text": "",
+     "type": "text"
+    },
+    "index": 0,
+    "type": "content_block_start"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "# Rivers: Sources,",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " Courses, and Deltas",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "\n\nRivers",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " are among Earth",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "'s most vital",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " geographical",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " features, sh",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "aping landscapes, supporting",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " ecosystems, and sust",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "aining human civil",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": "izations for",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " millennia. These flowing",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " bodies",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " of water represent",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " dynamic",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " systems that",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " transport",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " water from",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " elevated",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " regions",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " to the sea, continuously",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " reshaping the",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " land",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " through erosion, transportation",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": ", and deposition. To",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " fully",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " understand rivers and",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  },
+  {
+   "event": "content_block_delta",
+   "data": {
+    "delta": {
+     "text": " their profound",
+     "type": "text_delta"
+    },
+    "index": 0,
+    "type": "content_block_delta"
+   }
+  }
+ ]
+}

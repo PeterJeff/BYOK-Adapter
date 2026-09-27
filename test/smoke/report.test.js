@@ -63,6 +63,21 @@ test('E4 verdicts', () => {
   assert.equal(report.deriveStatus(f, {}).E4.status, 'PASS');
 });
 
+test('E4 reports tool-loop replies and their signatures separately', () => {
+  const f = report.createFindings();
+  const emit = { thinking: 'ok', data: 'ok', usage: 'disabled' };
+  report.addEmitted(f, { nonce: 'smk-1-aaaaaa', at: '', model: 'm', emit, back: back(), loop: { round: 1, of: 2 }, signatureBytes: 1024 });
+  report.addEmitted(f, { nonce: 'smk-2-bbbbbb', at: '', model: 'm', emit, back: back(), loop: { round: 2, of: 2 }, signatureBytes: 8192 });
+  report.mergeRoundTrips(f, [
+    { nonce: 'smk-1-aaaaaa', ...back({ text: true, thinking: true, thinkingMetadata: true, signatureIntact: true }) },
+    { nonce: 'smk-2-bbbbbb', ...back({ text: true, thinking: true, thinkingMetadata: true }) },
+  ]);
+  const s = report.deriveStatus(f, {}).E4;
+  assert.equal(s.status, 'PASS');
+  assert.match(s.detail, /In tool loops \(2 tool-call replies, up to 2 rounds\): thinking back 2\/2, signature intact 1\/2 \(largest 1024 bytes\)\.$/);
+  assert.match(report.renderReport(f, {}), /\| smk-2-bbbbbb \| m \| 2\/2 \| .* \| 8192 B, not back \| no \|/);
+});
+
 test('E4 fails clearly when nothing could be emitted', () => {
   const f = report.createFindings();
   report.addEmitted(f, { nonce: 'smk-1-aaaaaa', at: '', model: 'm', emit: { thinking: 'unavailable', data: 'unavailable', usage: 'unavailable' }, back: back({ text: true }) });

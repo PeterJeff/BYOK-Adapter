@@ -1,0 +1,74 @@
+{
+ "test": "T0",
+ "seq": 9,
+ "label": "validate_token_with_full_user",
+ "kind": "user",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/user/validate_token_with_full_user",
+ "stream": false,
+ "startedAt": "2026-09-26T05:37:58.715Z",
+ "ms": 126,
+ "ttftMs": 126,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-access-tokens"
+  ],
+  "headers": {},
+  "body": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "summary": {
+   "bot_settings": "string(empty)",
+   "cac_auth": "boolean",
+   "cac_found": "boolean",
+   "company": "string",
+   "country": "string",
+   "custom_intro_prompt": {
+    "type": "string(empty)",
+    "chars": 0
+   },
+   "datasets_with_permissions": "array(12)",
+   "email": "<redacted>",
+   "enabled_models": "null",
+   "first_name": "<redacted>",
+   "force_models": [],
+   "force_post_check": "null",
+   "id": "number",
+   "is_cui_mfa_authorized": false,
+   "last_name": "<redacted>",
+   "max_tokens": 200000,
+   "max_train_tokens": 200000,
+   "mfa_auth": "boolean",
+   "mfa_required": "boolean",
+   "mfa_secret": "string",
+   "new_password_required": "boolean",
+   "organization_id": "<redacted>",
+   "paid": true,
+   "persona_source_list": "array(0)",
+   "phone": "<redacted>",
+   "plan_type": "string",
+   "plugin_source_list": "array(0)",
+   "role": "developer",
+   "stripe_customer_id": "string",
+   "token_scopes": "null",
+   "type": "string"
+  }
+ }
+}

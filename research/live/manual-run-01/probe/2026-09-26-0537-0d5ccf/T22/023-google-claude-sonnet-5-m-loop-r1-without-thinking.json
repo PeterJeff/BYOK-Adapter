@@ -1,0 +1,131 @@
+{
+ "test": "T22",
+ "seq": 23,
+ "label": "google-claude-sonnet-5@M loop r1 without thinking",
+ "kind": "M",
+ "model": "google-claude-sonnet-5",
+ "resolvedModel": "claude-sonnet-5",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T05:38:27.715Z",
+ "ms": 1378,
+ "ttftMs": 1378,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-sonnet-5",
+   "max_tokens": 768,
+   "tools": [
+    {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "inference_geo": null,
+  "input_tokens": 457,
+  "output_tokens": 50,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 457,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 50,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 77.77,
+  "full": 77.77,
+  "inverse": 4245.45,
+  "inputTokens": 457,
+  "outputTokens": 50
+ },
+ "body": {
+  "id": "msg_vrtx_011CfRWeZKpFooNQV6pJS6bT",
+  "container": null,
+  "content": [
+   {
+    "id": "toolu_vrtx_01Ur1k2TFp41h5nXqHgJjHVW",
+    "input": {
+     "city": "Paris"
+    },
+    "name": "get_weather",
+    "type": "tool_use"
+   }
+  ],
+  "model": "claude-sonnet-5",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 457,
+   "output_tokens": 50,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

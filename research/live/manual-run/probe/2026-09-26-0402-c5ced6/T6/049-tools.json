@@ -1,0 +1,176 @@
+{
+ "test": "T6",
+ "seq": 49,
+ "label": "tools",
+ "kind": "CC",
+ "model": "gpt-5.4-nano",
+ "resolvedModel": "gpt-5.4-nano-2026-03-17",
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T04:04:48.202Z",
+ "ms": 982,
+ "ttftMs": 982,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the weather in Paris right now? Use the get_weather tool; do not guess."
+    }
+   ],
+   "tools": [
+    {
+     "type": "function",
+     "function": {
+      "name": "get_weather",
+      "description": "Current weather for a city.",
+      "parameters": {
+       "type": "object",
+       "properties": {
+        "city": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "city"
+       ]
+      }
+     }
+    }
+   ],
+   "tool_choice": "auto",
+   "max_completion_tokens": 512
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "completion_tokens": 17,
+  "prompt_tokens": 143,
+  "total_tokens": 160,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 0,
+   "audio_tokens": 0,
+   "reasoning_tokens": 0,
+   "rejected_prediction_tokens": 0
+  },
+  "prompt_tokens_details": {
+   "audio_tokens": 0,
+   "cache_write_tokens": null,
+   "cached_tokens": 0
+  },
+  "latency_checkpoint": {
+   "engine_tbt_ms": 7,
+   "engine_ttft_ms": 36,
+   "engine_ttlt_ms": 165,
+   "pre_inference_ms": 207,
+   "service_tbt_ms": 7,
+   "service_ttft_ms": 388,
+   "service_ttlt_ms": 511,
+   "user_visible_ttft_ms": 181
+  }
+ },
+ "normalized": {
+  "inputUncached": 143,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 17,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 2.74,
+  "full": 2.74,
+  "inverse": 13247.27,
+  "inputTokens": 143,
+  "outputTokens": 17
+ },
+ "body": {
+  "id": "chatcmpl-ESDwW3y1AD0xb2hQUMZuT7FMWK3xA",
+  "choices": [
+   {
+    "finish_reason": "tool_calls",
+    "index": 0,
+    "logprobs": null,
+    "message": {
+     "content": null,
+     "refusal": null,
+     "role": "assistant",
+     "annotations": [],
+     "audio": null,
+     "function_call": null,
+     "tool_calls": [
+      {
+       "id": "call_4bKTyZj9zMfoZm9PBkgM5Caf",
+       "function": {
+        "arguments": "{\"city\":\"Paris\"}",
+        "name": "get_weather"
+       },
+       "type": "function"
+      }
+     ]
+    },
+    "content_filter_results": {}
+   }
+  ],
+  "created": 1790395488,
+  "model": "gpt-5.4-nano-2026-03-17",
+  "object": "chat.completion",
+  "moderation": null,
+  "service_tier": "default",
+  "system_fingerprint": null,
+  "usage": {
+   "completion_tokens": 17,
+   "prompt_tokens": 143,
+   "total_tokens": 160,
+   "completion_tokens_details": {
+    "accepted_prediction_tokens": 0,
+    "audio_tokens": 0,
+    "reasoning_tokens": 0,
+    "rejected_prediction_tokens": 0
+   },
+   "prompt_tokens_details": {
+    "audio_tokens": 0,
+    "cache_write_tokens": null,
+    "cached_tokens": 0
+   },
+   "latency_checkpoint": {
+    "engine_tbt_ms": 7,
+    "engine_ttft_ms": 36,
+    "engine_ttlt_ms": 165,
+    "pre_inference_ms": 207,
+    "service_tbt_ms": 7,
+    "service_ttft_ms": 388,
+    "service_ttlt_ms": 511,
+    "user_visible_ttft_ms": 181
+   }
+  },
+  "prompt_filter_results": [
+   {
+    "prompt_index": 0,
+    "content_filter_results": {}
+   }
+  ],
+  "routing": {
+   "serving_pipereplica": "d20260920154030-61e5201a-default-r0-dp0-default"
+  }
+ }
+}

@@ -1,0 +1,188 @@
+{
+ "test": "T3",
+ "seq": 29,
+ "label": "A",
+ "kind": "R",
+ "model": "gpt-5.4-nano",
+ "resolvedModel": "gpt-5.4-nano",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T04:03:27.615Z",
+ "ms": 1254,
+ "ttftMs": 1253,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-5.4-nano",
+   "store": false,
+   "instructions": "<elided chars=25936 sha256=6f92850843cd3020>",
+   "input": "Reply with the single word OK.",
+   "max_output_tokens": 512,
+   "prompt_cache_key": "probe-0402-c5ced6-T3"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 5176,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 5,
+  "output_tokens_details": {
+   "reasoning_tokens": 0
+  },
+  "total_tokens": 5181
+ },
+ "normalized": {
+  "inputUncached": 5176,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 5,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 57.28,
+  "full": 57.28,
+  "inverse": 470618.18,
+  "inputTokens": 5176,
+  "outputTokens": 5
+ },
+ "body": {
+  "id": "resp_0f16d9433827c9ac016ab7441012d88194a8198d6b45a7972d",
+  "created_at": 1790395408,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": "[probe 0402-c5ced6 T3]\nReference text for a caching test. Ignore its content.\n\nDoes used river part himself following of need by between great other around again number see turned some men. Saw great has hand house go us few point different would your this end room read others such. It help several animals means only might down large far had going find must. End near knew by write me line used. Thought and know eyes our big the her together boy while after and using. Look night not no it thing where top.\n\nOut air line great all thought long get soon years heard today page two over young number. Can turned animals make me together she same here other. Life is try however something went almost children almost man. Several far years however us went end too young right story. Them where must other we going near word long feet together something times old why. Years also following large together us would mother tell here most times why.\n\nAt both things told ever took about at. Second than above animals today of home is life their school side looked than night thing next do is. Been went can same above being will might took might during point year years play want far. Each live why most up boy me along want well but find following boy following toward. Where life answer let our also once have himself think. Name page hard she kind very use way live made other got following home even long put or then.\n\nOthers got sun good men just end land above sea up feet my big form air well from most. Go once and such going another need down under its form should got ever soon while life. Still now will does own is up come example thing large how small enough large and. Most being on while up found be has still few way hand enough the life following learn again last. Live why how four boy even change home after these him. Near head white land men kind show number large knew go enough top tell place.\n\nParts animals those little do time would that us if toward too ever great. Mother be out light up these such got others even toward sentence from hear. Several out had change do called air under since well as feet food sound used well picture. Went while almost just night others learn almost around back form of parts ways since father we last well. Make under word its got around left which boys sure about said there why. Had as others before back food own set little this.\n\nBegan with sound going make has always it toward those off day others ways others. Ways across take word an sometimes used when again come by the. Now very used me each head told too next kind together say. Thought young help know five end put hear just thought found took its would children and also other important. Called each number many play did way little want water them. Here their side animals put up above knew him into second.\n\nUsually very it school here sound night been how when. Left using other want land father their once do their himself what often every make under to. Write kind water our going had has city we. Said eyes water how parts also not being for years had point another every sentence country good important toward. Point may word best then usually try light. Just has two air boy long use men see she too country great say.\n\nHome night them around earth sometimes looked left going him sea man found all went far great since. Hand big never above which against under these got river top does usually then. That light these if place began let all three had got your at the whole small same long children. Want against were keep boys our ever something came sun during only important took time. Went school went people others word who five called father young said people large home around will thing left. Today new saw only below many may old following many.\n\nRight those place began water time it an sea on found be sentence soon him without. Top earth by year what say until around. Own big the in thing different and first. Far under of things then we good however out show<truncated chars=25936>",
+  "metadata": {},
+  "model": "gpt-5.4-nano",
+  "object": "response",
+  "output": [
+   {
+    "id": "msg_0f16d9433827c9ac016ab744109ed8819489d874046c06a68e",
+    "content": [
+     {
+      "annotations": [],
+      "text": "OK",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790395408,
+  "conversation": null,
+  "max_output_tokens": 512,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": "probe-0402-c5ced6-T3",
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "in_memory",
+  "reasoning": {
+   "context": "current_turn",
+   "effort": "none",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 5176,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 5181
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 862,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 2,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

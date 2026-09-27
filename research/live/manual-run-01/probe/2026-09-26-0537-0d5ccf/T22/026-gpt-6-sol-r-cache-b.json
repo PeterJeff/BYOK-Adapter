@@ -1,0 +1,188 @@
+{
+ "test": "T22",
+ "seq": 26,
+ "label": "gpt-6-sol@R cache B",
+ "kind": "R",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T05:38:47.283Z",
+ "ms": 2178,
+ "ttftMs": 2178,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "store": false,
+   "instructions": "<elided chars=10924 sha256=8c85ee38b2f9d312>",
+   "input": "Reply with the single word OK.",
+   "max_output_tokens": 256,
+   "prompt_cache_key": "probe-0537-0d5ccf-gpt-6-sol-R"
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 2194,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 2191
+  },
+  "output_tokens": 5,
+  "output_tokens_details": {
+   "reasoning_tokens": 0
+  },
+  "total_tokens": 2199
+ },
+ "normalized": {
+  "inputUncached": 3,
+  "cacheRead": 2191,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 5,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 67.27,
+  "full": 609.54,
+  "inverse": 7982.22,
+  "inputTokens": 2194,
+  "outputTokens": 5
+ },
+ "body": {
+  "id": "resp_099876fd30989cdc016ab75a67c8848194b23c5ea910b6c24a",
+  "created_at": 1790401127,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": "[probe 0537-0d5ccf T22-gpt-6-sol@R]\nReference text for a caching test. Ignore its content.\n\nSeveral going while it some story say same side side be our name between set few great no. Try called thought have today food went began toward near kind few below or soon however go. Then people find once from best those young word. Times part also things kind this every hear before long thought no new very asked. With right new called hand began point even white eyes way it. Under could together boys others got around know let thing can form every such take white.\n\nThe well come heard land being sometimes what did. Home city up together same however as form several in know others kind could city those what many out. Only think make point called four same river looked below. Way today next far above new earth next there usually in without day because other. Near and part called own away which place below even. To many white well ever sometimes before make her not whole sound sure.\n\nAbove more being end three from set always as important too land right have for away. Through this any sometimes until there would tell right when because first once play times learn some. Often but line its things several here young put sea things many sun an across. Might because children it could take thought himself might year sure. Found four write took two if be much sea others could before much but found live here one hard. Use say during just several page both going page several him show form when for me them find come.\n\nHave with give back sun water change page try something sea great being all form. Go place food right me far were because. Near about toward five again great like means out enough. End from sea next need my can found. New where what light how down five made these across men as their new. See think however five try help times next have must men.\n\nSide make no as their good however also called water about example sound sun the water saw. Another almost around father country country she not sometimes here made both too picture play were picture told. Young looked often last night to after which their years get using it will animals across show others sun. From those small means different who look most one so every into second end on help as point. Told can me might had every knew does together food those even story top. Word so began because first the away boys them than left my paper across.\n\nThis were sentence where land own at use like learn work up means high not make by down. Know that place work use light into home food usually put. Point heard from give far house going about school picture hand why about. Good end saw sound city set much below him last today on words her set head took sure. Under many give little know study however own each look try do around. City let sometimes why on picture these under.\n\nIn different know story give picture house should words many say five who one got below earth. Think both years take hard something even does very. Took went your sentence than it young thought second can now during study most its every to which. Years by food our right great show school page new live river over. Going eyes sound not sure being white told small to try. Three where together much world go turned following another told took without know knew.\n\nSure soon she today most day each if of see called two help make that us. River mother took number her to been river means make go we once is times form soon. From water should hand should told look by sometimes change tell enough would there here line we find. Feet keep earth being get through without before think has let river even can live next of today were. Today does side page night paper something do sea about. Before made going word go once up always country point children do at.\n\nAgainst father as after world live hand old hand him said. Tell looked own just this each new thing answer each went. There form then where to white them went found turned. As went live so<truncated chars=10924>",
+  "metadata": {},
+  "model": "gpt-6-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "msg_099876fd30989cdc016ab75a692d388194b0cead29d96d0f16",
+    "content": [
+     {
+      "annotations": [],
+      "text": "OK",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790401129,
+  "conversation": null,
+  "max_output_tokens": 256,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": "probe-0537-0d5ccf-gpt-6-sol-R",
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 2194,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 2191
+   },
+   "output_tokens": 5,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 2199
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 808,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 2,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

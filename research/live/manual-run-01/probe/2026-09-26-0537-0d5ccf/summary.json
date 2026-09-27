@@ -1,0 +1,505 @@
+{
+ "alias": "manual-run-01",
+ "runId": "0537-0d5ccf",
+ "startedAt": "2026-09-26T05:37:56.465Z",
+ "finishedAt": "2026-09-26T05:39:03.684Z",
+ "apiVia": "--api",
+ "models": {
+  "claude": {
+   "id": "google-claude-45-haiku",
+   "token_conversion_rate": {
+    "completion": 0.275,
+    "prompt": 0.055
+   },
+   "cui_capable": true
+  },
+  "gpt": {
+   "id": "gpt-5.4-nano",
+   "token_conversion_rate": {
+    "completion": 0.06875,
+    "prompt": 0.011
+   },
+   "cui_capable": true
+  },
+  "gemini": {
+   "id": "google-gemini-3.1-flash-lite-gov",
+   "token_conversion_rate": {
+    "completion": 0.0825,
+    "prompt": 0.01375
+   },
+   "cui_capable": true
+  },
+  "embedding": null,
+  "long": null
+ },
+ "options": {
+  "tests": [
+   "T0",
+   "T22"
+  ],
+  "matrix": [
+   "google-claude-sonnet-5@M",
+   "gpt-6-sol@R"
+  ],
+  "maxSpend": 60000,
+  "prefixTokens": 6000,
+  "ttlWaitS": 360,
+  "measure": true,
+  "allowNonCui": false,
+  "dataset": null
+ },
+ "budget": {
+  "before": {
+   "used": 83907,
+   "left": 116093
+  },
+  "after": {
+   "used": 86670,
+   "left": 113330
+  }
+ },
+ "spentEstimate": 3879.82,
+ "billedRates": {
+  "google-claude-sonnet-5": {
+   "prompt": 0.21481481481481482,
+   "completion": 1.072503,
+   "source": "tokenizer"
+  },
+  "gpt-6-sol": {
+   "prompt": 0.17834757834757833,
+   "completion": 1.072501,
+   "source": "tokenizer"
+  }
+ },
+ "maxSpend": 60000,
+ "results": [
+  {
+   "id": "T0",
+   "title": "Auth and budget endpoints (free)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "bad auth is HTTP 200 + error envelope on every flavor",
+     "result": "pass",
+     "detail": "{\"bad-auth M\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth CC\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth R\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":400,\"message\":\"Token is invalid [2]\"}},\"bad-auth G\":{\"http\":200,\"error\":{\"shape\":\"asksage-envelope\",\"status\":4"
+    },
+    {
+     "name": "rate unit (tokenizer vs get-models prompt rate)",
+     "result": "info",
+     "detail": "ratio 0.07288317256162916 matches neither 0.055 nor its inverse"
+    }
+   ],
+   "observations": {
+    "accessToken": "<redacted:object>",
+    "budgetEndpoints": {
+     "used GET (jwt)": {
+      "response": 83907,
+      "type": "number",
+      "status": 200
+     },
+     "used POST {} (jwt)": {
+      "response": 83907,
+      "type": "number",
+      "status": 200
+     },
+     "used POST app_name=byok-adapter-probe (jwt)": {
+      "response": 83907,
+      "type": "number",
+      "status": 200
+     },
+     "left-with-org (jwt)": {
+      "response": 116093,
+      "type": "number",
+      "status": 200
+     },
+     "teach used GET (jwt)": {
+      "response": 11,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as x-access-tokens)": {
+      "response": 83907,
+      "type": "number",
+      "status": 200
+     },
+     "used GET (raw key as bearer)": {
+      "error": "asksage-envelope 400: Token is invalid [1]"
+     }
+    },
+    "fullUser": {
+     "summary": {
+      "bot_settings": "string(empty)",
+      "cac_auth": "boolean",
+      "cac_found": "boolean",
+      "company": "string",
+      "country": "string",
+      "custom_intro_prompt": {
+       "type": "string(empty)",
+       "chars": 0
+      },
+      "datasets_with_permissions": "array(12)",
+      "email": "<redacted>",
+      "enabled_models": "null",
+      "first_name": "<redacted>",
+      "force_models": [],
+      "force_post_check": "null",
+      "id": "number",
+      "is_cui_mfa_authorized": false,
+      "last_name": "<redacted>",
+      "max_tokens": 200000,
+      "max_train_tokens": 200000,
+      "mfa_auth": "boolean",
+      "mfa_required": "boolean",
+      "mfa_secret": "string",
+      "new_password_required": "boolean",
+      "organization_id": "<redacted>",
+      "paid": true,
+      "persona_source_list": "array(0)",
+      "phone": "<redacted>",
+      "plan_type": "string",
+      "plugin_source_list": "array(0)",
+      "role": "developer",
+      "stripe_customer_id": "string",
+      "token_scopes": "null",
+      "type": "string"
+     }
+    },
+    "authenticatedCatalog": {
+     "count": 105,
+     "publicCount": 105,
+     "onlyAuthenticated": [],
+     "onlyPublic": []
+    },
+    "badAuth": {
+     "bad-auth M": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth CC": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth R": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth G": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     },
+     "bad-auth server": {
+      "http": 200,
+      "error": {
+       "shape": "asksage-envelope",
+       "status": 400,
+       "message": "Token is invalid [2]"
+      }
+     }
+    },
+    "countTokens": {
+     "key": {
+      "input_tokens": 14
+     },
+     "jwt": {
+      "input_tokens": 14
+     }
+    },
+    "tokenizer": {
+     "model": "google-claude-45-haiku",
+     "tokens": 933,
+     "asksage": 68,
+     "ratio": 0.0729,
+     "getModelsPromptRate": 0.055
+    }
+   },
+   "exchanges": 19
+  },
+  {
+   "id": "T22",
+   "title": "Model matrix: cache repeat and reasoning tool loop per model and flavor (--matrix)",
+   "status": "ok",
+   "checks": [
+    {
+     "name": "google-claude-sonnet-5@M: cache read on repeat",
+     "result": "pass",
+     "detail": "read 6299 of 6360; A wrote 6299"
+    },
+    {
+     "name": "google-claude-sonnet-5@M: read billed at 0.1x (host rule 0.1x)",
+     "result": "pass",
+     "detail": "billed 150 for 6299 cached + 61 uncached in, 0 out"
+    },
+    {
+     "name": "google-claude-sonnet-5@M: write billed at 1.25x (host rule 1.25x)",
+     "result": "pass",
+     "detail": "billed 1694 for 6299 written + 14 uncached in"
+    },
+    {
+     "name": "google-claude-sonnet-5@M: tool call in round 1",
+     "result": "pass"
+    },
+    {
+     "name": "google-claude-sonnet-5@M: reasoning state returned",
+     "result": "info",
+     "detail": "none"
+    },
+    {
+     "name": "google-claude-sonnet-5@M: round 2 with state as returned",
+     "result": "pass",
+     "detail": "ok"
+    },
+    {
+     "name": "gpt-6-sol@R: cache read on repeat",
+     "result": "pass",
+     "detail": "read 2191 of 2194; A wrote 2191"
+    },
+    {
+     "name": "gpt-6-sol@R: read billed at 0.1x (host rule 0.1x)",
+     "result": "pass",
+     "detail": "billed 49 for 2191 cached + 3 uncached in, 5 out"
+    },
+    {
+     "name": "gpt-6-sol@R: write billed at 1.25x (host rule 1.25x)",
+     "result": "pass",
+     "detail": "billed 498 for 2191 written + 3 uncached in"
+    },
+    {
+     "name": "gpt-6-sol@R: tool call in round 1",
+     "result": "pass"
+    },
+    {
+     "name": "gpt-6-sol@R: reasoning state returned",
+     "result": "info",
+     "detail": "none"
+    },
+    {
+     "name": "gpt-6-sol@R: round 2 with state as returned",
+     "result": "pass",
+     "detail": "ok"
+    }
+   ],
+   "observations": {
+    "billedRates": {
+     "google-claude-sonnet-5": {
+      "prompt": 0.21481481481481482,
+      "completion": 1.072503,
+      "source": "tokenizer"
+     },
+     "gpt-6-sol": {
+      "prompt": 0.17834757834757833,
+      "completion": 1.072501,
+      "source": "tokenizer"
+     }
+    },
+    "matrixRows": [
+     {
+      "model": "google-claude-sonnet-5",
+      "flavor": "M",
+      "served": "claude-sonnet-5",
+      "cacheRead": 6299,
+      "cacheInput": 6360,
+      "cacheWrite": 6299,
+      "readMult": 0.1,
+      "writeMult": 1.25,
+      "billedA": 1694,
+      "billedB": 150,
+      "toolCall": true,
+      "state": "none",
+      "round2": "ok",
+      "round2Without": "n/a",
+      "thinking": "not accepted: anthropic-error invalid_request_error: \"thinking.type.enabled\" is not supported for this model. Use ",
+      "thinkingTokens": 0
+     },
+     {
+      "model": "gpt-6-sol",
+      "flavor": "R",
+      "served": "gpt-6-sol",
+      "cacheRead": 2191,
+      "cacheInput": 2194,
+      "cacheWrite": 2191,
+      "readMult": 0.1,
+      "writeMult": 1.25,
+      "billedA": 498,
+      "billedB": 49,
+      "toolCall": true,
+      "state": "none",
+      "round2": "ok",
+      "round2Without": "n/a",
+      "thinkingTokens": 0
+     }
+    ]
+   },
+   "exchanges": 9
+  }
+ ],
+ "measurements": [
+  {
+   "test": "T22",
+   "label": "T22 google-claude-sonnet-5@M cache A",
+   "usedDelta": 1694,
+   "leftDelta": 1694,
+   "settled": true,
+   "firstMoveMs": 5548,
+   "est": {
+    "discounted": 867.65,
+    "full": 694.43,
+    "inverse": 57390.91
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5548,
+     "used": 85601,
+     "left": 114399
+    },
+    {
+     "tMs": 11008,
+     "used": 85601,
+     "left": 114399
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 google-claude-sonnet-5@M cache B",
+   "usedDelta": 150,
+   "leftDelta": 150,
+   "settled": true,
+   "firstMoveMs": 5428,
+   "est": {
+    "discounted": 76,
+    "full": 699.6,
+    "inverse": 57818.18
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5428,
+     "used": 85751,
+     "left": 114249
+    },
+    {
+     "tMs": 11186,
+     "used": 85751,
+     "left": 114249
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 gpt-6-sol@R cache A",
+   "usedDelta": 498,
+   "leftDelta": 498,
+   "settled": true,
+   "firstMoveMs": 5993,
+   "est": {
+    "discounted": 760.17,
+    "full": 609.54,
+    "inverse": 7982.22
+   },
+   "closest": "full",
+   "polls": [
+    {
+     "tMs": 5993,
+     "used": 86552,
+     "left": 113448
+    },
+    {
+     "tMs": 11695,
+     "used": 86552,
+     "left": 113448
+    }
+   ]
+  },
+  {
+   "test": "T22",
+   "label": "T22 gpt-6-sol@R cache B",
+   "usedDelta": 49,
+   "leftDelta": 49,
+   "settled": true,
+   "firstMoveMs": 5516,
+   "est": {
+    "discounted": 67.27,
+    "full": 609.54,
+    "inverse": 7982.22
+   },
+   "closest": "discounted",
+   "polls": [
+    {
+     "tMs": 5516,
+     "used": 86601,
+     "left": 113399
+    },
+    {
+     "tMs": 11067,
+     "used": 86601,
+     "left": 113399
+    }
+   ]
+  }
+ ],
+ "usageFields": {
+  "M non-stream": {
+   "count": 4,
+   "fields": [
+    "cache_creation",
+    "cache_creation.ephemeral_1h_input_tokens",
+    "cache_creation.ephemeral_5m_input_tokens",
+    "cache_creation_input_tokens",
+    "cache_read_input_tokens",
+    "inference_geo",
+    "input_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.thinking_tokens",
+    "server_tool_use",
+    "service_tier"
+   ],
+   "checks": {}
+  },
+  "R non-stream": {
+   "count": 4,
+   "fields": [
+    "input_tokens",
+    "input_tokens_details",
+    "input_tokens_details.cache_write_tokens",
+    "input_tokens_details.cached_tokens",
+    "output_tokens",
+    "output_tokens_details",
+    "output_tokens_details.reasoning_tokens",
+    "total_tokens"
+   ],
+   "checks": {}
+  }
+ },
+ "servedModels": [
+  {
+   "requested": "google-claude-sonnet-5",
+   "served": "claude-sonnet-5",
+   "count": 4
+  },
+  {
+   "requested": "gpt-6-sol",
+   "served": "gpt-6-sol",
+   "count": 4
+  }
+ ],
+ "stoppedBy": null,
+ "tool": "phase0/probe/api-probe.mjs"
+}

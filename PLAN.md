@@ -51,11 +51,13 @@ The raw specs win whenever a digest disagrees with them. Pricing claims are now 
 VS Code's built-in Custom Endpoint (BYOK) route performs poorly against Ask Sage and shows nothing about budget or cost. The likely causes (`caching-and-endpoint-flavors.md`):
 
 1. **Caching.** Copilot does not send cache hints to third-party endpoints. With Claude configured as chat-completions, Copilot sends a proprietary `copilot_cache_control` field that Ask Sage ignores (confirmed 2026-09-25: no cache write). So every agent tool round re-sends the full context uncached. (Claude through CC is currently billed 0 by an Ask Sage bug, which hides that cost until it is fixed; `research/rate-sources-investigation.md` §4.)
-2. **Thinking.** Ask Sage's documented Claude config never switches on extended thinking.
+2. **Thinking.** Ask Sage's documented Claude config never switched on extended thinking. (Its VS Code page does now, with `"thinking": true` and a reasoning-effort list, checked 2026-09-27; `research/live/FINDINGS.md`, "Checked against the docs".)
 3. **Output caps.** Output limits are low (as little as 5–8k on some models) or left to unknown server defaults.
-4. **Stateful Responses API.** The Responses API path chains `previous_response_id` without storing responses.
+4. **Stateful Responses API.** The Responses API path chains `previous_response_id` without storing responses. (Ask Sage's VS Code page works around this with `"zeroDataRetentionEnabled": true`, checked 2026-09-27.)
 5. **Silent errors.** Errors come back as HTTP 200 with the error in the body.
 6. **No cost view.** There is no rate awareness, so no cost display.
+
+Reasons 2 and 4 are now fixed by configuration in Ask Sage's own guide, so the extension has to earn its place on caching, cost awareness and error handling. T12 measures the built-in route configured exactly as that guide says, and it runs before Phase 2 (§9).
 
 The extension's job:
 - **Caching done right.** Explicit cache breakpoints, the right endpoint per model, and cache use that can be checked.
@@ -89,7 +91,7 @@ The extension's job:
 ### 2.1 Cache pricing
 Cache prices are **multiples of the same model's prompt price**, so they do not depend on the absolute rate scale (§3.1). Measured on the test tenant, 2026-09-25 (`research/rate-sources-investigation.md` §3); provisional for other tenants until Phase 0c.
 - **Rule per host, from the response's own usage fields** (constants in code, not a per-model table):
-  - Claude through M (Vertex `google-claude-*`, Bedrock `aws-bedrock-claude-*`): read **0.1×**, 5-minute write **1.25×**, 1-hour write **2×**. Measured on Haiku 4.5, Sonnet 4.5 and Sonnet 4.6. The web app's table gives lower read multipliers for Fable 5.1 (0.025×) and Opus 5.5 (0.05×), not yet measured.
+  - Claude through M (Vertex `google-claude-*`, Bedrock `aws-bedrock-claude-*`): read **0.1×**, 5-minute write **1.25×**, 1-hour write **2×**. Measured on Haiku 4.5, Sonnet 4.5 and Sonnet 4.6. **Except Opus 5.5, which reads at 0.05× (measured 2026-09-26), as the web app's table says; the table's 0.025× for Fable 5.1 is not yet measured.** So the read multiplier is per model, not a host constant.
   - OpenAI on Azure through CC or R: read **0.1×** on every GPT tested, including GPT-4.1-nano and GPT-5.4-nano, which the web app's table lists with no cache rate; write **1.25×** only where the response reports `cache_write_tokens` (GPT-5.6/6), with no write charge otherwise.
   - No discount: Gemini through G (the implicit cache hits, `cachedContentTokenCount` is reported, the bill is full), Bedrock-hosted GPT-5.6, N.
   - Claude through CC: every request logged and billed 0 (an Ask Sage billing bug, §3.1). Never route Claude through CC.
@@ -108,10 +110,10 @@ Overridable per model in settings.
 | Family | Default | Fallback |
 |---|---|---|
 | Claude (all hosts) | **M**, always | none: CC gives no reliable Claude caching |
-| GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC. Note that CC drops reasoning between tool rounds, which hurts agentic quality. |
+| GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC, with no reasoning between tool rounds. On GPT-6 Sol CC rejects tools unless `reasoning_effort: "none"` (measured), so CC means no reasoning at all there. |
 | GPT-4.1, 5, 5.1, 5.2, o-series | R for reasoning models, CC for 4.1 | cache reads are discounted on both (measured on 4.1-nano and 5.4-nano) |
 | Bedrock-hosted GPT (`aws-bedrock-gpt-*`) | CC | no caching at all (measured): prefer the Azure-hosted model for agent work |
-| Gemini | CC (Ask Sage's own choice), only if T18 shows thought signatures survive the CC shim | G. No cache discount on either path (measured on G), so it is expensive for long agent loops |
+| Gemini | **G**, with the placeholder `thoughtSignature` added to history function calls: Ask Sage strips real signatures, and Gemini 3 rejects a tool loop without one (T18, T22, `research/live/FINDINGS.md`). The model then does not see its earlier reasoning. Measured on non-streaming `generateContent` only; the streaming endpoint is still open. | none: CC rejects every Gemini id tried, although Ask Sage's VS Code page lists Gemini under Chat Completions. The live `/server/openai/v1/models` list decides per tenant. No cache discount through G (measured), so it is expensive for long loops |
 | Everything else (partner-hosted, Grok, DeepSeek, Mistral, Llama) | CC | – |
 | Datasets, personas or live search wanted | **N**, as a separate opt-in "Ask Sage (datasets)" model variant in Ask mode only | – |
 
@@ -121,7 +123,7 @@ The picker can list the same model under several flavors (e.g. "GPT-5.5 (Respons
 Tenants can route the same model name to different upstream hosts and regions. Hosts lag each other on features: caching parameters, the 1-hour TTL, extended retention, newer models and reasoning round-trips. Therefore:
 - The catalog, rate table, default-flavor table and Phase 0 fixtures are all keyed by tenant.
 - The picker is never built from `get-models` alone. The public catalogs are not filtered per instance: the FedRAMP instance lists `cui_capable: false` models (`research/model-catalog-findings.md`). Intersect with the organization's `force_models`, hide `cui_capable: false` models on government-like instances by default, and treat undocumented suffixes (`-ts`, `-sec`) as unknown data handling. Always send exact `get-models` IDs, never bare public IDs or aliases, which the server resolves per environment. `phase0/probe/catalog-audit.mjs` audits an instance.
-- Findings from the test tenant are **provisional** for any other tenant until the Phase 0c subset is re-run there (§9).
+- The test tenant is the **development reference**. No measurements come back from other tenants (§9), so anything tenant-specific the extension depends on (rates, cache behavior, feature support) is detected or calibrated at runtime on each tenant and degrades safely when it differs.
 - The ledger records tenant on every request.
 
 ---
@@ -148,13 +150,13 @@ The APIs count tokens differently. A pure `normalize/` module converts every fla
 
 | Flavor | Input | Cache | Output and thinking |
 |---|---|---|---|
-| M | `input_tokens` **excludes** cache reads and writes | `cache_read_input_tokens`; `cache_creation_input_tokens` (split by TTL where reported) | `output_tokens` **includes** thinking; no separate thinking count |
+| M | `input_tokens` **excludes** cache reads and writes | `cache_read_input_tokens`; `cache_creation_input_tokens` (split by TTL where reported) | `output_tokens` **includes** thinking; Vertex also reports `output_tokens_details.thinking_tokens` (below) |
 | CC | `prompt_tokens` **includes** `cached_tokens`: uncached = prompt − cached | `cached_tokens`; writes not reported | `completion_tokens` **includes** `reasoning_tokens`: visible = completion − reasoning |
 | R | `input_tokens` **includes** `cached_tokens` | as CC | `output_tokens` **includes** `reasoning_tokens` |
 | G | `promptTokenCount` **includes** `cachedContentTokenCount` | `cachedContentTokenCount` | `candidatesTokenCount` excludes `thoughtsTokenCount` (separate) |
 | N | best-effort from response fields or `/tokenizer` | none | best-effort |
 
-**Claude thinking.** Claude reports no separate thinking count. If the rate table gives Claude a thinking rate different from its completion rate, the extension cannot compute it from usage. Default: price all Claude output at the completion rate, record `thinkingUnknown: true`, and let reconciliation (§3.6) measure the error.
+**Claude thinking.** Vertex Claude reports `output_tokens_details.thinking_tokens` inside `output_tokens` (T7, `research/live/FINDINGS.md`); use it when present. Other hosts may report no separate thinking count. If the rate table gives Claude a thinking rate different from its completion rate, the extension cannot compute it from usage. Default: price all Claude output at the completion rate, record `thinkingUnknown: true`, and let reconciliation (§3.6) measure the error.
 
 ### 3.3 Budget signals (verified endpoints)
 
@@ -189,11 +191,11 @@ Usage is also reported to Copilot through a `LanguageModelDataPart` with MIME ty
 - **Session spend cap (Phase 1).** A simple per-conversation and per-hour cap in Ask Sage tokens, with a hard stop. It exists before the full guards so that Phase 2 agent testing cannot run away.
 - **Pre-flight estimate** = local token estimate × expected cache split for this conversation × rates. `provideTokenCount` stays local and fast; it never calls a remote tokenizer. Near a guard threshold, the guard may make one free remote count: `count_tokens` for Claude (exact on Vertex; count Bedrock ids with their Vertex twin, since Bedrock's count is +28%), `/server/tokenizer` otherwise (within ~3% for GPT and Gemini; −16% on Opus 5.5's denser tokenizer). The local estimator starts at the web app's conservative 3.7 characters per token and learns a per-model ratio from the true counts in each response.
 - **Warn** at a remaining-budget threshold. **Hard stop** when the estimate exceeds remaining minus a reserve. The stop is a `LanguageModelError` offering: request tokens, switch model, or compact.
-- **Cache-health alarm.** Warn when the cache-read share stays under 50% for 2 or more consecutive agent rounds on a cache-capable model, when `resolvedModel` differs from the requested model, or when the tool-set hash changed (informational).
+- **Cache-health alarm.** Warn when the cache-read share stays under 50% for 2 or more consecutive agent rounds on a cache-capable model, when `resolvedModel` is a different model from the requested one (version or tier, not just another name: `google-gemini-3.1-flash-lite-com` was served and billed as `gemini-2.5-flash`, `research/live/FINDINGS.md`), or when the tool-set hash changed (informational).
 - **Budget mode (experimental).** Advertise a smaller `maxInputTokens` (32k, 64k, 128k or the model maximum). Copilot compacts history at about 80% of the window. This is **not assumed to save money**: compaction is itself a model call, and the rewritten history forces a cold cache turn. A small window means frequent compactions. Phase 3 measures it against normal mode before it is recommended.
 - **Output caps.** Always send an explicit maximum output size. Never rely on server defaults.
 - **Retries.** Never auto-retry after any output has streamed (it double-bills). Retry once only for auth refresh or transport failure before the first token. Detect errors inside SSE streams as well as in HTTP 200 bodies.
-- **Cancellation.** Billing of cancelled streams is **LIVE-TEST** (T9). Until known, the ledger estimates cost from input plus streamed output and marks the record.
+- **Cancellation (T9, measured).** A cancelled stream is billed for somewhat more output than had arrived (the model runs on briefly upstream), far less than the cap. The ledger estimates from input plus streamed output, marks the record, and takes the exact bill from the prompt log (§3.6).
 - **Burn-rate forecast** in the status bar tooltip, e.g. "at this week's rate you run out on the 19th".
 
 ### 3.6 Checking the numbers against real billing
@@ -236,7 +238,8 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
   Never place a breakpoint on thinking blocks; put it on the `tool_result` block.
 - **Mixed TTLs.** Human pauses between user turns often exceed 5 minutes. When T15 confirms support, breakpoints 1–2 (the stable tools+system prefix) use the 1-hour TTL and breakpoints 3–4 use 5 minutes. Longer TTLs must come before shorter ones. Test with and without the `extended-cache-ttl-2025-04-11` beta header, since hosts may differ. A setting chooses 5m-only, mixed, or 1h-only; the ledger's TTL-expiry attribution shows which pays off.
 - **Minimum length.** Each model has a minimum cacheable prefix (roughly 1–4k tokens). Breakpoints below it silently don't cache. The placer skips them, and the health check reports them.
-- **Lookback window.** A cache lookup only checks about 20 content blocks back from a breakpoint. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.
+- **Lookback window.** Anthropic documents that a cache lookup only checks about 20 content blocks back from a breakpoint, but T16 read the whole cached prefix from 50 blocks past it (Vertex Haiku 4.5, `research/live/FINDINGS.md`). The rule below is kept as cheap insurance, not as a correctness requirement. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.
+- **Thinking parameter per model.** Haiku 4.5 and the 4.5 generation take `thinking: {type: "enabled", budget_tokens}`. Claude 4.6 and newer take `{type: "adaptive"}` with `output_config: {effort}`; Opus 4.7 and newer, Sonnet 5 and Fable reject `budget_tokens` (measured on Sonnet 5). Opus 5.5 and Fable always think, and Opus 5.5 defaults to effort `medium`. The converter picks the shape from a per-model table and falls back on the documented error. It also sends `display: "summarized"` when thinking is shown in the UI (the default is empty thinking text on the newer models). It drops `temperature`/`top_p`/`top_k` on the models that reject them, and it turns VS Code's "required" tool mode into `auto` plus an instruction on Opus 5.5 and Fable 5.1, which reject forced tool choice. The source is Anthropic's API reference (`research/live/FINDINGS.md`, "Checked against the docs"); only the Sonnet 5 rejection is measured through Ask Sage so far.
 - **Thinking config is pinned per conversation.** Turning thinking on or off, or changing its budget or effort, invalidates the message cache. The provider keeps the first request's thinking config for the life of the conversation unless the user explicitly changes it (logged via `thinkingConfigHash`).
 
 ### 4.2 CC and R
@@ -257,13 +260,13 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
 ## 5. Conversation state (new)
 
 v2's "per-request state only" principle is relaxed, because reasoning models need state carried across tool rounds:
-- **Claude (M):** with thinking on, the signed thinking block from the last assistant turn must be sent back with its `tool_use` during a tool loop, or the API errors.
+- **Claude (M):** with thinking on, the signed thinking block from the last assistant turn is sent back with its `tool_use` during a tool loop. Measured through Ask Sage on Haiku 4.5 (T7) and Sonnet 5 (T22): the block round-trips and a tampered signature is rejected, but a round 2 *without* the block is accepted (the model reasons again). So a lost block costs reasoning and tokens, not the request. **Opus 5.5 and Fable 5.1 bind each block to the conversation prefix before it** ("preserved thinking"). Editing that prefix (a changed system prompt, a summarized or trimmed history) returns a 400 on accounts that enforce the check. The M converter handles that 400 by stripping every thinking block and retrying once, logging `reasoningStateLost`. Whether Ask Sage's upstream enforces it is still open (FINDINGS "Still open").
 - **Gemini 3 (G, and possibly CC):** thought signatures are required on function calls.
-- **OpenAI R:** encrypted reasoning items must be sent back for reasoning to persist.
+- **OpenAI R:** encrypted reasoning items must be sent back for reasoning to persist. Measured on GPT-6 Sol (T22): `store:false` + `include: ["reasoning.encrypted_content"]` returns the item, and round 2 accepts it. Without it, round 2 still works and the model reasons again.
 
 **First choice:** emit reasoning as a part VS Code preserves in history and read it back from the incoming messages: a thinking part with the signature in its id or metadata (a `LanguageModelDataPart` with a private MIME type turned out not to come back; see E4 below).
 
-**E4 results (2026-09-25, dev machine, VS Code 1.139.1, dev host; `research/live/test-tenant/phase0a-report.md`).** Between turns, a plain reply's thinking part is **not** handed back (0 of 5) and neither is a private-MIME data part (0 of 5): only the text is. **Inside a tool loop the thinking part does come back, with its id and metadata intact** (the reply that carried thinking + text + data part + tool call was seen again on the request carrying the tool result: thinking, id and metadata yes, data part no). One sample, one tool round, a small metadata object, from the development host. That is the case that matters: Claude needs its signed thinking block back only during the tool loop, and Gemini thought signatures and OpenAI encrypted reasoning items are needed in the same place. So the first choice is now viable: carry the signature in the thinking part's metadata (feature-detected `LanguageModelThinkingPart`, which per the research is exported at runtime with no proposal check; confirm on an installed copy), and never rely on a data part. Still to show: several rounds (Phase 2 needs 5+), realistically large signatures, and an installed (not development-host) extension.
+**E4 results (2026-09-25, dev machine, VS Code 1.139.1, dev host; `research/live/test-tenant/phase0a-report.md`).** Between turns, a plain reply's thinking part is **not** handed back (0 of 5) and neither is a private-MIME data part (0 of 5): only the text is. **Inside a tool loop the thinking part does come back, with its id and metadata intact** (the reply that carried thinking + text + data part + tool call was seen again on the request carrying the tool result: thinking, id and metadata yes, data part no). One sample, one tool round, a small metadata object, from the development host. That is the case that matters: Claude needs its signed thinking block back only during the tool loop, and Gemini thought signatures and OpenAI encrypted reasoning items are needed in the same place. So the first choice is now viable: carry the signature in the thinking part's metadata (feature-detected `LanguageModelThinkingPart`, which exported at runtime with no proposal check, confirmed on a folder-installed copy), and never rely on a data part. **Multi-round follow-up (2026-09-25, folder install, `research/live/test-tenant/phase0a-e4-loop.md`):** a three-round tool loop with signatures of 1 KB, 8 KB and 64 KB in the thinking metadata. Every round's thinking part came back with its id and metadata, and every signature came back byte-for-byte; the data part again never did. A six-round loop then passed the same way (four 64 KB signatures in one history), covering Phase 2's 5+ round target on the VS Code side.
 
 **Fallback (needed if the thinking part is absent on the target, drops the metadata or size-limits it): a bounded in-memory side cache in `state/`:**
 - keyed by tool-call ID (and response item ID for R), which appears in the history VS Code sends back (E2 confirmed the provider's own call id returns on the tool result)
@@ -328,7 +331,7 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 - **`#asksageCodebase`.** A local vector index built with `/server/openai/v1/embeddings`, stored on disk per workspace and searched with cosine similarity in plain JS.
   - Rough cost for a 50k-line C++ repo: about 0.6M model tokens to build (times the embedding rate), then about 10–40k a day to re-embed changes. The index is about 12 MB, and a search takes under 10 ms.
   - Only text chunks go to the embeddings endpoint, subject to the workspace policy (§6).
-  - Which balance embeddings charge (inference or training) is **LIVE-TEST** (T20).
+  - Embeddings charge the **training** balance, not inference (T20: `text-embedding-3-small`, not in the catalog, 1,536 dimensions).
 - **`#asksageDocs`.** Query an existing Ask Sage dataset. No documented endpoint returns search results on their own, so this runs `/query` with `dataset`, a cheap model and a minimal reply, and parses the `references` string (about 2–7k inference tokens per search). Two leads for results-only search, the `/get <text>` chat command and `/get-dataset-results`, are **LIVE-TEST** (T21).
 - **Datasets economics.** Training tokens are charged once, at ingestion, from their own monthly balance. Retrieval costs inference tokens, because the retrieved chunks enter the prompt. There is no update operation: a changed file must be deleted and re-uploaded, which charges the full file again. Datasets suit stable docs, not a fast-changing codebase.
 
@@ -336,8 +339,12 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 
 ## 9. Phases
 
-### Phase 0a: environment smoke test (target machine, no API)
-A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as a `.vsix` (built with `scripts/pack-vsix.mjs`) or as an unpacked folder on the machine where the extension will actually be used. It costs nothing and is the go/no-go gate.
+**Where things are verified (revised 2026-09-25).** The dev machine and the public test tenant (`api.asksage.ai`) are the reference environment: every phase is built and accepted there. The target environment is close enough that it is not measured separately. It receives beta builds (alpha at worst), and **no data comes back from it**: feedback is at most a written description of a failure, with environment details left out. Two consequences:
+- Each build must be diagnosable on the machine it runs on: clear error messages, feature detection that reports what it found, and a local diagnostics report (like the smoke extension's) that the person there can read and describe in their own words.
+- Tenant differences are handled at runtime (§2.3): calibrate what can be calibrated and degrade safely instead of relying on a measured per-tenant table.
+
+### Phase 0a: environment smoke test (dev machine, no API)
+A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as an unpacked folder or a `.vsix` (built with `scripts/pack-vsix.mjs`). It costs nothing and is the go/no-go gate. It can also be installed on the target as a first beta: whether it works there is the useful signal, not its numbers.
 - **E1:** extension-contributed models appear in the chat model picker **with no GitHub or Copilot sign-in** (the state on the target machine), on VS Code 1.122 or later. Also record whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting applies to a signed-out machine (unverified in the research).
 - **E2:** agent mode will use an extension-contributed model and pass it tools.
 - **E3:** `.vsix` side-loading is permitted (`extensions.allowed` and related policy).
@@ -360,7 +367,7 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 | T9 | streaming and cancellation metering |
 | T10 | errors (including mid-stream) and model fallback |
 | T11 | tool-limit and schema acceptance per model |
-| T12 | reproduce a BYOK session as a baseline |
+| T12 | reproduce a BYOK session as a baseline, with VS Code's Custom Endpoint configured as Ask Sage's VS Code page says (manual, before Phase 2) |
 | T13 | long-context threshold behavior with cached input |
 | T14 | usage normalization: raw usage fields per flavor captured for §3.2 fixtures |
 | T15 | 1-hour and mixed TTLs, with and without the beta header |
@@ -370,30 +377,33 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 | T19 | budget counter lag and granularity (single-request resolvability) |
 | T20 | embeddings endpoint availability and which balance it charges |
 | T21 | dataset results-only search leads |
+| T22 | model matrix (`--matrix`): cache repeat and a reasoning tool loop per model and flavor, so flagship, other-host and partner models are covered, not only the cheapest per role |
 
 Estimated cost: about 200–350k Ask Sage tokens. **Exit:** `research/live/FINDINGS.md`, with the default flavor table, cache policy and normalization rules confirmed or corrected for the test tenant.
 
-### Phase 0c: target-tenant subset
-If the tenant used day to day differs from the test tenant: re-run T0, T1–T6, T7, T15–T19 there before any default is relied on. Findings are recorded under that tenant's alias. Test-tenant results never silently apply to another tenant.
+### Phase 0c: target-tenant subset (dropped)
+Dropped 2026-09-25: no measurements come back from the target environment. Test-tenant findings are the development reference; per-tenant differences are handled by runtime calibration and safe degradation (§2.3), and checked by beta use on the target.
 
-### Phase 1: skeleton with M and CC, ledger and spend cap
-Tenant and key setup with scoped settings; the catalog from bundled tables and rates; M and CC transports with streaming; the error normalizer (bodies and SSE events); the usage normalizer; the ledger and the `usage` DataPart; the session spend cap; a status bar showing remaining budget and the last request's cost.
+### Phase 1: skeleton with CC and R, ledger and spend cap
+CC and R come first because R is the measured default for GPT-5.4 and later (§2.2) and CC serves every other family except Claude and Gemini, so together they reach the most models in any tenant's catalog (§2.3). M follows in Phase 2 with its breakpoints and thinking; G stays in Phase 4.
 
-**Accept:** Claude through M and GPT-5.x through CC stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; the spend cap stops a synthetic runaway loop.
+Tenant and key setup with scoped settings; the catalog from bundled tables and rates; CC and R transports with streaming (R: `store:false`, full history, never `previous_response_id`); the error normalizer (bodies and SSE events); the usage normalizer; the ledger and the `usage` DataPart; the session spend cap; a status bar showing remaining budget and the last request's cost.
+
+**Accept:** GPT-5.x through R and a non-GPT model (e.g. a partner model) through CC stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; the spend cap stops a synthetic runaway loop.
 
 ### Phase 2: tools, agent mode, caching and reasoning state
-Tool conversion; cache breakpoints (M) with TTL, minimum and lookback handling; `prompt_cache_key` (CC); thinking pinning; reasoning round-trip with the `state/` fallback; the Check Cache Health command.
+The M transport; tool conversion; cache breakpoints (M) with TTL, minimum and lookback handling; `prompt_cache_key` (CC); thinking pinning; reasoning round-trip with the `state/` fallback; the Check Cache Health command.
 
 **Accept:**
-- a multi-step agent task shows cache reads of 80% or more from round 2 on at least one Claude and one GPT-5.x model
-- Claude with thinking on completes a 5+ round tool loop without errors
+- a multi-step agent task shows cache reads of 80% or more from round 2 on GPT-5.x (R) and on at least one other model family
+- a reasoning model with its reasoning state carried between rounds (encrypted reasoning, signed thinking or the Gemini placeholder) completes a 5+ round tool loop without errors, on GPT-5.x (R) and on at least one other family
 - estimate accuracy: measured delta within ±10% of the estimate per request if T19 shows single requests are resolvable; otherwise within ±10% in batch mode (§3.6)
 
 ### Phase 3: budget guards
 Pre-flight estimate, warnings and hard stop, the budget-mode experiment (measured against normal mode before it is recommended), burn-rate forecast, request-tokens command, cache-health and fallback alarms, and the reconciliation display.
 
 ### Phase 4: remaining flavors and overrides
-R (`store:false`, encrypted reasoning; promoted to GPT-5.x default if T3 passes), G, multi-flavor picker entries and workspace policy.
+G, multi-flavor picker entries and workspace policy. (R moved to Phase 1 once T3 made it the GPT-5.x default.)
 
 ### Phase 5: search tools
 Subject to the §8 gate: `#asksageCodebase` (local embeddings index, purge command) and `#asksageDocs` (dataset query); N as an opt-in "Ask Sage (datasets)" model variant.
@@ -429,17 +439,18 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 | Ledger | one file per month | per-process files; tool-set and thinking-config hashes; collision-resistant conversation ID |
 | Security | key in SecretStorage | scoped settings, token refresh, workspace policy, derived-data purge, fixture redaction |
 | Semantic search | build in Phase 5 | gated on measured need |
+| Claude thinking | one `enabled` + budget shape | per-model table (adaptive + effort on 4.6+, always-on Opus 5.5/Fable), display, sampling and forced-tool-choice rules, preserved-thinking strip-and-retry (v3.4, 2026-09-27) |
 
 ---
 
 ## 12. Open decisions
 - Data-handling policy for code sent to the API, and the default `asksage.workspacePolicy`.
-- Which tenant is the day-to-day target, and whether Phase 0c is needed.
-- VS Code version and policy on the target machine (answered by Phase 0a).
+- ~~Which tenant is the day-to-day target, and whether Phase 0c is needed~~: the test tenant is the development reference; Phase 0c is dropped because no data comes back from the target (§9).
+- VS Code version and policy on the target machine: not measured; found out by beta use there. The extension must work on the oldest VS Code it declares and say clearly when something it needs is missing.
 - Ask Sage's terms for third-party clients.
 - Whether the extension is for one user or shared.
-- ~~Which rate set Ask Sage bills~~: settled by measurement on the test tenant (§3.1): the tokenizer's conversion; neither `get-models` nor, on six models, the web app's table. Re-check per tenant (Phase 0c) and ask Ask Sage support whether the tokenizer's conversion is the supported source. (The web-app rate refresher question is closed: dropped.)
-- Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in (answered by E1).
+- ~~Which rate set Ask Sage bills~~: settled by measurement on the test tenant (§3.1): the tokenizer's conversion; neither `get-models` nor, on six models, the web app's table. Calibrate per tenant at runtime (§2.3) and ask Ask Sage support whether the tokenizer's conversion is the supported source. (The web-app rate refresher question is closed: dropped.)
+- Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in: not binding on the dev machine (E1); elsewhere found out by beta use.
 
 ---
 
@@ -447,7 +458,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 
 > Build the Ask Sage VS Code language-model provider in `PLAN.md` phase by phase, starting with the Phase 0a smoke-test provider, then the Phase 0b probe script.
 >
-> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md`. The specs in `research/sources/` are the starting data. Rates come from the API at runtime, not from a table (§3.1); `model-token-conversion.json` is a 2026-09-22 snapshot of the web app's table, useful only as a cross-check.
+> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md` (not yet in this repository, §0; until they are, `research/live/FINDINGS.md` and `research/rate-sources-investigation.md` are the committed evidence). The specs in `research/sources/` are the starting data. Rates come from the API at runtime, not from a table (§3.1); `model-token-conversion.json` is a 2026-09-22 snapshot of the web app's table, useful only as a cross-check.
 >
 > Constraints:
 > - plain JavaScript (CommonJS, `// @ts-check` + JSDoc), no build step, no npm; only Node built-ins and the `vscode` API

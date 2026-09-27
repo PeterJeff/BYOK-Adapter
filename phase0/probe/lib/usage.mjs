@@ -18,6 +18,8 @@
  * @property {number} visibleOutput
  * @property {number} thinking
  * @property {boolean} thinkingUnknown
+ * @property {number} [thinkingHidden]  G only: tokens in totalTokenCount beyond prompt + candidates when
+ *   thoughtsTokenCount is missing (Ask Sage strips it; the model still thinks, and it is not billed)
  */
 
 /**
@@ -100,8 +102,16 @@ export function normalize(flavor, u) {
       z.cacheWrite5m = n(split.ephemeral_5m_input_tokens);
       z.cacheWrite1h = n(split.ephemeral_1h_input_tokens);
     } else z.cacheWriteUnsplit = n(u.cache_creation_input_tokens);
-    z.visibleOutput = n(u.output_tokens);
-    z.thinkingUnknown = true;
+    // Vertex Claude reports thinking inside output_tokens and separately as
+    // output_tokens_details.thinking_tokens (measured 2026-09-26); other hosts may not.
+    const thinking = u.output_tokens_details?.thinking_tokens;
+    if (typeof thinking === 'number') {
+      z.thinking = thinking;
+      z.visibleOutput = Math.max(0, n(u.output_tokens) - thinking);
+    } else {
+      z.visibleOutput = n(u.output_tokens);
+      z.thinkingUnknown = true;
+    }
     return z;
   }
   // Claude served through CC answers with Anthropic-shaped usage (measured 2026-09-25).
@@ -135,6 +145,8 @@ export function normalize(flavor, u) {
     z.inputUncached = Math.max(0, n(u.promptTokenCount) - cached);
     z.visibleOutput = n(u.candidatesTokenCount);
     z.thinking = n(u.thoughtsTokenCount);
+    const hidden = n(u.totalTokenCount) - n(u.promptTokenCount) - z.visibleOutput - z.thinking - n(u.toolUsePromptTokenCount);
+    if (u.thoughtsTokenCount === undefined && hidden > 0) z.thinkingHidden = hidden;
     return z;
   }
   return null;

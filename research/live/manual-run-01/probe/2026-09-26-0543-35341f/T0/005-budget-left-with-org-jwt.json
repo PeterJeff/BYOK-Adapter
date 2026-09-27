@@ -1,0 +1,40 @@
+{
+ "test": "T0",
+ "seq": 5,
+ "label": "budget left-with-org (jwt)",
+ "kind": "server",
+ "model": null,
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/count-monthly-tokens-left-with-org",
+ "stream": false,
+ "startedAt": "2026-09-26T05:43:05.579Z",
+ "ms": 242,
+ "ttftMs": 242,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-access-tokens"
+  ],
+  "headers": {},
+  "body": {}
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "response": 113330,
+  "status": 200
+ }
+}

@@ -1,0 +1,62 @@
+{
+ "test": "T4",
+ "seq": 34,
+ "label": "gemini-via-CC A",
+ "kind": "CC",
+ "model": "google-gemini-3.1-flash-lite-gov",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": false,
+ "startedAt": "2026-09-26T04:04:03.374Z",
+ "ms": 172,
+ "ttftMs": 172,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "google-gemini-3.1-flash-lite-gov",
+   "messages": [
+    {
+     "role": "system",
+     "content": "<elided chars=26032 sha256=3f452559e548631f>"
+    },
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "max_tokens": 512
+  }
+ },
+ "status": 400,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": {
+  "shape": "openai-error",
+  "status": "invalid_request_error",
+  "message": "Unsupported model: google-gemini-3.1-flash-lite-gov"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "body": {
+  "error": {
+   "message": "Unsupported model: google-gemini-3.1-flash-lite-gov",
+   "type": "invalid_request_error",
+   "code": "invalid_request_error",
+   "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+   "ref": "ERR-813E9D9C"
+  }
+ }
+}

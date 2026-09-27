@@ -1,0 +1,92 @@
+{
+ "test": "T5",
+ "seq": 43,
+ "label": "native default persona",
+ "kind": "N",
+ "model": "google-claude-45-haiku",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/query_stream",
+ "stream": true,
+ "startedAt": "2026-09-26T04:04:43.540Z",
+ "ms": 904,
+ "ttftMs": 904,
+ "aborted": false,
+ "request": {
+  "auth": "jwt",
+  "authStyle": "x-access-tokens",
+  "headerNames": [
+   "accept",
+   "content-type",
+   "x-access-tokens"
+  ],
+  "headers": {},
+  "body": {
+   "message": "Reply with the single word OK.",
+   "model": "google-claude-45-haiku",
+   "dataset": "none",
+   "limit_references": 0,
+   "live": 0,
+   "usage": true,
+   "temperature": 0
+  }
+ },
+ "status": 200,
+ "contentType": "text/plain; charset=utf-8",
+ "headers": {
+  "content-type": "text/plain; charset=utf-8"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "usage": {
+   "model_tokens": {
+    "completion_tokens": 4,
+    "prompt_tokens": 820,
+    "total_tokens": 824
+   },
+   "asksage_tokens": 63
+  }
+ },
+ "normalized": null,
+ "estimate": null,
+ "events": [
+  {
+   "data": {
+    "response": "OK",
+    "message": "\n\nOK",
+    "embedding_down": false,
+    "vectors_down": false,
+    "uuid": "22b2fe14-b693-43cc-b05c-487ebc0efb70",
+    "references": "",
+    "type": "completion",
+    "added_obj": null,
+    "tool_calls": null,
+    "usage": {
+     "model_tokens": {
+      "completion_tokens": 4,
+      "prompt_tokens": 820,
+      "total_tokens": 824
+     },
+     "asksage_tokens": 63
+    },
+    "tool_responses": [],
+    "tool_calls_unified": [],
+    "error": null,
+    "provenance": {
+     "model": "google-claude-45-haiku",
+     "datasets": "none",
+     "persona": {
+      "id": 1,
+      "version": null
+     },
+     "agents": [],
+     "timestamp": "2026-09-26T04:04:43.724683+00:00"
+    },
+    "citations": [],
+    "sources": [],
+    "status": 200
+   }
+  }
+ ]
+}

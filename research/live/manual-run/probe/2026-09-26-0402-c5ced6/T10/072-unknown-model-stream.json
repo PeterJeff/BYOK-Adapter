@@ -1,0 +1,69 @@
+{
+ "test": "T10",
+ "seq": 72,
+ "label": "unknown-model-stream",
+ "kind": "CC",
+ "model": "probe-no-such-model",
+ "resolvedModel": null,
+ "method": "POST",
+ "path": "/server/openai/v1/chat/completions",
+ "stream": true,
+ "startedAt": "2026-09-26T04:05:40.144Z",
+ "ms": 229,
+ "ttftMs": 228,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "probe-no-such-model",
+   "max_completion_tokens": 8,
+   "stream": true,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Reply with the single word OK."
+    }
+   ],
+   "stream_options": {
+    "include_usage": true
+   }
+  }
+ },
+ "status": 200,
+ "contentType": "text/event-stream; charset=utf-8",
+ "headers": {
+  "content-type": "text/event-stream; charset=utf-8"
+ },
+ "error": {
+  "shape": "openai-error (in stream)",
+  "status": "invalid_request_error",
+  "message": "Unsupported model: probe-no-such-model"
+ },
+ "transportError": null,
+ "usage": null,
+ "normalized": null,
+ "estimate": null,
+ "events": [
+  {
+   "data": {
+    "error": {
+     "message": "Unsupported model: probe-no-such-model",
+     "type": "invalid_request_error",
+     "code": "invalid_request_error",
+     "error_code": "ERR-OPENAI-400-INVALID_REQUEST",
+     "ref": "ERR-1FBCE822"
+    }
+   }
+  },
+  {
+   "data": "[DONE]"
+  }
+ ]
+}
