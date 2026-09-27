@@ -58,9 +58,10 @@ message you're about to send.
   (2026-09-27, thrown from Copilot Chat's own bundle, not this extension — the stack trace is
   entirely inside `extensions/copilot/dist/extension.js`). Copilot Chat uses a separate small
   "utility model" internally (intent detection, gathering codebase references) and doesn't
-  automatically reuse a BYOK main model for that. It surfaced via `_getCodebaseReferences`,
-  which suggests it's tied to implicit codebase-context gathering (Agent mode or `#codebase`),
-  not plain Ask mode. Fix with a VS Code setting, not a code change here:
+  automatically reuse a BYOK main model for that. It surfaced via `_getCodebaseReferences` —
+  **confirmed to happen in plain Ask mode too** (2026-09-27), whenever that turn's request ends
+  up with a "codebase" context attached, not only in Agent mode. Fix with a VS Code setting, not
+  a code change here:
   ```json
   "chat.byokUtilityModelDefault": "mainAgent"
   ```
