@@ -33,12 +33,38 @@ function classifyFlavor(id) {
 }
 
 /**
- * @param {{ apiBase: string, fetchImpl?: typeof fetch }} opts
+ * Intersects the catalog with the organization's force_models (PLAN.md §2.3). Matches a name
+ * against each model's id and aliases, ignoring case: whether orgs list exact get-models ids is
+ * not yet seen on a tenant that sets it (the public test account's list is empty). If no model
+ * matches any name, the list is left unfiltered and `ignored` is set, because an empty picker
+ * would hide the mismatch; Ask Sage still enforces the restriction server-side. Pure.
+ * @template {CatalogModel} T
+ * @param {T[]} models
+ * @param {string[] | null | undefined} forceModels
+ * @returns {{ models: T[], unmatched: string[], ignored: boolean }}
+ */
+function applyForceModels(models, forceModels) {
+  if (!forceModels || !forceModels.length) return { models, unmatched: [], ignored: false };
+  const wanted = new Map(forceModels.map((n) => [n.toLowerCase(), n]));
+  const matched = new Set();
+  const kept = models.filter((m) => {
+    const names = [m.id, ...(m.aliases || [])].map((n) => n.toLowerCase()).filter((n) => wanted.has(n));
+    for (const n of names) matched.add(n);
+    return names.length > 0;
+  });
+  const unmatched = [...wanted].filter(([k]) => !matched.has(k)).map(([, v]) => v);
+  if (!kept.length) return { models, unmatched, ignored: true };
+  return { models: kept, unmatched, ignored: false };
+}
+
+/**
+ * @param {{ apiBase: string, fetchImpl?: typeof fetch, warn?: (msg: string) => void }} opts
  */
 function createCatalog(opts) {
   /** @type {{ at: number, models: CatalogModel[] } | null} */
   let cached = null;
   const TTL_MS = 24 * 60 * 60 * 1000;
+  let lastForceWarning = '';
 
   async function fetchRaw() {
     const res = await request({
@@ -64,13 +90,19 @@ function createCatalog(opts) {
      */
     async list(o = {}) {
       if (!cached || Date.now() - cached.at > TTL_MS) cached = { at: Date.now(), models: await fetchRaw() };
-      const forceSet = o.forceModels && o.forceModels.length ? new Set(o.forceModels) : null;
+      const forced = applyForceModels(cached.models, o.forceModels);
+      const warning = forced.ignored
+        ? `Ask Sage: none of the organization's force_models (${forced.unmatched.join(', ')}) is in this tenant's catalog; showing all models (the server still enforces the restriction)`
+        : forced.unmatched.length
+          ? `Ask Sage: force_models not in this tenant's catalog: ${forced.unmatched.join(', ')}`
+          : '';
+      if (warning && warning !== lastForceWarning && opts.warn) opts.warn(warning);
+      lastForceWarning = warning;
       /** @type {(CatalogModel & { flavor: 'CC' | 'R' })[]} */
       const out = [];
-      for (const m of cached.models) {
+      for (const m of forced.models) {
         if (!o.allowNonCui && m.cui_capable === false) continue;
         if (m.deprecation?.state === 'retired') continue;
-        if (forceSet && !forceSet.has(m.id)) continue;
         const flavor = classifyFlavor(m.id);
         if (flavor !== 'CC' && flavor !== 'R') continue; // M/G: not built yet, don't misroute
         out.push({ ...m, flavor });
@@ -83,4 +115,4 @@ function createCatalog(opts) {
   };
 }
 
-module.exports = { createCatalog, classifyFlavor };
+module.exports = { createCatalog, classifyFlavor, applyForceModels };

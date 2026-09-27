@@ -65,8 +65,10 @@ class LanguageModelError extends Error {
  */
 function createStub(opts = {}) {
   const registered = { providers: /** @type {Record<string, any>} */ ({}), commands: /** @type {Record<string, Function>} */ ({}), documents: /** @type {string[]} */ ([]), messages: /** @type {string[]} */ ([]), executed: /** @type {{ id: string, args: any[] }[]} */ ([]) };
-  /** @type {Record<string, unknown>} */
+  /** @type {Record<string, unknown>} user-settings values */
   const config = {};
+  /** @type {Record<string, unknown>} workspace-settings values: win in get(), as in VS Code for a non-application setting */
+  const workspaceConfig = {};
   const disposable = { dispose() {} };
   const vscode = {
     version: '1.999.0-stub',
@@ -156,7 +158,13 @@ function createStub(opts = {}) {
           /** @param {string} key @param {unknown} [def] */
           get(key, def) {
             const full = section ? `${section}.${key}` : key;
+            if (full in workspaceConfig) return workspaceConfig[full];
             return full in config ? config[full] : def;
+          },
+          /** @param {string} key */
+          inspect(key) {
+            const full = section ? `${section}.${key}` : key;
+            return { key: full, defaultValue: undefined, globalValue: config[full], workspaceValue: workspaceConfig[full] };
           },
         };
       },
@@ -168,7 +176,7 @@ function createStub(opts = {}) {
     },
     extensions: { getExtension: () => undefined },
   };
-  return { vscode, registered, config };
+  return { vscode, registered, config, workspaceConfig };
 }
 
 /**

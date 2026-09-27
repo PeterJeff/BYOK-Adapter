@@ -3,7 +3,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createCatalog, classifyFlavor } = require('../../src/catalog');
+const { createCatalog, classifyFlavor, applyForceModels } = require('../../src/catalog');
 
 test('classifyFlavor: Phase 1 default flavor per family (PLAN §2.2)', () => {
   assert.equal(classifyFlavor('gpt-4.1-nano'), 'CC');
@@ -68,4 +68,41 @@ test('list(): forceModels intersects the offered set', async () => {
   const catalog = createCatalog({ apiBase: 'https://api.test', fetchImpl: async () => jsonResponse(models) });
   const list = await catalog.list({ forceModels: ['gpt-4.1-nano'] });
   assert.deepEqual(list.map((m) => m.id), ['gpt-4.1-nano']);
+});
+
+test('applyForceModels: empty or missing list means no restriction', () => {
+  const models = [{ id: 'a' }, { id: 'b' }];
+  for (const force of [undefined, null, []]) assert.deepEqual(applyForceModels(models, force), { models, unmatched: [], ignored: false });
+});
+
+test('applyForceModels: matches ids and aliases ignoring case, and reports names it could not match', () => {
+  const models = [{ id: 'gpt-4.1-nano' }, { id: 'gpt-5.4-nano', aliases: ['GPT 5.4 Nano'] }, { id: 'grok-4' }];
+  const r = applyForceModels(models, ['GPT-4.1-NANO', 'gpt 5.4 nano', 'not-a-model']);
+  assert.deepEqual(r.models.map((m) => m.id), ['gpt-4.1-nano', 'gpt-5.4-nano']);
+  assert.deepEqual(r.unmatched, ['not-a-model']);
+  assert.equal(r.ignored, false);
+});
+
+test('applyForceModels: no match at all leaves the list unfiltered and flags it', () => {
+  const models = [{ id: 'a' }, { id: 'b' }];
+  const r = applyForceModels(models, ['x', 'y']);
+  assert.equal(r.models, models);
+  assert.deepEqual(r.unmatched, ['x', 'y']);
+  assert.equal(r.ignored, true);
+});
+
+test('list(): warns once per distinct force_models mismatch', async () => {
+  const models = [{ id: 'gpt-4.1-nano' }, { id: 'gpt-5.4-nano' }];
+  /** @type {string[]} */
+  const warnings = [];
+  const catalog = createCatalog({ apiBase: 'https://api.test', fetchImpl: async () => jsonResponse(models), warn: (m) => warnings.push(m) });
+  assert.equal((await catalog.list({ forceModels: ['nope'] })).length, 2);
+  await catalog.list({ forceModels: ['nope'] });
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /none of the organization's force_models \(nope\)/);
+  await catalog.list({ forceModels: ['gpt-4.1-nano', 'nope'] });
+  assert.equal(warnings.length, 2);
+  assert.match(warnings[1], /not in this tenant's catalog: nope/);
+  await catalog.list({ forceModels: ['gpt-4.1-nano'] });
+  assert.equal(warnings.length, 2);
 });

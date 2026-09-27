@@ -71,7 +71,7 @@ function openaiErrorResponse(message) {
   };
 }
 
-/** @param {{ models: unknown[], cc?: string, r?: string, rSequence?: unknown[] }} o */
+/** @param {{ models: unknown[], cc?: string, r?: string, rSequence?: unknown[], forceModels?: unknown }} o */
 function createFakeFetch(o) {
   const calls = /** @type {{ url: string, body: any }[]} */ ([]);
   const rQueue = o.rSequence ? [...o.rSequence] : null;
@@ -80,7 +80,7 @@ function createFakeFetch(o) {
     calls.push({ url, body });
     if (url.endsWith('/server/get-models?format=full')) return jsonResponse({ response: o.models }); // real tenants wrap the array (2026-09-27 live finding)
     if (url.endsWith('/user/get-token-with-api-key')) return jsonResponse({ response: { access_token: 'jwt-1' } });
-    if (url.endsWith('/user/validate_token_with_full_user')) return jsonResponse({ response: { max_tokens: 200000 } });
+    if (url.endsWith('/user/validate_token_with_full_user')) return jsonResponse({ response: { max_tokens: 200000, force_models: o.forceModels ?? [] } });
     if (url.endsWith('/server/count-monthly-tokens-left-with-org')) return jsonResponse({ response: 150000 });
     if (url.endsWith('/server/count-monthly-tokens')) return jsonResponse({ response: 50000 });
     if (url.endsWith('/server/tokenizer')) {
@@ -254,6 +254,32 @@ test('sends the model\'s maxOutputTokens as an explicit output cap on both flavo
 test('provideLanguageModelChatInformation only lists CC/R models (Claude/Gemini excluded, Phase 1)', async () => {
   const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL, { id: 'google-claude-45-haiku', cui_capable: true }] });
   const { provider, restore } = setup(fetchImpl);
+  try {
+    const models = await provider.provideLanguageModelChatInformation({}, token());
+    assert.deepEqual(models.map((/** @type {any} */ m) => m.id).sort(), ['gpt-4.1-nano', 'gpt-5.4-nano']);
+  } finally {
+    restore();
+  }
+});
+
+test('provideLanguageModelChatInformation intersects the catalog with the org force_models (PLAN §2.3)', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL], forceModels: 'gpt-4.1-nano' }); // the spec's comma-separated form
+  const { provider, restore } = setup(fetchImpl);
+  try {
+    const models = await provider.provideLanguageModelChatInformation({}, token());
+    assert.deepEqual(models.map((/** @type {any} */ m) => m.id), ['gpt-4.1-nano']);
+    await assert.rejects(
+      provider.provideLanguageModelChatResponse({ id: 'gpt-5.4-nano' }, [], { toolMode: 1 }, { report() {} }, token()),
+      /not in this tenant's catalog/
+    );
+  } finally {
+    restore();
+  }
+});
+
+test('the model list is unrestricted when force_models cannot be read (no email set)', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL], forceModels: 'gpt-4.1-nano' });
+  const { provider, restore } = setup(fetchImpl, { 'asksage.email': '' });
   try {
     const models = await provider.provideLanguageModelChatInformation({}, token());
     assert.deepEqual(models.map((/** @type {any} */ m) => m.id).sort(), ['gpt-4.1-nano', 'gpt-5.4-nano']);

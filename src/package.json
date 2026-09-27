@@ -19,7 +19,13 @@
   ],
   "capabilities": {
     "untrustedWorkspaces": {
-      "supported": true
+      "supported": "limited",
+      "description": "The tenant, host and email settings are read only from user settings, so an untrusted workspace cannot redirect requests or the API key.",
+      "restrictedConfigurations": [
+        "asksage.tenant",
+        "asksage.host",
+        "asksage.email"
+      ]
     },
     "virtualWorkspaces": true
   },

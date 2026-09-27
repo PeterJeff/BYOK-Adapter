@@ -25,15 +25,17 @@ effect.
   it; you'll just see no cost estimate and a warning in the log.
 - Run **Ask Sage: Set API Key** (stored only in `SecretStorage`, never logged).
 
-All three settings are `scope: "application"` (a workspace's `.vscode/settings.json` cannot
-override them), but they are not yet registered in VS Code's `restrictedConfigurations` org
-policy — that's a separate, unverified step.
+All three settings are `scope: "application"` and listed in `restrictedConfigurations`, and
+the extension reads them from user settings only, so a workspace's `.vscode/settings.json`
+cannot redirect requests or the API key.
 
 ## 3. Try it
 
 Open Copilot Chat and pick a model under the **Ask Sage** vendor. Only CC/R-flavored models
 are listed — Claude and Gemini ids are filtered out rather than silently misrouted through the
-wrong endpoint. Use **Ask mode**: Phase 1's accept criteria and tests only cover plain
+wrong endpoint. If your organization restricts models (`force_models` in your account info),
+only those are listed; this needs `asksage.email`, and without it the list is unrestricted
+(Ask Sage still refuses a model the org doesn't allow). Use **Ask mode**: Phase 1's accept criteria and tests only cover plain
 streaming, not an agent tool loop. Tool calls are wired (basic passthrough) but untested at any
 scale, and there is no cache-breakpoint or reasoning-state logic yet, so an agent-mode session
 will re-send the full context uncached every round and may lose reasoning between rounds.
@@ -107,7 +109,6 @@ channel logs each request's estimate, conversation id and running totals (no pro
 ## Known gaps (tracked in `requirements/REQUIREMENTS.md` and `TODO.md`)
 
 - No Claude (M) or Gemini (G) transport, no cache breakpoints, no reasoning-state round-trip
-- Catalog filtering is `cui_capable` only; `force_models` intersection (§2.3) isn't implemented
 - No pre-flight cost estimate before sending, only the after-the-fact ledger/cap accounting
 - No retry-on-transport-failure logic for CC/R model calls (the JWT-based `/server`/`/user`
   calls do retry once on an auth-invalid response)

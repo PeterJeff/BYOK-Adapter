@@ -112,7 +112,7 @@ function getServices(settings) {
   const credentials = createCredentials(ctx);
   const accessToken = createAccessTokenService({ apiBase: settings.apiBase, getApiKey: credentials.getApiKey, email: settings.email });
   const userInfo = createUserInfoService({ apiBase: settings.apiBase, accessToken });
-  const catalog = createCatalog({ apiBase: settings.apiBase });
+  const catalog = createCatalog({ apiBase: settings.apiBase, warn: (m) => log.warn(m) });
   const tokenizerRates = createTokenizerRates({
     apiBase: settings.apiBase,
     accessToken,
@@ -129,6 +129,27 @@ function getServices(settings) {
   services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, budgetService };
   servicesKey = key;
   return services;
+}
+
+let forceModelsWarned = false;
+
+/**
+ * The org's force_models for the catalog (PLAN.md §2.3). Needs a JWT, so it fails without an
+ * email or key; the picker then shows the unrestricted catalog (Ask Sage still enforces the
+ * restriction) and the failure is logged once.
+ * @param {NonNullable<typeof services>} svc
+ * @returns {Promise<string[] | undefined>}
+ */
+async function forceModelsFor(svc) {
+  try {
+    const names = await svc.userInfo.getForceModels();
+    forceModelsWarned = false;
+    return names;
+  } catch (e) {
+    if (!forceModelsWarned) log.warn(`Ask Sage: could not read the organization's force_models, so the model list is unrestricted: ${/** @type {Error} */ (e).message}`);
+    forceModelsWarned = true;
+    return undefined;
+  }
 }
 
 /** @param {string} text */
@@ -162,9 +183,9 @@ function conversationIdFor(messages, ctors, modelOptions, toolSetHash) {
 const provider = {
   async provideLanguageModelChatInformation(_options, _token) {
     const settings = readSettings(vscode);
-    const { catalog } = getServices(settings);
+    const svc = getServices(settings);
     try {
-      const models = await catalog.list();
+      const models = await svc.catalog.list({ forceModels: await forceModelsFor(svc) });
       return models.map((m) => ({
         id: m.id,
         name: m.id,
@@ -192,7 +213,7 @@ const provider = {
     const ctors = partCtors();
     const settings = readSettings(vscode);
     const svc = getServices(settings);
-    const models = await svc.catalog.list();
+    const models = await svc.catalog.list({ forceModels: await forceModelsFor(svc) });
     const entry = models.find((m) => m.id === model.id);
     if (!entry) throw toLanguageModelError(vscode, new Error(`Ask Sage: ${model.id} is not in this tenant's catalog`));
     const apiKey = await svc.credentials.getApiKey();
