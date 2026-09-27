@@ -79,7 +79,7 @@ async function streamChatCompletions(opts) {
     }
   }
 
-  return { usage, resolvedModel, stopReason, error: result.error, transportError: result.transportError };
+  return { usage, resolvedModel, stopReason, error: result.error, transportError: result.transportError, requestBody: body };
 }
 
 module.exports = { streamChatCompletions };

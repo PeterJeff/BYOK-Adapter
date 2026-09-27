@@ -80,6 +80,11 @@
           "default": 200000,
           "minimum": 0,
           "description": "Hard stop: maximum estimated Ask Sage tokens across all conversations in a rolling hour before requests are refused. 0 disables the cap."
+        },
+        "asksage.debug.logRequests": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Nothing is sent anywhere; files stay on this machine."
         }
       }
     }

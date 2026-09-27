@@ -8,6 +8,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const { createStub, loadWithStub, createContext, parts } = require('../helpers/vscode-stub');
 const { readAll } = require('../../src/ledger/reader');
@@ -296,5 +297,30 @@ test('the spend cap stops a synthetic runaway loop wired through the real reques
     assert.equal(records.length, 1, 'the blocked second request never reached the transport or the ledger');
   } finally {
     restore();
+  }
+});
+
+test('asksage.debug.logRequests is off by default, and writes the real request/response when turned on', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  const off = setup(fetchImpl);
+  try {
+    await off.send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    assert.equal(fs.existsSync(path.join(off.context.globalStorageUri.fsPath, 'debug')), false, 'no debug directory at all when the setting is off');
+  } finally {
+    off.restore();
+  }
+
+  const fetchImpl2 = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  const on = setup(fetchImpl2, { 'asksage.debug.logRequests': true });
+  try {
+    await on.send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    const records = readAll(path.join(on.context.globalStorageUri.fsPath, 'debug'));
+    assert.equal(records.length, 1);
+    const r = /** @type {any} */ (records[0]);
+    assert.equal(r.model, 'gpt-4.1-nano');
+    assert.equal(r.request.messages[0].content, 'hi');
+    assert.equal(r.responseText, 'Hello world');
+  } finally {
+    on.restore();
   }
 });

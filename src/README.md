@@ -51,6 +51,11 @@ message you're about to send.
   Useful for checking what was actually normalized and what it was estimated to cost.
 - The first message to any given model pays a small extra latency hit: five free
   `/server/tokenizer` calls to learn that model's billed rate, cached for 24h afterward.
+- **`asksage.debug.logRequests`** (default `false`): when turned on, writes the exact request
+  body and the concatenated response text to `<globalStorageUri>/debug/*.jsonl` — one line per
+  attempt (a rejected first try and its retry both get their own line). This is the only place
+  in the codebase allowed to hold prompt text, and only because you turned it on; the ledger
+  never does. Turning it on logs a warning in the Output channel with the exact file path.
 
 ## Known VS Code / Copilot Chat interactions
 
@@ -67,6 +72,16 @@ message you're about to send.
   ```
   (or point `chat.utilitySmallModel` at a specific model, including one of ours, if you want
   those utility calls ledgered too).
+- **`chat.byokUtilityModelDefault: "mainAgent"` trades the error above for real background
+  spend.** Once set, one visible chat turn can produce *several* real model calls: confirmed
+  (2026-09-27, ledger + the Ask Sage prompt log) an auto-generated session title and the
+  rotating "Warming up the code" / "Brewing fresh logic" progress-message flourish shown while
+  waiting are both real inference through this provider, not free UI text. In one observed turn,
+  a single visible question produced 4 real requests (1 answer + 3 background), on two different
+  models, all within about a second. The per-call cost is small (a few Ask Sage tokens each) but
+  it's a real request multiplier this extension can't prevent — Copilot Chat decides when to
+  make these calls, not the provider. If it looks like a burst of tiny unexplained ledger entries
+  clustered around one real question, this is almost certainly why.
 
 ## Known Ask Sage data-quality issues (worked around here, not silently trusted)
 

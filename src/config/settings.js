@@ -18,8 +18,9 @@ function readSettings(vscode) {
   const email = /** @type {string} */ (cfg.get('email', ''));
   const sessionCapTokens = /** @type {number} */ (cfg.get('budget.sessionCapTokens', 50000));
   const hourlyCapTokens = /** @type {number} */ (cfg.get('budget.hourlyCapTokens', 200000));
+  const debugLogRequests = /** @type {boolean} */ (cfg.get('debug.logRequests', false));
   const apiBase = `https://${resolveHost({ tenant, host })}`;
-  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens };
+  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens, debugLogRequests };
 }
 
 module.exports = { readSettings, SECTION };

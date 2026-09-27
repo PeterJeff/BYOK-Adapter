@@ -23,6 +23,7 @@ const { streamChatCompletions } = require('./transport/openaiChat');
 const { streamResponses } = require('./transport/openaiResponses');
 const { textOf, roleName } = require('./convert/messages');
 const { createLedgerWriter } = require('./ledger/writer');
+const { createRequestLog } = require('./debug/requestLog');
 const { createSpendCap } = require('./budget/spendCap');
 const { createBudgetService } = require('./budget/budgetService');
 const { createStatusBar } = require('./ui/statusBar');
@@ -44,6 +45,17 @@ let statusBar;
 let spendCap;
 /** @type {ReturnType<typeof createLedgerWriter>} */
 let ledger;
+/** @type {ReturnType<typeof createRequestLog> | null} */
+let debugLog = null;
+
+/** Lazily created only when asksage.debug.logRequests is actually turned on. */
+function getDebugLog() {
+  if (!debugLog) {
+    debugLog = createRequestLog(path.join(ctx.globalStorageUri.fsPath, 'debug'));
+    log.warn(`Ask Sage: request/response logging is ON (asksage.debug.logRequests) -- writing prompt text to ${debugLog.filePath}`);
+  }
+  return debugLog;
+}
 
 /** @type {string | null} */
 let servicesKey = null;
@@ -168,9 +180,12 @@ const provider = {
       throw toLanguageModelError(vscode, /** @type {Error} */ (e));
     }
 
+    let attempt = 0;
     /** @param {number | undefined} maxOutputTokens */
     async function runOnce(maxOutputTokens) {
+      attempt++;
       let streamedAnything = false;
+      let debugText = '';
       const streamOpts = {
         apiBase: settings.apiBase,
         apiKey,
@@ -182,6 +197,7 @@ const provider = {
         maxOutputTokens,
         onText: (/** @type {string} */ text) => {
           streamedAnything = true;
+          if (settings.debugLogRequests) debugText += text;
           progress.report(new vs.LanguageModelTextPart(text));
         },
         onToolCall: (/** @type {{ callId: string, name: string, input: unknown }} */ call) => {
@@ -191,6 +207,20 @@ const provider = {
         token,
       };
       const result = entry.flavor === 'R' ? await streamResponses(streamOpts) : await streamChatCompletions(streamOpts);
+      if (settings.debugLogRequests) {
+        getDebugLog().write({
+          ts: new Date().toISOString(),
+          conversationId,
+          model: model.id,
+          flavor: entry.flavor,
+          attempt,
+          request: result.requestBody,
+          responseText: debugText,
+          usage: result.usage,
+          resolvedModel: result.resolvedModel,
+          error: result.error,
+        });
+      }
       return { result, streamedAnything };
     }
 
