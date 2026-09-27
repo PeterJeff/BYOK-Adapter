@@ -1,0 +1,167 @@
+{
+ "test": "T22",
+ "seq": 24,
+ "label": "google-claude-sonnet-5@M loop r2 with thinking",
+ "kind": "M",
+ "model": "google-claude-sonnet-5",
+ "resolvedModel": "claude-sonnet-5",
+ "method": "POST",
+ "path": "/server/anthropic/v1/messages",
+ "stream": false,
+ "startedAt": "2026-09-26T19:06:26.962Z",
+ "ms": 3488,
+ "ttftMs": 3488,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "x-api-key",
+  "headerNames": [
+   "accept",
+   "anthropic-version",
+   "content-type",
+   "x-api-key"
+  ],
+  "headers": {
+   "anthropic-version": "2023-06-01"
+  },
+  "body": {
+   "model": "google-claude-sonnet-5",
+   "max_tokens": 1280,
+   "thinking": {
+    "type": "adaptive"
+   },
+   "output_config": {
+    "effort": "medium"
+   },
+   "tools": [
+    {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "input_schema": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "messages": [
+    {
+     "role": "user",
+     "content": "Decide which city to check: if 391 is a prime number, check Paris; otherwise check Berlin. Work it out, then call the get_weather tool exactly once for that city. Do not guess the weather."
+    },
+    {
+     "role": "assistant",
+     "content": [
+      {
+       "signature": "EoADCnkIEhACGAIqQJKswpbLKo0g2EpbYKkdDpcgVAh0NvZKbe92RPohgOVdsvg1EYaobifxgZ5tH5T/KUMNugN3AFlVrbc1ejsgOhgyD2NsYXVkZS1zb25uZXQtNTgAQgh0aGlua2luZ1oLNzQyMjE0OTg1MTGoAbCv4NUGEgzog/3GHiDu+GVLPG8aDHdxWtRKYlhDiHpD6iIwuWcGQj4Cd45jDvc+D2gxJnsIzkEGaOVCp5JfxOI0wiRvUNooDPBHPklgcrnGnSKoKrQBNmOzKj8DsER+amRrzu6WlSbPpZk/AGt8estw7T4A4mLfmrEBptPALEJkBFh4K6oNNHkNjuWL9QU8jAzWvBl3pJ2bVo5pmxHZ6QdCZ+kRPp76A+dOAW8ML31vxjU6DgAwo99l1BVyb1jvnltsl+boGfbwj1BV0HoTV4EawvO19jnxYi6EGD2303Es+NMLuYPBvi7bXQs4lN4iHm97yxP2tKYXSar0XZtuByAL3FzEy/YO8RBXGAE=",
+       "thinking": "",
+       "type": "thinking"
+      },
+      {
+       "citations": null,
+       "text": "I need to check if 391 is a prime number.\n\nTesting divisibility: 391 ÷ 17 = 23. Since 17 × 23 = 391, this means 391 has factors other than 1 and itself, so **391 is NOT a prime number**.\n\nTherefore, I should check the weather for **Berlin**.",
+       "type": "text"
+      },
+      {
+       "id": "toolu_vrtx_01UCte46NZScuUzSoTnAWtdj",
+       "input": {
+        "city": "Berlin"
+       },
+       "name": "get_weather",
+       "type": "tool_use"
+      }
+     ]
+    },
+    {
+     "role": "user",
+     "content": [
+      {
+       "type": "tool_result",
+       "tool_use_id": "toolu_vrtx_01UCte46NZScuUzSoTnAWtdj",
+       "content": "{\"city\":\"Paris\",\"temp_c\":18,\"sky\":\"clear\"}"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 0,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "cache_creation_input_tokens": 0,
+  "cache_read_input_tokens": 0,
+  "inference_geo": null,
+  "input_tokens": 770,
+  "output_tokens": 183,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": null,
+  "service_tier": null
+ },
+ "normalized": {
+  "inputUncached": 770,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 183,
+  "thinking": 0,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 185.35,
+  "full": 185.35,
+  "inverse": 7332.73,
+  "inputTokens": 770,
+  "outputTokens": 183
+ },
+ "body": {
+  "id": "msg_vrtx_011CfSaG7JkNBBVD8zVyj2gG",
+  "container": null,
+  "content": [
+   {
+    "citations": null,
+    "text": "It looks like the tool returned data labeled \"Paris\" instead of Berlin, despite my request being for Berlin — this appears to be a mismatch in the tool's response.\n\nTo clarify the logic: since 391 = 17 × 23, it is **not prime**, so **Berlin** was the correct city to check based on the puzzle's rule. However, the weather data returned came back associated with Paris rather than Berlin, so I don't have verified weather data for Berlin from this call. I won't guess Berlin's actual weather conditions since the tool didn't return them correctly.",
+    "type": "text"
+   }
+  ],
+  "model": "claude-sonnet-5",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": null,
+   "input_tokens": 770,
+   "output_tokens": 183,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "server_tool_use": null,
+   "service_tier": null
+  }
+ }
+}

@@ -1,0 +1,260 @@
+{
+ "test": "T22",
+ "seq": 30,
+ "label": "gpt-6-sol@R loop r2 without reasoning",
+ "kind": "R",
+ "model": "gpt-6-sol",
+ "resolvedModel": "gpt-6-sol",
+ "method": "POST",
+ "path": "/server/openai/v1/responses",
+ "stream": false,
+ "startedAt": "2026-09-26T19:07:06.044Z",
+ "ms": 1605,
+ "ttftMs": 1605,
+ "aborted": false,
+ "request": {
+  "auth": "key",
+  "authStyle": "bearer",
+  "headerNames": [
+   "accept",
+   "authorization",
+   "content-type"
+  ],
+  "headers": {},
+  "body": {
+   "model": "gpt-6-sol",
+   "store": false,
+   "tools": [
+    {
+     "type": "function",
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   ],
+   "reasoning": {
+    "effort": "medium"
+   },
+   "include": [
+    "reasoning.encrypted_content"
+   ],
+   "max_output_tokens": 768,
+   "input": [
+    {
+     "role": "user",
+     "content": "Decide which city to check: if 391 is a prime number, check Paris; otherwise check Berlin. Work it out, then call the get_weather tool exactly once for that city. Do not guess the weather."
+    },
+    {
+     "arguments": "{\"city\":\"Berlin\"}",
+     "call_id": "call_aYPXi2XCCQ3L0JxiOWNkE9E0",
+     "name": "get_weather",
+     "type": "function_call",
+     "id": "fc_04127c337a018452016ab817d77a748196aa13eae545aec065",
+     "caller": null,
+     "namespace": null,
+     "status": "completed"
+    },
+    {
+     "type": "function_call_output",
+     "call_id": "call_aYPXi2XCCQ3L0JxiOWNkE9E0",
+     "output": "{\"city\":\"Paris\",\"temp_c\":18,\"sky\":\"clear\"}"
+    }
+   ]
+  }
+ },
+ "status": 200,
+ "contentType": "application/json",
+ "headers": {
+  "content-type": "application/json"
+ },
+ "error": null,
+ "transportError": null,
+ "usage": {
+  "input_tokens": 129,
+  "input_tokens_details": {
+   "cache_write_tokens": 0,
+   "cached_tokens": 0
+  },
+  "output_tokens": 85,
+  "output_tokens_details": {
+   "reasoning_tokens": 45
+  },
+  "total_tokens": 214
+ },
+ "normalized": {
+  "inputUncached": 129,
+  "cacheRead": 0,
+  "cacheWrite5m": 0,
+  "cacheWrite1h": 0,
+  "cacheWriteUnsplit": 0,
+  "visibleOutput": 40,
+  "thinking": 45,
+  "thinkingUnknown": false
+ },
+ "estimate": {
+  "discounted": 140.66,
+  "full": 140.66,
+  "inverse": 537.78,
+  "inputTokens": 129,
+  "outputTokens": 85
+ },
+ "body": {
+  "id": "resp_04127c337a018452016ab817d92b388196a12b8ec18a4db138",
+  "created_at": 1790449625,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_04127c337a018452016ab817d9ba208196bf3b55fd3c42bcf7",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABquBfa394mf_6eP4AQqHSxSmNuPVbFhf3BOr2RcSpfyrm8htogCuo7I0KqKtZhQjOxfl_rjRBs9TllEjk4ku3bKxtIYJo1Yjuyby0wXV7QI7vmhaFUgxXs-TpTtLzyFVXS0yVdyhjl59PM0sjCtTl-jYSC06PeAREHKWZnwoe4vTSTWsVflAkliO2OUPCZ7fAubhA2a-b9xofDJ0MDfgu0wEbYjded0A_SmZYo9WWCQbP3pf6l2L5FpIL2pL2CFKSH2YMvgBTQRdk8m7CBXanAuye0N2ePf9GPXRgQx406xfD0T25xK_vqFeB-zLkhbsJAg2QUS34O2uWnQs4Qkcz4YD_vOKw4tmR-GGODu6ugnOQkBNNXpWLY9aDCZBnbOAihNGtg2cLTq9wy0TAKNEYPjG-ytUjpO0wkYHM7dmuiIP3Z0qEp7YUY_2I01jliUZHmHrhKKSE90TM8tZDY8dya666KDHz6mdQU0o-bHi9SHRnv9Y2qw7MPs7o1xTQGNBAYLya0p76o7_8srMRhW0GKx6LMv3Qxe5A2hsWB-H-Eopqpp68SpFiMCcaqPCQJXQKNSEBIX2s4NVBeUBkwiS_pVSjfUd8hpEaNMxd72DFGnuHDxPm3P45HUOVIiz-kremgz9aj0cUM8RltGvn8eM1uBqsntmsQZlZ9MRVKQ4ansh_RCLD1fj-4hGl8Kegn4Q-c5mKJ1UaduwhWufqnuCpiJtbli1N994FW9hYwN1jCF05fyRItgWoLM9tJb3iP9cdq8-FZJ8mqX_Rlu0CcUqm3MN5eb2cUxiypXoel5f6aDpgltmAAFH_ffxsfTR5Ci1hu1JrSpsmdfmivMvBM2KVPOjYvloU-DvWTYD57-WK2ogpiLuzK_aR8j1ywsh4wmAaGyeXe9yOikdefbqe-sfqJUkUFFu_0vf92bZ5BVKJv0FriwZRwj2L39gddd_VpF0PiBXuMkDrnghqn-1xf_jbAL1Twk1brSY-PAzQ5w8MYn1rY8nyecMPFJ5lSKiyHz4waBh6b2aY0ccckuX-9fi4Z4rQ2xny30hCRI5MLu_BOWhcja85mE4-PwQvEa7XqzYskVC4VBO7rCA4YZQkqcEdNexd5ErGPTfuZC7pggOczHQAm7yT1tnloHOCjUXVBXkkA5Y2kJcjf2SAaQk9UNcO0nj33ikFKr6di_tlLPa3YZwM-eGrBne3JelzWcR1enkcs0G-4Ad5MvppLi3ZlzxMwlCv0UNyODpvXSI_6w-_fMEG04iB7H7SBrSCP2ZEW01bWAd9YC7ro9caDSgNSzPMcQIM_qlQ5FbBEMgaG4aln97cZFDsNjRpgC0iPw42dkxJiq-TzS-Vh5nsEnpo9YR0okR5Apj-RSkcJ9KZ-JnQBuJ_fxBk=",
+    "status": null
+   },
+   {
+    "id": "msg_04127c337a018452016ab817da0bc88196b62e7e4c1c568f22",
+    "content": [
+     {
+      "annotations": [],
+      "text": "391 = 17 × 23, so I checked **Berlin**. The weather tool returned data for Paris instead, so I can’t reliably report Berlin’s weather.",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1,
+  "tool_choice": "auto",
+  "tools": [
+   {
+    "name": "get_weather",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "city": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "city"
+     ],
+     "additionalProperties": false
+    },
+    "strict": true,
+    "type": "function",
+    "allowed_callers": null,
+    "defer_loading": null,
+    "description": "Current weather for a city.",
+    "output_schema": null
+   }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790449626,
+  "conversation": null,
+  "max_output_tokens": 768,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 129,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 85,
+   "output_tokens_details": {
+    "reasoning_tokens": 45
+   },
+   "total_tokens": 214
+  },
+  "user": null,
+  "content_filters": [
+   {
+    "blocked": false,
+    "source_type": "prompt",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 306,
+     "check_offset": 0
+    }
+   },
+   {
+    "blocked": false,
+    "source_type": "completion",
+    "content_filter_raw": [],
+    "content_filter_results": {},
+    "content_filter_offsets": {
+     "start_offset": 0,
+     "end_offset": 335,
+     "check_offset": 0
+    }
+   }
+  ],
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "store": false,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}
