@@ -87,6 +87,13 @@ channel logs each request's estimate, conversation id and running totals (no pro
   make these calls, not the provider. If it looks like a burst of tiny unexplained ledger entries
   clustered around one real question, this is almost certainly why.
 
+- **Deselecting tools in the chat tools picker doesn't always apply** (2026-09-27, Ask mode).
+  It took several tries (switching to another agent, deselecting, switching back, deselecting
+  again) before a request went out without the full tool list, and `session_store_sql` was sent
+  even with every tool deselected. Check what was really sent with `asksage.debug.logRequests`.
+  This matters for models that reject Copilot's tool list (Bedrock Gemma on CC, see
+  `research/live/FINDINGS.md`).
+
 ## Known Ask Sage data-quality issues (worked around here, not silently trusted)
 
 - **`get-models?format=full`'s `limits.max_output` is often not the real completion-token cap.**
