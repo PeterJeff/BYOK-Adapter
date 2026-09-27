@@ -48,7 +48,11 @@ function createCatalog(opts) {
       fetchImpl: opts.fetchImpl,
     });
     if (res.error) throw new Error(`Ask Sage: get-models failed: ${res.error.message}`);
-    const list = /** @type {any} */ (res.body);
+    const body = /** @type {any} */ (res.body);
+    // Observed shapes across tenants (research/model-catalog-findings.md, phase0/probe/catalog-audit.mjs,
+    // phase0/probe/api-probe.mjs's loadCatalog): a bare array on some hosts, {response: [...]} or
+    // {data: [...]} on others.
+    const list = Array.isArray(body) ? body : body?.response || body?.data || body?.models;
     if (!Array.isArray(list)) throw new Error('Ask Sage: get-models?format=full did not return a model list');
     return /** @type {CatalogModel[]} */ (list);
   }

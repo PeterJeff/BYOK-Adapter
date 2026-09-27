@@ -48,6 +48,17 @@ test('list(): filters cui_capable:false and retired, excludes M/G models, tags C
   assert.equal(calls, 2);
 });
 
+test('list(): unwraps {response: [...]} and {data: [...]} envelopes, not just a bare array', async () => {
+  // A live tenant returned get-models?format=full wrapped in {response: [...]} (2026-09-27);
+  // phase0/probe/catalog-audit.mjs and api-probe.mjs's loadCatalog both already handle this.
+  const models = [{ id: 'gpt-4.1-nano', cui_capable: true }];
+  for (const wrapped of [models, { response: models }, { data: models }]) {
+    const catalog = createCatalog({ apiBase: 'https://api.test', fetchImpl: async () => jsonResponse(wrapped) });
+    const list = await catalog.list();
+    assert.deepEqual(list.map((m) => m.id), ['gpt-4.1-nano'], `failed to unwrap ${JSON.stringify(wrapped)}`);
+  }
+});
+
 test('list(): forceModels intersects the offered set', async () => {
   const models = [{ id: 'gpt-4.1-nano' }, { id: 'gpt-5.4-nano' }];
   const catalog = createCatalog({ apiBase: 'https://api.test', fetchImpl: async () => jsonResponse(models) });

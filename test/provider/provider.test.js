@@ -60,7 +60,7 @@ function createFakeFetch(o) {
   const fn = async (/** @type {string} */ url, /** @type {any} */ init) => {
     const body = init && init.body ? JSON.parse(init.body) : undefined;
     calls.push({ url, body });
-    if (url.endsWith('/server/get-models?format=full')) return jsonResponse(o.models);
+    if (url.endsWith('/server/get-models?format=full')) return jsonResponse({ response: o.models }); // real tenants wrap the array (2026-09-27 live finding)
     if (url.endsWith('/user/get-token-with-api-key')) return jsonResponse({ response: { access_token: 'jwt-1' } });
     if (url.endsWith('/user/validate_token_with_full_user')) return jsonResponse({ response: { max_tokens: 200000 } });
     if (url.endsWith('/server/count-monthly-tokens-left-with-org')) return jsonResponse({ response: 150000 });
