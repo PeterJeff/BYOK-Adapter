@@ -1,10 +1,14 @@
 // @ts-check
 'use strict';
 
-// Just enough of the `vscode` module to activate the smoke extension and drive its
-// provider under node:test. Only members the extension touches are modelled.
+// Just enough of the `vscode` module to activate the smoke extension (and the Phase 1 asksage
+// extension) and drive their providers under node:test. Only members the extensions touch are
+// modelled.
 
 const Module = require('module');
+const os = require('os');
+const path = require('path');
+const fs = require('fs');
 
 class LanguageModelTextPart {
   /** @param {string} value */
@@ -79,6 +83,7 @@ function createStub(opts = {}) {
     ExtensionKind: { UI: 1, Workspace: 2 },
     UIKind: { Desktop: 1, Web: 2 },
     ProgressLocation: { Notification: 15 },
+    StatusBarAlignment: { Left: 1, Right: 2 },
     CancellationTokenSource: class {
       token = { isCancellationRequested: false, onCancellationRequested: () => disposable };
       cancel() {
@@ -130,6 +135,10 @@ function createStub(opts = {}) {
       withProgress(_o, task) {
         return task();
       },
+      /** @param {number} [_alignment] @param {number} [_priority] */
+      createStatusBarItem(_alignment, _priority) {
+        return { text: '', tooltip: '', name: '', show() {}, hide() {}, dispose() {} };
+      },
     },
     workspace: {
       isTrusted: true,
@@ -162,7 +171,9 @@ function createStub(opts = {}) {
 function loadWithStub(modulePath, vscode) {
   const resolved = require.resolve(modulePath);
   // Fresh copies of the extension and its libs for every test.
-  for (const key of Object.keys(require.cache)) if (key.includes('smoke-extension')) delete require.cache[key];
+  for (const key of Object.keys(require.cache)) {
+    if (key.includes('smoke-extension') || key.includes(`${path.sep}src${path.sep}`)) delete require.cache[key];
+  }
   const M = /** @type {any} */ (Module);
   const original = M._load;
   M._load = function (/** @type {string} */ request, /** @type {any[]} */ ...rest) {
@@ -179,6 +190,9 @@ function loadWithStub(modulePath, vscode) {
 function createContext() {
   /** @type {Map<string, unknown>} */
   const store = new Map();
+  /** @type {Map<string, string>} */
+  const secretStore = new Map();
+  const storageDir = fs.mkdtempSync(path.join(os.tmpdir(), 'asksage-test-'));
   return {
     subscriptions: /** @type {any[]} */ ([]),
     extensionMode: 1,
@@ -191,6 +205,21 @@ function createContext() {
         return Promise.resolve();
       },
     },
+    secrets: {
+      /** @param {string} k */
+      get: (k) => Promise.resolve(secretStore.get(k)),
+      /** @param {string} k @param {string} v */
+      store: (k, v) => {
+        secretStore.set(k, v);
+        return Promise.resolve();
+      },
+      /** @param {string} k */
+      delete: (k) => {
+        secretStore.delete(k);
+        return Promise.resolve();
+      },
+    },
+    globalStorageUri: { fsPath: storageDir },
     extension: {
       id: 'byok-adapter.asksage-smoke',
       extensionPath: '/home/tester/.vscode/extensions/byok-adapter.asksage-smoke-0.1.0',
@@ -198,6 +227,7 @@ function createContext() {
       packageJSON: { version: '0.1.0', __metadata: { source: 'vsix' } },
     },
     store,
+    secretStore,
   };
 }
 

@@ -1,0 +1,87 @@
+{
+  "name": "asksage-provider",
+  "displayName": "Ask Sage",
+  "description": "Ask Sage model provider for VS Code chat: cache-aware, cost-aware access to Ask Sage's API endpoints in place of the built-in Custom Endpoint (BYOK) route.",
+  "version": "0.1.0",
+  "publisher": "byok-adapter",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languageModelChatProviders": [
+      {
+        "vendor": "asksage",
+        "displayName": "Ask Sage",
+        "managementCommand": "asksage.showStatus"
+      }
+    ],
+    "commands": [
+      {
+        "command": "asksage.setApiKey",
+        "title": "Set API Key",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.clearApiKey",
+        "title": "Clear API Key",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.showStatus",
+        "title": "Show Status",
+        "category": "Ask Sage"
+      }
+    ],
+    "configuration": {
+      "title": "Ask Sage",
+      "properties": {
+        "asksage.tenant": {
+          "type": "string",
+          "default": "public",
+          "scope": "application",
+          "markdownDescription": "Tenant alias (see `config/tenants.js`), or `custom` to use `#asksage.host#`. Application scope: a workspace cannot redirect requests or the bearer token to another host."
+        },
+        "asksage.host": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "API host used when `#asksage.tenant#` is `custom` (e.g. `api.asksage.ai`). Application scope."
+        },
+        "asksage.email": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "Account email, used only to exchange the API key for a short-lived access token on `/server` and `/user` endpoints (catalog, rates, budget). Application scope."
+        },
+        "asksage.budget.sessionCapTokens": {
+          "type": "number",
+          "default": 50000,
+          "minimum": 0,
+          "description": "Hard stop: maximum estimated Ask Sage tokens for one conversation before requests are refused. 0 disables the cap."
+        },
+        "asksage.budget.hourlyCapTokens": {
+          "type": "number",
+          "default": 200000,
+          "minimum": 0,
+          "description": "Hard stop: maximum estimated Ask Sage tokens across all conversations in a rolling hour before requests are refused. 0 disables the cap."
+        }
+      }
+    }
+  }
+}
