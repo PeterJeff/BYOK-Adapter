@@ -1,0 +1,120 @@
+{
+ "source": "owner's prompt log (POST /user/get-user-logs via phase0/probe/prompt-log.mjs), numbers only; no prompt or response text, no log or user ids",
+ "route": "VS Code built-in Custom Endpoint (BYOK), chatLanguageModels.json = Ask Sage VS Code page 'Option D' verbatim (gpt-4.1 on chat-completions; gpt-6-astra on responses with zeroDataRetentionEnabled, thinking, reasoningEffort high; claude-opus-5 on messages, not run)",
+ "source_doc": "research/sources/asksage-docs/2026-09-27/vscode-copilot-byok.md",
+ "task": "Agent mode, one message: 'Review the main readme and todo files in this project, then write your opinion in a small file in a folder that is to be ignored by gitignore (you can also edit the gitignore). This is test T12. Do not exceed the task'. Both models wrote one file under the existing gitignored private/ folder.",
+ "cacheInference": "The prompt log has no cached-token column. impliedCachedTokens = (full price - billed) / (0.9 x prompt rate), from the measured OpenAI-on-Azure read multiplier 0.1 (rate-sources-investigation.md). The +1..5 per-request constant is ignored.",
+ "rates": {
+  "gpt-4.1": {
+   "prompt": 0.143,
+   "completion": 0.572,
+   "source": "get-models x 1.3 (tokenizer / API ratio, research/live/chat.asksage.ai/rates/2026-09-25/summary.md)"
+  },
+  "gpt-6-astra": {
+   "prompt": 0.715,
+   "completion": 3.576,
+   "source": "get-models x 0.650 / 0.867 (same table)"
+  }
+ },
+ "rows": [
+  {
+   "time": "2026-09-27T23:10:09Z",
+   "model": "gpt-4.1",
+   "flavor": "CC",
+   "prompt_tokens": 15710,
+   "completion_tokens": 103,
+   "billed": 2308,
+   "fullPriceAtBilledRate": 2305,
+   "impliedCachedTokens": 0,
+   "impliedCachedPct": 0
+  },
+  {
+   "time": "2026-09-27T23:10:10Z",
+   "model": "gpt-4.1",
+   "flavor": "CC",
+   "prompt_tokens": 18566,
+   "completion_tokens": 35,
+   "billed": 652,
+   "fullPriceAtBilledRate": 2675,
+   "impliedCachedTokens": 15718,
+   "impliedCachedPct": 84.7
+  },
+  {
+   "time": "2026-09-27T23:10:14Z",
+   "model": "gpt-4.1",
+   "flavor": "CC",
+   "prompt_tokens": 18760,
+   "completion_tokens": 196,
+   "billed": 426,
+   "fullPriceAtBilledRate": 2795,
+   "impliedCachedTokens": 18406,
+   "impliedCachedPct": 98.1
+  },
+  {
+   "time": "2026-09-27T23:10:15Z",
+   "model": "gpt-4.1",
+   "flavor": "CC",
+   "prompt_tokens": 18989,
+   "completion_tokens": 42,
+   "billed": 320,
+   "fullPriceAtBilledRate": 2739,
+   "impliedCachedTokens": 18799,
+   "impliedCachedPct": 99
+  },
+  {
+   "time": "2026-09-27T23:11:07Z",
+   "model": "gpt-6-astra",
+   "flavor": "R",
+   "prompt_tokens": 21348,
+   "completion_tokens": 159,
+   "billed": 15834,
+   "fullPriceAtBilledRate": 15832,
+   "impliedCachedTokens": 0,
+   "impliedCachedPct": 0
+  },
+  {
+   "time": "2026-09-27T23:11:24Z",
+   "model": "gpt-6-astra",
+   "flavor": "R",
+   "prompt_tokens": 24363,
+   "completion_tokens": 730,
+   "billed": 20031,
+   "fullPriceAtBilledRate": 20030,
+   "impliedCachedTokens": 0,
+   "impliedCachedPct": 0
+  },
+  {
+   "time": "2026-09-27T23:11:32Z",
+   "model": "gpt-6-astra",
+   "flavor": "R",
+   "prompt_tokens": 24731,
+   "completion_tokens": 296,
+   "billed": 18743,
+   "fullPriceAtBilledRate": 18741,
+   "impliedCachedTokens": 0,
+   "impliedCachedPct": 0
+  },
+  {
+   "time": "2026-09-27T23:11:49Z",
+   "model": "gpt-6-astra",
+   "flavor": "R",
+   "prompt_tokens": 24934,
+   "completion_tokens": 45,
+   "billed": 17990,
+   "fullPriceAtBilledRate": 17989,
+   "impliedCachedTokens": 0,
+   "impliedCachedPct": 0
+  }
+ ],
+ "totals": {
+  "gpt-4.1": {
+   "requests": 4,
+   "billed": 3706
+  },
+  "gpt-6-astra": {
+   "requests": 4,
+   "billed": 72598
+  }
+ },
+ "alsoInWindow": "4 gpt-5.4-nano rows (7, 12, 12, 7 billed): Copilot's title and progress-message utility calls, served by this extension (not the Custom Endpoint)."
+}

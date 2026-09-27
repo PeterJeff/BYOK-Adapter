@@ -1,0 +1,70 @@
+{
+  "source": "owner's asksage.debug.logRequests records from VS Code Copilot Chat, Ask mode, 2026-09-27 (message text removed by the owner; only the request shape is kept here)",
+  "endpoint": "POST /server/openai/v1/chat/completions",
+  "model": "aws-bedrock-gemma-4-e2b-gov",
+  "common": {
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "messageRoles": [
+      "system",
+      "user",
+      "user"
+    ],
+    "max_completion_tokens": 120000
+  },
+  "rejected": {
+    "ts": "2026-09-27T21:46:40.293Z",
+    "toolCount": 20,
+    "tools": [
+      "copilot_getNotebookSummary",
+      "fetch_webpage",
+      "file_search",
+      "get_errors",
+      "get_task_output",
+      "get_terminal_output",
+      "github_repo",
+      "github_text_search",
+      "grep_search",
+      "list_dir",
+      "memory",
+      "read_file",
+      "read_notebook_cell_output",
+      "session_store_sql",
+      "terminal_last_command",
+      "terminal_selection",
+      "testFailure",
+      "view_image",
+      "vscode_askQuestions",
+      "vscode_listCodeUsages"
+    ],
+    "schemaFeaturesNotInTheAcceptedTool": {
+      "pattern": "get_terminal_output.id (a UUID regex)",
+      "minItems/maxItems": "memory.view_range; vscode_askQuestions.questions (minItems)",
+      "maxLength": "vscode_askQuestions header/question",
+      "nested array of objects": "vscode_askQuestions.questions[].options[]",
+      "empty properties {}": "terminal_last_command, terminal_selection, testFailure",
+      "no required list": "get_errors"
+    },
+    "error": {
+      "shape": "openai-error (in stream)",
+      "status": "invalid_request_error",
+      "message": "The task request was rejected by the target"
+    }
+  },
+  "accepted": {
+    "ts": "2026-09-27T21:50:40.483Z",
+    "toolCount": 1,
+    "tools": [
+      "session_store_sql"
+    ],
+    "note": "Owner deselected every tool in the Copilot tools picker; session_store_sql was still sent. The picker took several attempts to apply the deselection.",
+    "usage": {
+      "prompt_tokens": 4838,
+      "completion_tokens": 661,
+      "total_tokens": 5499
+    },
+    "resolvedModel": null
+  }
+}

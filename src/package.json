@@ -1,0 +1,108 @@
+{
+  "name": "asksage-provider",
+  "displayName": "Ask Sage",
+  "description": "Ask Sage model provider for VS Code chat: cache-aware, cost-aware access to Ask Sage's API endpoints in place of the built-in Custom Endpoint (BYOK) route.",
+  "version": "0.1.0",
+  "publisher": "byok-adapter",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.104.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "The tenant, host and email settings are read only from user settings, so an untrusted workspace cannot redirect requests or the API key.",
+      "restrictedConfigurations": [
+        "asksage.tenant",
+        "asksage.host",
+        "asksage.email"
+      ]
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languageModelChatProviders": [
+      {
+        "vendor": "asksage",
+        "displayName": "Ask Sage",
+        "managementCommand": "asksage.showStatus"
+      }
+    ],
+    "commands": [
+      {
+        "command": "asksage.setApiKey",
+        "title": "Set API Key",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.clearApiKey",
+        "title": "Clear API Key",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.showStatus",
+        "title": "Show Status",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.openLedgerFolder",
+        "title": "Open Ledger Folder",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.openDebugLogFolder",
+        "title": "Open Request Log Folder",
+        "category": "Ask Sage"
+      }
+    ],
+    "configuration": {
+      "title": "Ask Sage",
+      "properties": {
+        "asksage.tenant": {
+          "type": "string",
+          "default": "public",
+          "scope": "application",
+          "markdownDescription": "Tenant alias (see `config/tenants.js`), or `custom` to use `#asksage.host#`. Application scope: a workspace cannot redirect requests or the bearer token to another host."
+        },
+        "asksage.host": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "API host used when `#asksage.tenant#` is `custom` (e.g. `api.asksage.ai`). Application scope."
+        },
+        "asksage.email": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "Account email, used only to exchange the API key for a short-lived access token on `/server` and `/user` endpoints (catalog, rates, budget). Application scope."
+        },
+        "asksage.budget.sessionCapTokens": {
+          "type": "number",
+          "default": 50000,
+          "minimum": 0,
+          "markdownDescription": "Hard stop: maximum estimated Ask Sage tokens for one conversation before requests are refused. 0 disables the cap. Checked before each request, so the request that crosses it still completes. Every request's estimate is in the [ledger](command:asksage.openLedgerFolder)."
+        },
+        "asksage.budget.hourlyCapTokens": {
+          "type": "number",
+          "default": 200000,
+          "minimum": 0,
+          "description": "Hard stop: maximum estimated Ask Sage tokens across all conversations in a rolling hour before requests are refused. 0 disables the cap."
+        },
+        "asksage.debug.logRequests": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Requests are sent to Ask Sage exactly as with this off; the log files themselves stay on this machine and are never uploaded. [Open the request log folder](command:asksage.openDebugLogFolder)."
+        }
+      }
+    }
+  }
+}
