@@ -15,15 +15,22 @@ function createStatusBar(vscode) {
     item.text = '$(sparkle) Ask Sage';
     item.show();
   }
+  /** @type {{ remaining?: number | null, lastCostAs?: number | null }} */
+  const state = {};
   return {
     item,
-    /** @param {{ remaining?: number | null, lastCostAs?: number | null }} status */
+    /**
+     * Merges into the last known state, so a cost-only update keeps the known balance.
+     * @param {{ remaining?: number | null, lastCostAs?: number | null }} status
+     */
     update(status) {
+      Object.assign(state, status);
       if (!item) return;
-      const remainingText = typeof status.remaining === 'number' ? status.remaining.toLocaleString() : '?';
+      const remainingText = typeof state.remaining === 'number' ? state.remaining.toLocaleString() : '?';
       item.text = `$(sparkle) Ask Sage: ${remainingText} left`;
-      item.tooltip = typeof status.lastCostAs === 'number' ? `Last request: ~${status.lastCostAs} Ask Sage tokens` : 'Ask Sage';
+      item.tooltip = typeof state.lastCostAs === 'number' ? `Last request: ~${state.lastCostAs} Ask Sage tokens` : 'Ask Sage';
     },
+    state,
     dispose() {
       if (item) item.dispose();
     },

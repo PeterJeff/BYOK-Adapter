@@ -1,0 +1,22 @@
+{
+  "endpoint": "POST https://api.asksage.ai/server/openai/v1/chat/completions",
+  "auth": "cloud-session proxy credential (not recorded)",
+  "recorded": "2026-09-27",
+  "tool": "curl",
+  "purpose": "Does Nemotron fail on CC even with no tools and no system prompt?",
+  "request": {
+    "model": "aws-bedrock-nemotron-9b-gov",
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_completion_tokens": 64
+  },
+  "responseSSE": "data: {\"error\": {\"message\": \"The model 'nvidia.nemotron-nano-9b-v2' does not support the '/openai/v1/responses' API\", \"type\": \"invalid_request_error\", \"code\": \"invalid_request_error\", \"error_code\": \"ERR-OPENAI-400-INVALID_REQUEST\", \"ref\": \"ERR-16B68347\"}}\n\ndata: [DONE]\n\n"
+}

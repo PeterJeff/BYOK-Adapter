@@ -58,6 +58,33 @@ function getDebugLog() {
   return debugLog;
 }
 
+/** @type {Promise<void> | null} */
+let balanceRefresh = null;
+let balanceRefreshedAt = 0;
+
+/**
+ * PLAN.md §3.3: refresh the remaining balance on activation and after each completed turn,
+ * debounced. Free calls (JWT exchange + counters); failures only leave the last known value.
+ * @param {{ force?: boolean }} [o]
+ */
+function refreshBalance(o = {}) {
+  if (balanceRefresh || (!o.force && Date.now() - balanceRefreshedAt < 30000)) return balanceRefresh;
+  balanceRefresh = (async () => {
+    try {
+      const svc = getServices(readSettings(vscode));
+      if (!(await svc.credentials.getApiKey())) return;
+      const status = await svc.budgetService.getStatus();
+      balanceRefreshedAt = Date.now();
+      if (typeof status.remaining === 'number') statusBar.update({ remaining: status.remaining });
+    } catch (e) {
+      log.debug(`balance refresh failed: ${/** @type {Error} */ (e).message}`);
+    } finally {
+      balanceRefresh = null;
+    }
+  })();
+  return balanceRefresh;
+}
+
 /** @type {string | null} */
 let servicesKey = null;
 /** @type {{ credentials: ReturnType<typeof createCredentials>, accessToken: ReturnType<typeof createAccessTokenService>,
@@ -309,6 +336,7 @@ const provider = {
     }
 
     statusBar.update({ lastCostAs: estAsCost });
+    void refreshBalance();
   },
 };
 
@@ -333,6 +361,7 @@ function activate(context) {
 
   const credentials = createCredentials(context);
   context.subscriptions.push(...registerCredentialCommands(vscode, credentials));
+  void refreshBalance({ force: true });
   context.subscriptions.push(
     vscode.commands.registerCommand('asksage.openDebugLogFolder', () => revealStorageFolder('debug')),
     vscode.commands.registerCommand('asksage.openLedgerFolder', () => revealStorageFolder('ledger')),
