@@ -54,6 +54,13 @@ const R_SSE =
   'data: {"type":"response.completed","response":{"model":"gpt-5.4-nano-2026-01-01","status":"completed","usage":{"input_tokens":40,"input_tokens_details":{"cached_tokens":0},"output_tokens":3,"output_tokens_details":{"reasoning_tokens":0}}}}\n\n' +
   'data: [DONE]\n\n';
 
+// Real gpt-5.6-luna traffic (2026-09-27 live ledger) reports a cache write with no 5m/1h split;
+// normalize() puts it in cacheWriteUnsplit, which the ledger must not silently drop.
+const R_SSE_CACHE_WRITE =
+  'data: {"type":"response.output_text.delta","delta":"Hi"}\n\n' +
+  'data: {"type":"response.completed","response":{"model":"gpt-5.6-luna","status":"completed","usage":{"input_tokens":3,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":10000},"output_tokens":41,"output_tokens_details":{"reasoning_tokens":19}}}}\n\n' +
+  'data: [DONE]\n\n';
+
 /** @param {{ models: unknown[], cc?: string, r?: string }} o */
 function createFakeFetch(o) {
   const calls = /** @type {{ url: string, body: any }[]} */ ([]);
@@ -159,6 +166,21 @@ test('a non-reasoning model streams through CC and lands a normalized, estimated
     assert.equal(r.inputUncached, 50);
     assert.equal(r.visibleOutput, 5);
     assert.equal(r.estAsCost, 3.75); // 50*0.05 + 5*0.25
+  } finally {
+    restore();
+  }
+});
+
+test('a cache write reported without a TTL split (R/CC) still lands in the ledger, not silently dropped', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL], r: R_SSE_CACHE_WRITE });
+  const { send, context, restore } = setup(fetchImpl);
+  try {
+    await send('gpt-5.4-nano', [{ role: 1, content: [text('hi')] }]);
+    const records = readAll(path.join(context.globalStorageUri.fsPath, 'ledger'));
+    assert.equal(records.length, 1);
+    // Real ledger data (2026-09-27) showed this as inputUncached:3, cacheWrite5m:0 -- indistinguishable
+    // from no cache activity at all -- while a later round's cacheRead proved a write must have happened.
+    assert.equal(records[0].cacheWrite5m, 10000, 'the unsplit cache write must be visible in the ledger, folded into cacheWrite5m');
   } finally {
     restore();
   }

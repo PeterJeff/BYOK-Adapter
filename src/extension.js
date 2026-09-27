@@ -207,7 +207,11 @@ const provider = {
       flavor: entry.flavor,
       inputUncached: norm?.inputUncached ?? 0,
       cacheRead: norm?.cacheRead ?? 0,
-      cacheWrite5m: norm?.cacheWrite5m ?? 0,
+      // CC/R report an unsplit write (no 5m/1h distinction, unlike M's TTL split) into
+      // cacheWriteUnsplit; fold it into cacheWrite5m for the ledger since expectedBill() already
+      // prices it at the write5m multiplier (src/rates/formula.js). Dropping it here previously
+      // made real cache writes invisible in the ledger even though they were billed correctly.
+      cacheWrite5m: (norm?.cacheWrite5m ?? 0) + (norm?.cacheWriteUnsplit ?? 0),
       cacheWrite1h: norm?.cacheWrite1h ?? 0,
       visibleOutput: norm?.visibleOutput ?? 0,
       thinking: norm?.thinking ?? 0,
