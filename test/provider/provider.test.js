@@ -41,8 +41,8 @@ function sseResponse(sseText) {
   };
 }
 
-const CC_MODEL = { id: 'gpt-4.1-nano', cui_capable: true };
-const R_MODEL = { id: 'gpt-5.4-nano', cui_capable: true };
+const CC_MODEL = { id: 'gpt-4.1-nano', cui_capable: true, limits: { max_context: 128000, max_output: 4096 } };
+const R_MODEL = { id: 'gpt-5.4-nano', cui_capable: true, limits: { max_context: 128000, max_output: 4096 } };
 
 const CC_SSE =
   'data: {"id":"1","model":"gpt-4.1-nano-2026-01-01","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}\n\n' +
@@ -56,10 +56,10 @@ const R_SSE =
 
 /** @param {{ models: unknown[], cc?: string, r?: string }} o */
 function createFakeFetch(o) {
-  const calls = /** @type {string[]} */ ([]);
+  const calls = /** @type {{ url: string, body: any }[]} */ ([]);
   const fn = async (/** @type {string} */ url, /** @type {any} */ init) => {
-    calls.push(url);
     const body = init && init.body ? JSON.parse(init.body) : undefined;
+    calls.push({ url, body });
     if (url.endsWith('/server/get-models?format=full')) return jsonResponse(o.models);
     if (url.endsWith('/user/get-token-with-api-key')) return jsonResponse({ response: { access_token: 'jwt-1' } });
     if (url.endsWith('/user/validate_token_with_full_user')) return jsonResponse({ response: { max_tokens: 200000 } });
@@ -98,19 +98,25 @@ function setup(fetchImpl, configOverrides = {}) {
   context.secrets.store(SECRET_KEY, 'test-api-key');
   const provider = registered.providers.asksage;
   /**
+   * Looks the model up through provideLanguageModelChatInformation first, the way VS Code
+   * actually does, so provideLanguageModelChatResponse gets the same maxOutputTokens etc. that
+   * were advertised in the picker (PLAN.md §3.5: always send an explicit output cap).
    * @param {string} modelId
    * @param {any[]} messages
    */
   async function send(modelId, messages) {
+    const models = await provider.provideLanguageModelChatInformation({}, token());
+    const model = models.find((/** @type {any} */ m) => m.id === modelId);
+    assert.ok(model, `${modelId} not offered by provideLanguageModelChatInformation`);
     /** @type {any[]} */
     const out = [];
-    await provider.provideLanguageModelChatResponse({ id: modelId }, messages, { toolMode: 1 }, { report: (/** @type {any} */ p) => out.push(p) }, token());
+    await provider.provideLanguageModelChatResponse(model, messages, { toolMode: 1 }, { report: (/** @type {any} */ p) => out.push(p) }, token());
     return out;
   }
   function restore() {
     globalThis.fetch = realFetch;
   }
-  return { vscode, registered, provider, send, context, restore };
+  return { vscode, registered, provider, send, fetchImpl, context, restore };
 }
 
 test('GPT-5.x streams through R and lands a normalized, estimated-cost ledger record', async () => {
@@ -155,6 +161,28 @@ test('a non-reasoning model streams through CC and lands a normalized, estimated
     assert.equal(r.estAsCost, 3.75); // 50*0.05 + 5*0.25
   } finally {
     restore();
+  }
+});
+
+test('sends the model\'s maxOutputTokens as an explicit output cap on both flavors (PLAN §3.5)', async () => {
+  const ccFetch = createFakeFetch({ models: [CC_MODEL, R_MODEL], cc: CC_SSE });
+  const { send: sendCC, restore: restoreCC } = setup(ccFetch);
+  try {
+    await sendCC('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    const ccCall = ccFetch.calls.find((c) => c.url.endsWith('/server/openai/v1/chat/completions'));
+    assert.equal(ccCall?.body.max_completion_tokens, 4096);
+  } finally {
+    restoreCC();
+  }
+
+  const rFetch = createFakeFetch({ models: [CC_MODEL, R_MODEL], r: R_SSE });
+  const { send: sendR, restore: restoreR } = setup(rFetch);
+  try {
+    await sendR('gpt-5.4-nano', [{ role: 1, content: [text('hi')] }]);
+    const rCall = rFetch.calls.find((c) => c.url.endsWith('/server/openai/v1/responses'));
+    assert.equal(rCall?.body.max_output_tokens, 4096);
+  } finally {
+    restoreR();
   }
 });
 

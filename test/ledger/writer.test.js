@@ -51,9 +51,19 @@ test('appends JSONL lines with no prompt text field, mergeable across files', ()
   for (const r of all) {
     assert.ok(!('prompt' in r) && !('promptText' in r) && !('messages' in r), 'no prompt text in the ledger by default');
   }
+  // Cross-file ordering isn't guaranteed at millisecond resolution (readAll sorts by `ts`, and
+  // two different processes' files can tie), so check presence, not relative order across files.
+  assert.deepEqual(all.map((r) => r.conversationId).sort(), ['conv-a', 'conv-a', 'conv-b']);
+  assert.ok(all.some((r) => r.conversationId === 'conv-a' && r.estAsCost === 5));
+});
 
-  const lastRecord = last(dir);
-  assert.equal(lastRecord.estAsCost, 5);
+test('last() returns the most recently appended record within a single writer', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'asksage-ledger-'));
+  const writer = createLedgerWriter(dir);
+  writer.append(record({ estAsCost: 1 }));
+  writer.append(record({ estAsCost: 2 }));
+  writer.append(record({ estAsCost: 3 }));
+  assert.equal(last(dir).estAsCost, 3);
 });
 
 test('readAll tolerates a corrupt line instead of failing the whole read', () => {

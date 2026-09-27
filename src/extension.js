@@ -171,6 +171,7 @@ const provider = {
       ctors,
       roleEnum: roleEnum(),
       tools,
+      maxOutputTokens: model.maxOutputTokens, // PLAN.md §3.5: always send an explicit cap, never rely on the server default
       onText: (/** @type {string} */ text) => progress.report(new vs.LanguageModelTextPart(text)),
       onToolCall: (/** @type {{ callId: string, name: string, input: unknown }} */ call) => progress.report(new vs.LanguageModelToolCallPart(call.callId, call.name, call.input)),
       token,
