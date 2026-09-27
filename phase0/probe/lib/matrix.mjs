@@ -16,6 +16,10 @@
  * @type {Record<string, { purpose: string, ids: string[] }>}
  */
 export const PRESETS = {
+  breadth: {
+    purpose: 'coverage beyond Claude, which most tests so far ran on: Azure Gov GPT on R, Gemini Gov and 2.5 tiers on G, Bedrock partner models on CC',
+    ids: ['gpt-5.6-terra-gov', 'gpt-5.6-luna-gov', 'google-gemini-3.5-flash-gov', 'google-gemini-2.5-pro', 'aws-bedrock-gpt-oss-120b-gov', 'aws-bedrock-nemotron-super-3-120b-gov', 'aws-bedrock-nova-pro-gov'],
+  },
   flagship: {
     purpose: 'large models per family: caching (incl. GPT-5.6/6 cache writes), reasoning round trips at flagship scale',
     ids: ['google-claude-sonnet-5', 'google-claude-opus-5-5', 'gpt-5.6-sol', 'gpt-6-sol', 'gpt-5.5', 'google-gemini-3.1-pro-com'],

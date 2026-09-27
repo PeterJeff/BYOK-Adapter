@@ -150,7 +150,7 @@ The APIs count tokens differently. A pure `normalize/` module converts every fla
 
 | Flavor | Input | Cache | Output and thinking |
 |---|---|---|---|
-| M | `input_tokens` **excludes** cache reads and writes | `cache_read_input_tokens`; `cache_creation_input_tokens` (split by TTL where reported) | `output_tokens` **includes** thinking; no separate thinking count |
+| M | `input_tokens` **excludes** cache reads and writes | `cache_read_input_tokens`; `cache_creation_input_tokens` (split by TTL where reported) | `output_tokens` **includes** thinking; Vertex also reports `output_tokens_details.thinking_tokens` (below) |
 | CC | `prompt_tokens` **includes** `cached_tokens`: uncached = prompt − cached | `cached_tokens`; writes not reported | `completion_tokens` **includes** `reasoning_tokens`: visible = completion − reasoning |
 | R | `input_tokens` **includes** `cached_tokens` | as CC | `output_tokens` **includes** `reasoning_tokens` |
 | G | `promptTokenCount` **includes** `cachedContentTokenCount` | `cachedContentTokenCount` | `candidatesTokenCount` excludes `thoughtsTokenCount` (separate) |
@@ -384,24 +384,26 @@ Estimated cost: about 200–350k Ask Sage tokens. **Exit:** `research/live/FINDI
 ### Phase 0c: target-tenant subset (dropped)
 Dropped 2026-09-25: no measurements come back from the target environment. Test-tenant findings are the development reference; per-tenant differences are handled by runtime calibration and safe degradation (§2.3), and checked by beta use on the target.
 
-### Phase 1: skeleton with M and CC, ledger and spend cap
-Tenant and key setup with scoped settings; the catalog from bundled tables and rates; M and CC transports with streaming; the error normalizer (bodies and SSE events); the usage normalizer; the ledger and the `usage` DataPart; the session spend cap; a status bar showing remaining budget and the last request's cost.
+### Phase 1: skeleton with CC and R, ledger and spend cap
+CC and R come first because R is the measured default for GPT-5.4 and later (§2.2) and CC serves every other family except Claude and Gemini, so together they reach the most models in any tenant's catalog (§2.3). M follows in Phase 2 with its breakpoints and thinking; G stays in Phase 4.
 
-**Accept:** Claude through M and GPT-5.x through CC stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; the spend cap stops a synthetic runaway loop.
+Tenant and key setup with scoped settings; the catalog from bundled tables and rates; CC and R transports with streaming (R: `store:false`, full history, never `previous_response_id`); the error normalizer (bodies and SSE events); the usage normalizer; the ledger and the `usage` DataPart; the session spend cap; a status bar showing remaining budget and the last request's cost.
+
+**Accept:** GPT-5.x through R and a non-GPT model (e.g. a partner model) through CC stream in Ask mode; every request lands in the ledger with a normalized, estimated cost; the spend cap stops a synthetic runaway loop.
 
 ### Phase 2: tools, agent mode, caching and reasoning state
-Tool conversion; cache breakpoints (M) with TTL, minimum and lookback handling; `prompt_cache_key` (CC); thinking pinning; reasoning round-trip with the `state/` fallback; the Check Cache Health command.
+The M transport; tool conversion; cache breakpoints (M) with TTL, minimum and lookback handling; `prompt_cache_key` (CC); thinking pinning; reasoning round-trip with the `state/` fallback; the Check Cache Health command.
 
 **Accept:**
-- a multi-step agent task shows cache reads of 80% or more from round 2 on at least one Claude and one GPT-5.x model
-- Claude with thinking on completes a 5+ round tool loop without errors
+- a multi-step agent task shows cache reads of 80% or more from round 2 on GPT-5.x (R) and on at least one other model family
+- a reasoning model with its reasoning state carried between rounds (encrypted reasoning, signed thinking or the Gemini placeholder) completes a 5+ round tool loop without errors, on GPT-5.x (R) and on at least one other family
 - estimate accuracy: measured delta within ±10% of the estimate per request if T19 shows single requests are resolvable; otherwise within ±10% in batch mode (§3.6)
 
 ### Phase 3: budget guards
 Pre-flight estimate, warnings and hard stop, the budget-mode experiment (measured against normal mode before it is recommended), burn-rate forecast, request-tokens command, cache-health and fallback alarms, and the reconciliation display.
 
 ### Phase 4: remaining flavors and overrides
-R (`store:false`, encrypted reasoning; promoted to GPT-5.x default if T3 passes), G, multi-flavor picker entries and workspace policy.
+G, multi-flavor picker entries and workspace policy. (R moved to Phase 1 once T3 made it the GPT-5.x default.)
 
 ### Phase 5: search tools
 Subject to the §8 gate: `#asksageCodebase` (local embeddings index, purge command) and `#asksageDocs` (dataset query); N as an opt-in "Ask Sage (datasets)" model variant.
@@ -456,7 +458,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 
 > Build the Ask Sage VS Code language-model provider in `PLAN.md` phase by phase, starting with the Phase 0a smoke-test provider, then the Phase 0b probe script.
 >
-> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md`. The specs in `research/sources/` are the starting data. Rates come from the API at runtime, not from a table (§3.1); `model-token-conversion.json` is a 2026-09-22 snapshot of the web app's table, useful only as a cross-check.
+> Read `research/*.md` first, especially `caching-and-endpoint-flavors.md` and `token-conversion-and-ui-endpoints.md` (not yet in this repository, §0; until they are, `research/live/FINDINGS.md` and `research/rate-sources-investigation.md` are the committed evidence). The specs in `research/sources/` are the starting data. Rates come from the API at runtime, not from a table (§3.1); `model-token-conversion.json` is a 2026-09-22 snapshot of the web app's table, useful only as a cross-check.
 >
 > Constraints:
 > - plain JavaScript (CommonJS, `// @ts-check` + JSDoc), no build step, no npm; only Node built-ins and the `vscode` API

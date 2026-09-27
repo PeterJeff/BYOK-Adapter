@@ -51,6 +51,7 @@ T1–T21 run once per role on the cheapest matching model. That is right for end
 
 | Preset | Models (test-tenant ids) | Fills |
 |---|---|---|
+| `breadth` | GPT-5.6 Terra Gov, GPT-5.6 Luna Gov, Gemini 3.5 Flash Gov, Gemini 2.5 Pro, gpt-oss-120b, Nemotron Super 3 and Nova Pro (Bedrock) | coverage beyond Claude, which most tests so far ran on: reasoning loops and caching on Azure Gov GPT (R), Gemini tiers (G), Bedrock partner models (CC) |
 | `flagship` | Sonnet 5, Opus 5.5, GPT-5.6 Sol, GPT-6 Sol, GPT-5.5, Gemini 3.1 Pro | large-model caching (GPT-5.6/6 cache writes), reasoning round trips at flagship scale |
 | `premium` | Fable 5.1 (Bedrock), GPT-6 Astra, Opus 4.7 (-com) | the most expensive tier; Fable's 0.025× read is unmeasured |
 | `hosts` | Opus 5.5 on Bedrock, Sonnet 4.6 -com, GPT-5.6 Terra Gov, GPT-5.4 Gov, Bedrock GPT-5.6 Luna | the same families on other hosts |
@@ -61,6 +62,7 @@ T1–T21 run once per role on the cheapest matching model. That is right for end
 Suggested order after the default run, each with `--dry-run` first. The dry run prints a pessimistic estimate per model: every allowed output token billed, at the tokenizer's billed rate when `ASKSAGE_API_KEY` and `ASKSAGE_EMAIL` are set (free calls, made even in a dry run), else the catalog rate × 1.3. Input-heavy runs come close to the estimate; output caps are rarely used up.
 
 ```sh
+node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix breadth,gpt-5.6-luna-gov@M,google-gemini-3.5-flash-gov@M   # ~36k estimate; the @M entries ask whether M serves non-Claude ids (a rejection costs nothing)
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix small,partners,gemini   # ~28k estimate
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix flagship --max-spend 90000   # ~81k: pick models instead, e.g. google-claude-sonnet-5,gpt-6-sol@R (~12k)
 node phase0/probe/api-probe.mjs --api api.asksage.ai --alias manual-run --matrix hosts
