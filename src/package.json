@@ -84,7 +84,7 @@
         "asksage.debug.logRequests": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Nothing is sent anywhere; files stay on this machine."
+          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Requests are sent to Ask Sage exactly as with this off; the log files themselves stay on this machine and are never uploaded."
         }
       }
     }

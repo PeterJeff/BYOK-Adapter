@@ -42,7 +42,9 @@ Every real message spends real Ask Sage tokens. The default spend caps
 (`asksage.budget.sessionCapTokens` 50,000 / `asksage.budget.hourlyCapTokens` 200,000 per hour)
 are generous enough not to interfere with ordinary testing, but they only block a request
 *before* it's sent if the running total is already over — they don't project the cost of the
-message you're about to send.
+message you're about to send. So the request that crosses the cap still completes and the next one
+is refused. A changed cap applies to the next request, no reload needed. The "Ask Sage" output
+channel logs each request's estimate, conversation id and running totals (no prompt text).
 
 ## If something looks wrong
 

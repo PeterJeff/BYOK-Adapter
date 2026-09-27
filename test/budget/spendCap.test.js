@@ -45,3 +45,12 @@ test('0 disables a cap', () => {
   cap.record('conv-a', 1e9);
   assert.doesNotThrow(() => cap.check('conv-a'));
 });
+
+test('a getter is read on every check, so a lowered cap applies without a reload', () => {
+  let limits = { sessionCapTokens: 50000, hourlyCapTokens: 0 };
+  const cap = createSpendCap(() => limits);
+  cap.record('conv-1', 160);
+  assert.doesNotThrow(() => cap.check('conv-1'));
+  limits = { sessionCapTokens: 100, hourlyCapTokens: 0 };
+  assert.throws(() => cap.check('conv-1'), /session spend cap reached \(160 of 100/);
+});

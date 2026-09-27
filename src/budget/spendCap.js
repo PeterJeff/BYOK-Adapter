@@ -3,12 +3,18 @@
 
 // PLAN.md §3.5: a simple per-conversation and per-hour cap in Ask Sage tokens, with a hard
 // stop, so agent testing (Phase 2+) cannot run away. Pure; in-memory only (per extension-host
-// process, like the ledger).
+// process, like the ledger). The cap is checked before each request is sent, so the request
+// that crosses it still completes; the next one is refused.
+
+/** @typedef {{ sessionCapTokens: number, hourlyCapTokens: number }} SpendLimits  0 disables that cap */
 
 /**
- * @param {{ sessionCapTokens: number, hourlyCapTokens: number }} limits  0 disables that cap
+ * @param {SpendLimits | (() => SpendLimits)} limitsOrGetter  a getter is read on every check, so
+ *   a changed setting applies at once (live finding 2026-09-27: a cap lowered after activation
+ *   was ignored until a reload)
  */
-function createSpendCap(limits) {
+function createSpendCap(limitsOrGetter) {
+  const getLimits = typeof limitsOrGetter === 'function' ? limitsOrGetter : () => limitsOrGetter;
   /** @type {Map<string, number>} */
   const perConversation = new Map();
   /** @type {{ at: number, cost: number }[]} */
@@ -33,6 +39,7 @@ function createSpendCap(limits) {
      */
     check(conversationId) {
       const now = Date.now();
+      const limits = getLimits();
       const convTotal = perConversation.get(conversationId) || 0;
       if (limits.sessionCapTokens > 0 && convTotal >= limits.sessionCapTokens) {
         throw new Error(`Ask Sage: session spend cap reached (${convTotal} of ${limits.sessionCapTokens} AS tokens) for this conversation`);

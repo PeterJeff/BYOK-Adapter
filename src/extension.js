@@ -177,6 +177,7 @@ const provider = {
     try {
       spendCap.check(conversationId);
     } catch (e) {
+      log.warn(/** @type {Error} */ (e).message);
       throw toLanguageModelError(vscode, /** @type {Error} */ (e));
     }
 
@@ -261,6 +262,12 @@ const provider = {
       }
     }
     if (typeof estAsCost === 'number') spendCap.record(conversationId, estAsCost);
+    {
+      // No prompt text: ids and totals only, so a cap that doesn't trip can be diagnosed.
+      const idSource = options.modelOptions && '_conversationId' in options.modelOptions ? '_conversationId' : 'hash fallback';
+      const spent = spendCap.snapshot(conversationId);
+      log.info(`${model.id}: est ${estAsCost ?? 'n/a'} AS; conversation ${conversationId} (${idSource}) at ${Math.round(spent.conversation * 100) / 100} AS, last hour ${Math.round(spent.hourly * 100) / 100} AS`);
+    }
 
     ledger.append({
       ts: new Date().toISOString(),
@@ -310,8 +317,10 @@ function activate(context) {
   log = createLog(vscode);
   context.subscriptions.push(log.channel);
   statusBar = createStatusBar(vscode);
-  const settings = readSettings(vscode);
-  spendCap = createSpendCap({ sessionCapTokens: settings.sessionCapTokens, hourlyCapTokens: settings.hourlyCapTokens });
+  spendCap = createSpendCap(() => {
+    const s = readSettings(vscode);
+    return { sessionCapTokens: s.sessionCapTokens, hourlyCapTokens: s.hourlyCapTokens };
+  });
   ledger = createLedgerWriter(path.join(context.globalStorageUri.fsPath, 'ledger'));
 
   if (typeof vs.lm?.registerLanguageModelChatProvider !== 'function') {

@@ -137,7 +137,7 @@ function setup(fetchImpl, configOverrides = {}) {
   function restore() {
     globalThis.fetch = realFetch;
   }
-  return { vscode, registered, provider, send, fetchImpl, context, restore };
+  return { vscode, registered, config, provider, send, fetchImpl, context, restore };
 }
 
 test('GPT-5.x streams through R and lands a normalized, estimated-cost ledger record', async () => {
@@ -295,6 +295,21 @@ test('the spend cap stops a synthetic runaway loop wired through the real reques
 
     const records = readAll(path.join(context.globalStorageUri.fsPath, 'ledger'));
     assert.equal(records.length, 1, 'the blocked second request never reached the transport or the ledger');
+  } finally {
+    restore();
+  }
+});
+
+test('a session cap lowered after activation applies to the next request (live finding, 2026-09-27)', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  // Activated with the default cap (50000); the user then lowers it in Settings without a reload.
+  const { send, config, context, restore } = setup(fetchImpl);
+  try {
+    const messages = [{ role: 1, content: [text('hi')] }];
+    await send('gpt-4.1-nano', messages);
+    config['asksage.budget.sessionCapTokens'] = 3;
+    await assert.rejects(() => send('gpt-4.1-nano', messages), /spend cap reached/);
+    assert.equal(readAll(path.join(context.globalStorageUri.fsPath, 'ledger')).length, 1);
   } finally {
     restore();
   }
