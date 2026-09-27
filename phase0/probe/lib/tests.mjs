@@ -79,7 +79,13 @@ const ASK_WEATHER = 'What is the weather in Paris right now? Use the get_weather
  */
 const REASON_WEATHER = 'Decide which city to check: if 391 is a prime number, check Paris; otherwise check Berlin. Work it out, then call the get_weather tool exactly once for that city. Do not guess the weather.';
 const REASON_CITY = 'Berlin';
-const TOOL_RESULT = '{"city":"Paris","temp_c":18,"sky":"clear"}';
+/**
+ * The fake weather tool's answer, for the city the model asked about. A fixed "Paris" answer
+ * made Sonnet 5 and GPT-6 Sol spend round 2 flagging the mismatch after correctly asking for Berlin
+ * (2026-09-26 rerun).
+ * @param {unknown} args the tool call's arguments (JSON string or object)
+ */
+const toolResult = (args) => JSON.stringify({ city: cityOf(args) || 'Paris', temp_c: 18, sky: 'clear' });
 
 // ---------------------------------------------------------------- request helpers
 
@@ -534,7 +540,7 @@ export const TESTS = [
       ctx.observe('M round1', { ...usageRow(r1), stop: o1.stopReason, blocks: o1.content.map((b) => b.type), signature: think[0]?.signature ? `${String(think[0].signature).length} chars` : null });
       if (!call) ctx.check('M thinking + tool round trip', 'unknown', `no tool call in round 1 (${errText(r1) || o1.stopReason})`);
       else {
-        const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: TOOL_RESULT }] };
+        const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: toolResult(call.args) }] };
         const full = await m(ctx, 'M round2 with thinking', { ...base, messages: [u1, { role: 'assistant', content: o1.content }, result] });
         const stripped = await m(ctx, 'M round2 thinking stripped', { ...base, messages: [u1, { role: 'assistant', content: o1.content.filter((b) => b.type === 'tool_use' || b.type === 'text') }, result] });
         const tampered = think[0]?.signature
@@ -560,7 +566,7 @@ export const TESTS = [
         reasoned ? `${reasoningItems.length} reasoning item(s), ${n(q1).thinking} reasoning tokens` : 'inconclusive: the model did not reason (0 reasoning tokens)'
       );
       if (fc) {
-        const out = { type: 'function_call_output', call_id: fc.call_id, output: TOOL_RESULT };
+        const out = { type: 'function_call_output', call_id: fc.call_id, output: toolResult(fc.arguments) };
         const withR = await r(ctx, 'R round2 with reasoning', { ...rb, input: [{ role: 'user', content: REASON_WEATHER }, ...p1.items, out] });
         const noR = await r(ctx, 'R round2 without reasoning', { ...rb, input: [{ role: 'user', content: REASON_WEATHER }, ...p1.items.filter((it) => it.type !== 'reasoning'), out] });
         ctx.check('R round 2 with reasoning items succeeds', okEx(withR) ? 'pass' : 'fail', errText(withR));
@@ -573,7 +579,7 @@ export const TESTS = [
       if (k1.toolCalls[0]) {
         const t = k1.toolCalls[0];
         const c2 = await cc(ctx, 'CC round2', {
-          messages: [{ role: 'user', content: ASK_WEATHER }, { role: 'assistant', content: null, tool_calls: [{ id: t.id, type: 'function', function: { name: t.name, arguments: t.args } }] }, { role: 'tool', tool_call_id: t.id, content: TOOL_RESULT }],
+          messages: [{ role: 'user', content: ASK_WEATHER }, { role: 'assistant', content: null, tool_calls: [{ id: t.id, type: 'function', function: { name: t.name, arguments: t.args } }] }, { role: 'tool', tool_call_id: t.id, content: toolResult(t.args) }],
           tools: [WEATHER_CC],
           reasoning_effort: 'low',
           max_completion_tokens: 1024,
@@ -853,7 +859,7 @@ export const TESTS = [
       // Without one in round 1, round 2 cannot succeed whatever the provider sends (2026-09-26 run).
       if (callPart) ctx.check('G round 1 function call carries a thought signature', callPart.thoughtSignature ? 'pass' : 'fail', callPart.thoughtSignature ? '' : `none in the response (served ${g1.resolvedModel || '?'}): the proxy or model dropped it`);
       if (callPart) {
-        const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(TOOL_RESULT) } }] };
+        const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(toolResult(callPart.functionCall.args)) } }] };
         const withSig = await g(ctx, 'G round2 with signature', { ...cfg, contents: [user, { role: 'model', parts: o1.parts }, resp] });
         const noSig = await g(ctx, 'G round2 signature stripped', { ...cfg, contents: [user, { role: 'model', parts: o1.parts.map(({ thoughtSignature, ...p }) => p) }, resp] });
         ctx.check('G round 2 with thought signature succeeds', okEx(withSig) ? 'pass' : 'fail', errText(withSig));
@@ -871,7 +877,7 @@ export const TESTS = [
       const tcs = msg?.tool_calls || [];
       ctx.observe('CC round1', { ...usageRow(c1), messageKeys: Object.keys(msg || {}), toolCallKeys: tcs[0] ? Object.keys(tcs[0]) : [], extraContent: tcs[0]?.extra_content ? Object.keys(tcs[0].extra_content) : null });
       if (tcs[0]) {
-        const tail = [{ role: 'tool', tool_call_id: tcs[0].id, content: TOOL_RESULT }];
+        const tail = [{ role: 'tool', tool_call_id: tcs[0].id, content: toolResult(tcs[0].function?.arguments) }];
         const asIs = await cc(ctx, 'Gemini via CC round2 as returned', { model: gid, messages: [{ role: 'user', content: ASK_WEATHER }, { role: 'assistant', content: msg.content ?? null, tool_calls: tcs }, ...tail], tools: [WEATHER_CC], max_tokens: 1024 }, { role: 'gemini' });
         const bare = tcs.map((/** @type {any} */ t) => ({ id: t.id, type: 'function', function: { name: t.function?.name, arguments: t.function?.arguments } }));
         const plain = await cc(ctx, 'Gemini via CC round2 bare tool_calls', { model: gid, messages: [{ role: 'user', content: ASK_WEATHER }, { role: 'assistant', content: null, tool_calls: bare }, ...tail], tools: [WEATHER_CC], max_tokens: 1024 }, { role: 'gemini' });
@@ -1084,7 +1090,7 @@ async function matrixLoop(ctx, id, f) {
     row.thinkingTokens = n(r1).thinking;
     if (!think && !n(r1).thinking) expectState = false; // adaptive thinking may decide not to think
     if (call) {
-      const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: TOOL_RESULT }] };
+      const result = { role: 'user', content: [{ type: 'tool_result', tool_use_id: call.id, content: toolResult(call.args) }] };
       row.round2 = verdictOf(await m(ctx, `${label} loop r2 with thinking`, { ...base, messages: [u1, { role: 'assistant', content: o1.content }, result] }));
       if (think) row.round2Without = verdictOf(await m(ctx, `${label} loop r2 thinking stripped`, { ...base, messages: [u1, { role: 'assistant', content: o1.content.filter((/** @type {any} */ x) => x.type === 'tool_use' || x.type === 'text') }, result] }));
     }
@@ -1109,7 +1115,7 @@ async function matrixLoop(ctx, id, f) {
     row.state = enc.length ? `encrypted reasoning ${enc.map((/** @type {any} */ it) => String(it.encrypted_content).length).join('+')} chars` : reasoning.length ? `${reasoning.length} reasoning item(s), no encrypted_content` : 'none';
     if (!n(q1).thinking && !reasoning.length) expectState = false; // the model did not reason: inconclusive, not a failure
     if (fc) {
-      const out = { type: 'function_call_output', call_id: fc.call_id, output: TOOL_RESULT };
+      const out = { type: 'function_call_output', call_id: fc.call_id, output: toolResult(fc.arguments) };
       row.round2 = verdictOf(await r(ctx, `${label} loop r2 with reasoning`, { ...rb, input: [...input, ...p1.items, out] }));
       if (reasoning.length) row.round2Without = verdictOf(await r(ctx, `${label} loop r2 without reasoning`, { ...rb, input: [...input, ...p1.items.filter((/** @type {any} */ it) => it.type !== 'reasoning'), out] }));
     }
@@ -1137,7 +1143,7 @@ async function matrixLoop(ctx, id, f) {
     // CC is expected to lose reasoning between rounds; state is informational except for Gemini (extra_content signatures).
     expectState = /gemini/i.test(id);
     if (calls[0]) {
-      const tail = [{ role: 'tool', tool_call_id: calls[0].id, content: TOOL_RESULT }];
+      const tail = [{ role: 'tool', tool_call_id: calls[0].id, content: toolResult(calls[0].function?.arguments) }];
       row.round2 = verdictOf(await cc(ctx, `${label} loop r2 as returned`, { ...body, messages: [u, { ...msg, content: msg.content ?? null }, ...tail] }));
       if (extra.length || callExtra.length) {
         const bare = calls.map((/** @type {any} */ t) => ({ id: t.id, type: 'function', function: { name: t.function?.name, arguments: t.function?.arguments } }));
@@ -1158,7 +1164,7 @@ async function matrixLoop(ctx, id, f) {
     if (!n(g1).thinking && n(g1).thinkingHidden) row.thinkingNote = `thinking hidden: ${n(g1).thinkingHidden} tokens in totalTokenCount, no thought parts or thoughtsTokenCount`;
     row.state = callPart?.thoughtSignature ? `thoughtSignature ${String(callPart.thoughtSignature).length} chars` : 'none';
     if (callPart) {
-      const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(TOOL_RESULT) } }] };
+      const resp = { role: 'user', parts: [{ functionResponse: { name: callPart.functionCall.name, response: JSON.parse(toolResult(callPart.functionCall.args)) } }] };
       row.round2 = verdictOf(await g(ctx, `${label} loop r2 as returned`, { ...cfg, contents: [user, { role: 'model', parts: o1.parts }, resp] }, { model: id }));
       if (callPart.thoughtSignature) {
         row.round2Without = verdictOf(await g(ctx, `${label} loop r2 signature stripped`, { ...cfg, contents: [user, { role: 'model', parts: o1.parts.map(({ thoughtSignature, ...p }) => p) }, resp] }, { model: id }));

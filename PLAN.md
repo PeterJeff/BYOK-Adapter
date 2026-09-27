@@ -51,11 +51,13 @@ The raw specs win whenever a digest disagrees with them. Pricing claims are now 
 VS Code's built-in Custom Endpoint (BYOK) route performs poorly against Ask Sage and shows nothing about budget or cost. The likely causes (`caching-and-endpoint-flavors.md`):
 
 1. **Caching.** Copilot does not send cache hints to third-party endpoints. With Claude configured as chat-completions, Copilot sends a proprietary `copilot_cache_control` field that Ask Sage ignores (confirmed 2026-09-25: no cache write). So every agent tool round re-sends the full context uncached. (Claude through CC is currently billed 0 by an Ask Sage bug, which hides that cost until it is fixed; `research/rate-sources-investigation.md` §4.)
-2. **Thinking.** Ask Sage's documented Claude config never switches on extended thinking.
+2. **Thinking.** Ask Sage's documented Claude config never switched on extended thinking. (Its VS Code page does now, with `"thinking": true` and a reasoning-effort list, checked 2026-09-27; `research/live/FINDINGS.md`, "Checked against the docs".)
 3. **Output caps.** Output limits are low (as little as 5–8k on some models) or left to unknown server defaults.
-4. **Stateful Responses API.** The Responses API path chains `previous_response_id` without storing responses.
+4. **Stateful Responses API.** The Responses API path chains `previous_response_id` without storing responses. (Ask Sage's VS Code page works around this with `"zeroDataRetentionEnabled": true`, checked 2026-09-27.)
 5. **Silent errors.** Errors come back as HTTP 200 with the error in the body.
 6. **No cost view.** There is no rate awareness, so no cost display.
+
+Reasons 2 and 4 are now fixed by configuration in Ask Sage's own guide, so the extension has to earn its place on caching, cost awareness and error handling. T12 measures the built-in route configured exactly as that guide says, and it runs before Phase 2 (§9).
 
 The extension's job:
 - **Caching done right.** Explicit cache breakpoints, the right endpoint per model, and cache use that can be checked.
@@ -111,7 +113,7 @@ Overridable per model in settings.
 | GPT-5.4 / 5.5 / 5.6 / 6 | **R** (`store:false`, encrypted reasoning, full history): R is cache-discounted (measured), and hit the cache more reliably than CC for GPT-5.6 Luna | CC, with no reasoning between tool rounds. On GPT-6 Sol CC rejects tools unless `reasoning_effort: "none"` (measured), so CC means no reasoning at all there. |
 | GPT-4.1, 5, 5.1, 5.2, o-series | R for reasoning models, CC for 4.1 | cache reads are discounted on both (measured on 4.1-nano and 5.4-nano) |
 | Bedrock-hosted GPT (`aws-bedrock-gpt-*`) | CC | no caching at all (measured): prefer the Azure-hosted model for agent work |
-| Gemini | **G**, with the placeholder `thoughtSignature` added to history function calls: Ask Sage strips real signatures, and Gemini 3 rejects a tool loop without one (T18, T22, `research/live/FINDINGS.md`). The model then does not see its earlier reasoning. | none: CC rejects every Gemini id tried. No cache discount through G (measured), so it is expensive for long loops |
+| Gemini | **G**, with the placeholder `thoughtSignature` added to history function calls: Ask Sage strips real signatures, and Gemini 3 rejects a tool loop without one (T18, T22, `research/live/FINDINGS.md`). The model then does not see its earlier reasoning. Measured on non-streaming `generateContent` only; the streaming endpoint is still open. | none: CC rejects every Gemini id tried, although Ask Sage's VS Code page lists Gemini under Chat Completions. The live `/server/openai/v1/models` list decides per tenant. No cache discount through G (measured), so it is expensive for long loops |
 | Everything else (partner-hosted, Grok, DeepSeek, Mistral, Llama) | CC | – |
 | Datasets, personas or live search wanted | **N**, as a separate opt-in "Ask Sage (datasets)" model variant in Ask mode only | – |
 
@@ -237,7 +239,7 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
 - **Mixed TTLs.** Human pauses between user turns often exceed 5 minutes. When T15 confirms support, breakpoints 1–2 (the stable tools+system prefix) use the 1-hour TTL and breakpoints 3–4 use 5 minutes. Longer TTLs must come before shorter ones. Test with and without the `extended-cache-ttl-2025-04-11` beta header, since hosts may differ. A setting chooses 5m-only, mixed, or 1h-only; the ledger's TTL-expiry attribution shows which pays off.
 - **Minimum length.** Each model has a minimum cacheable prefix (roughly 1–4k tokens). Breakpoints below it silently don't cache. The placer skips them, and the health check reports them.
 - **Lookback window.** Anthropic documents that a cache lookup only checks about 20 content blocks back from a breakpoint, but T16 read the whole cached prefix from 50 blocks past it (Vertex Haiku 4.5, `research/live/FINDINGS.md`). The rule below is kept as cheap insurance, not as a correctness requirement. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.
-- **Thinking parameter per model.** Older Claude models take `thinking: {type: "enabled", budget_tokens}`; Sonnet 5 rejects that and takes `{type: "adaptive"}` with `output_config: {effort}` (measured). The converter picks the shape per model and falls back on the documented error.
+- **Thinking parameter per model.** Haiku 4.5 and the 4.5 generation take `thinking: {type: "enabled", budget_tokens}`. Claude 4.6 and newer take `{type: "adaptive"}` with `output_config: {effort}`; Opus 4.7 and newer, Sonnet 5 and Fable reject `budget_tokens` (measured on Sonnet 5). Opus 5.5 and Fable always think, and Opus 5.5 defaults to effort `medium`. The converter picks the shape from a per-model table and falls back on the documented error. It also sends `display: "summarized"` when thinking is shown in the UI (the default is empty thinking text on the newer models). It drops `temperature`/`top_p`/`top_k` on the models that reject them, and it turns VS Code's "required" tool mode into `auto` plus an instruction on Opus 5.5 and Fable 5.1, which reject forced tool choice. The source is Anthropic's API reference (`research/live/FINDINGS.md`, "Checked against the docs"); only the Sonnet 5 rejection is measured through Ask Sage so far.
 - **Thinking config is pinned per conversation.** Turning thinking on or off, or changing its budget or effort, invalidates the message cache. The provider keeps the first request's thinking config for the life of the conversation unless the user explicitly changes it (logged via `thinkingConfigHash`).
 
 ### 4.2 CC and R
@@ -258,9 +260,9 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
 ## 5. Conversation state (new)
 
 v2's "per-request state only" principle is relaxed, because reasoning models need state carried across tool rounds:
-- **Claude (M):** with thinking on, the signed thinking block from the last assistant turn must be sent back with its `tool_use` during a tool loop, or the API errors.
+- **Claude (M):** with thinking on, the signed thinking block from the last assistant turn is sent back with its `tool_use` during a tool loop. Measured through Ask Sage on Haiku 4.5 (T7) and Sonnet 5 (T22): the block round-trips and a tampered signature is rejected, but a round 2 *without* the block is accepted (the model reasons again). So a lost block costs reasoning and tokens, not the request. **Opus 5.5 and Fable 5.1 bind each block to the conversation prefix before it** ("preserved thinking"). Editing that prefix (a changed system prompt, a summarized or trimmed history) returns a 400 on accounts that enforce the check. The M converter handles that 400 by stripping every thinking block and retrying once, logging `reasoningStateLost`. Whether Ask Sage's upstream enforces it is still open (FINDINGS "Still open").
 - **Gemini 3 (G, and possibly CC):** thought signatures are required on function calls.
-- **OpenAI R:** encrypted reasoning items must be sent back for reasoning to persist.
+- **OpenAI R:** encrypted reasoning items must be sent back for reasoning to persist. Measured on GPT-6 Sol (T22): `store:false` + `include: ["reasoning.encrypted_content"]` returns the item, and round 2 accepts it. Without it, round 2 still works and the model reasons again.
 
 **First choice:** emit reasoning as a part VS Code preserves in history and read it back from the incoming messages: a thinking part with the signature in its id or metadata (a `LanguageModelDataPart` with a private MIME type turned out not to come back; see E4 below).
 
@@ -365,7 +367,7 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 | T9 | streaming and cancellation metering |
 | T10 | errors (including mid-stream) and model fallback |
 | T11 | tool-limit and schema acceptance per model |
-| T12 | reproduce a BYOK session as a baseline |
+| T12 | reproduce a BYOK session as a baseline, with VS Code's Custom Endpoint configured as Ask Sage's VS Code page says (manual, before Phase 2) |
 | T13 | long-context threshold behavior with cached input |
 | T14 | usage normalization: raw usage fields per flavor captured for §3.2 fixtures |
 | T15 | 1-hour and mixed TTLs, with and without the beta header |
@@ -435,6 +437,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 | Ledger | one file per month | per-process files; tool-set and thinking-config hashes; collision-resistant conversation ID |
 | Security | key in SecretStorage | scoped settings, token refresh, workspace policy, derived-data purge, fixture redaction |
 | Semantic search | build in Phase 5 | gated on measured need |
+| Claude thinking | one `enabled` + budget shape | per-model table (adaptive + effort on 4.6+, always-on Opus 5.5/Fable), display, sampling and forced-tool-choice rules, preserved-thinking strip-and-retry (v3.4, 2026-09-27) |
 
 ---
 
