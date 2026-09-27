@@ -315,6 +315,22 @@ test('a session cap lowered after activation applies to the next request (live f
   }
 });
 
+test('the folder commands linked from the settings reveal the newest ledger file, or the folder when empty', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  const { send, registered, context, restore } = setup(fetchImpl);
+  try {
+    await registered.commands['asksage.openDebugLogFolder']();
+    assert.deepEqual(registered.executed.at(-1), { id: 'revealFileInOS', args: [{ scheme: 'file', fsPath: path.join(context.globalStorageUri.fsPath, 'debug') }] });
+    await send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    await registered.commands['asksage.openLedgerFolder']();
+    const revealed = registered.executed.at(-1)?.args[0].fsPath;
+    assert.equal(path.dirname(revealed), path.join(context.globalStorageUri.fsPath, 'ledger'));
+    assert.match(path.basename(revealed), /\.jsonl$/);
+  } finally {
+    restore();
+  }
+});
+
 test('asksage.debug.logRequests is off by default, and writes the real request/response when turned on', async () => {
   const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
   const off = setup(fetchImpl);

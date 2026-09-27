@@ -64,7 +64,7 @@ class LanguageModelError extends Error {
  * @param {{ thinking?: boolean }} [opts] thinking:false simulates a VS Code without the proposed class
  */
 function createStub(opts = {}) {
-  const registered = { providers: /** @type {Record<string, any>} */ ({}), commands: /** @type {Record<string, Function>} */ ({}), documents: /** @type {string[]} */ ([]), messages: /** @type {string[]} */ ([]) };
+  const registered = { providers: /** @type {Record<string, any>} */ ({}), commands: /** @type {Record<string, Function>} */ ({}), documents: /** @type {string[]} */ ([]), messages: /** @type {string[]} */ ([]), executed: /** @type {{ id: string, args: any[] }[]} */ ([]) };
   /** @type {Record<string, unknown>} */
   const config = {};
   const disposable = { dispose() {} };
@@ -108,6 +108,14 @@ function createStub(opts = {}) {
         registered.commands[id] = fn;
         return disposable;
       },
+      /** @param {string} id @param {...any} args */
+      async executeCommand(id, ...args) {
+        registered.executed.push({ id, args });
+      },
+    },
+    Uri: {
+      /** @param {string} fsPath */
+      file: (fsPath) => ({ scheme: 'file', fsPath }),
     },
     window: {
       createOutputChannel() {

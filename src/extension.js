@@ -6,6 +6,7 @@
 // are later phases (§7's state/, cache/, policy/, tools/ do not exist yet).
 
 const vscode = require('vscode');
+const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
@@ -266,7 +267,7 @@ const provider = {
       // No prompt text: ids and totals only, so a cap that doesn't trip can be diagnosed.
       const idSource = options.modelOptions && '_conversationId' in options.modelOptions ? '_conversationId' : 'hash fallback';
       const spent = spendCap.snapshot(conversationId);
-      log.info(`${model.id}: est ${estAsCost ?? 'n/a'} AS; conversation ${conversationId} (${idSource}) at ${Math.round(spent.conversation * 100) / 100} AS, last hour ${Math.round(spent.hourly * 100) / 100} AS`);
+      log.info(`${model.id} via ${entry.flavor}: est ${estAsCost ?? 'n/a'} AS; conversation ${conversationId} (${idSource}) at ${Math.round(spent.conversation * 100) / 100} AS, last hour ${Math.round(spent.hourly * 100) / 100} AS`);
     }
 
     ledger.append({
@@ -333,6 +334,8 @@ function activate(context) {
   const credentials = createCredentials(context);
   context.subscriptions.push(...registerCredentialCommands(vscode, credentials));
   context.subscriptions.push(
+    vscode.commands.registerCommand('asksage.openDebugLogFolder', () => revealStorageFolder('debug')),
+    vscode.commands.registerCommand('asksage.openLedgerFolder', () => revealStorageFolder('ledger')),
     vscode.commands.registerCommand('asksage.showStatus', async () => {
       try {
         const svc = getServices(readSettings(vscode));
@@ -344,6 +347,22 @@ function activate(context) {
       }
     })
   );
+}
+
+/**
+ * Opens a folder under global storage in the OS file manager, with its newest file selected
+ * (revealFileInOS on the folder itself would only select it inside its parent). The path is
+ * per user and per install, so settings can't hold a static link; they link to these commands.
+ * @param {string} sub
+ */
+async function revealStorageFolder(sub) {
+  const dir = path.join(ctx.globalStorageUri.fsPath, sub);
+  fs.mkdirSync(dir, { recursive: true });
+  const newest = fs
+    .readdirSync(dir)
+    .map((name) => ({ name, at: fs.statSync(path.join(dir, name)).mtimeMs }))
+    .sort((a, b) => b.at - a.at)[0];
+  await vscode.commands.executeCommand('revealFileInOS', vscode.Uri.file(newest ? path.join(dir, newest.name) : dir));
 }
 
 function deactivate() {}

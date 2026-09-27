@@ -46,6 +46,16 @@
         "command": "asksage.showStatus",
         "title": "Show Status",
         "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.openLedgerFolder",
+        "title": "Open Ledger Folder",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.openDebugLogFolder",
+        "title": "Open Request Log Folder",
+        "category": "Ask Sage"
       }
     ],
     "configuration": {
@@ -73,7 +83,7 @@
           "type": "number",
           "default": 50000,
           "minimum": 0,
-          "description": "Hard stop: maximum estimated Ask Sage tokens for one conversation before requests are refused. 0 disables the cap."
+          "markdownDescription": "Hard stop: maximum estimated Ask Sage tokens for one conversation before requests are refused. 0 disables the cap. Checked before each request, so the request that crosses it still completes. Every request's estimate is in the [ledger](command:asksage.openLedgerFolder)."
         },
         "asksage.budget.hourlyCapTokens": {
           "type": "number",
@@ -84,7 +94,7 @@
         "asksage.debug.logRequests": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Requests are sent to Ask Sage exactly as with this off; the log files themselves stay on this machine and are never uploaded."
+          "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Requests are sent to Ask Sage exactly as with this off; the log files themselves stay on this machine and are never uploaded. [Open the request log folder](command:asksage.openDebugLogFolder)."
         }
       }
     }

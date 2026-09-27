@@ -13,6 +13,10 @@ test('classifyFlavor: Phase 1 default flavor per family (PLAN §2.2)', () => {
   assert.equal(classifyFlavor('gpt-5.1'), 'R');
   assert.equal(classifyFlavor('aws-bedrock-gpt-5-6-luna-gov'), 'CC'); // never R: no caching on Bedrock GPT
   assert.equal(classifyFlavor('o3-mini'), 'R');
+  assert.equal(classifyFlavor('gpt-o3-mini'), 'R'); // Ask Sage's real o-series ids carry a gpt- prefix
+  assert.equal(classifyFlavor('gpt-o3-mini-gov'), 'R');
+  assert.equal(classifyFlavor('gpt-oss-20b'), 'CC'); // not o-series
+  assert.equal(classifyFlavor('aws-bedrock-gpt-oss-20b-gov'), 'CC');
   assert.equal(classifyFlavor('google-claude-45-haiku'), 'M');
   assert.equal(classifyFlavor('google-gemini-3.5-flash'), 'G');
   assert.equal(classifyFlavor('grok-4'), 'CC');

@@ -26,7 +26,7 @@ function classifyFlavor(id) {
   if (/claude/.test(lower)) return 'M';
   if (/gemini/.test(lower)) return 'G';
   if (/^aws-bedrock-gpt/.test(lower)) return 'CC'; // no caching at all (measured): stays CC, never R
-  if (/^o\d/.test(lower)) return 'R'; // o-series reasoning models
+  if (/^(gpt-)?o\d/.test(lower)) return 'R'; // o-series reasoning models; Ask Sage ids are gpt-o3, gpt-o3-mini, gpt-o4-mini
   const gptMajor = /gpt-(\d+)/.exec(lower);
   if (gptMajor) return Number(gptMajor[1]) >= 5 ? 'R' : 'CC'; // 4.1 -> CC; 5, 5.1, 5.2, 5.4-5.6, 6 -> R
   return 'CC'; // partner-hosted, Grok, DeepSeek, Mistral, Llama, ...

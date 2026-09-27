@@ -51,6 +51,7 @@ channel logs each request's estimate, conversation id and running totals (no pro
 - **Output panel → "Ask Sage" channel** for logs (nothing secret is ever written there).
 - **`<globalStorageUri>/ledger/*.jsonl`** — one line per request, plain JSON, no prompt text.
   Useful for checking what was actually normalized and what it was estimated to cost.
+  **Ask Sage: Open Ledger Folder** opens it (also linked from the session-cap setting).
 - The first message to any given model pays a small extra latency hit: five free
   `/server/tokenizer` calls to learn that model's billed rate, cached for 24h afterward.
 - **`asksage.debug.logRequests`** (default `false`): when turned on, writes the exact request
@@ -58,6 +59,7 @@ channel logs each request's estimate, conversation id and running totals (no pro
   attempt (a rejected first try and its retry both get their own line). This is the only place
   in the codebase allowed to hold prompt text, and only because you turned it on; the ledger
   never does. Turning it on logs a warning in the Output channel with the exact file path.
+  **Ask Sage: Open Request Log Folder** opens it (also linked from the setting).
 
 ## Known VS Code / Copilot Chat interactions
 
