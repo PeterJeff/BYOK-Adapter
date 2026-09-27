@@ -95,3 +95,32 @@ export function verdict(billed, expected, constant = { min: 0, max: 6 }) {
   if (d >= constant.min - 0.5 && d <= constant.max + 0.5) return 'fits';
   return d > 0 ? 'over' : 'under';
 }
+
+/**
+ * Prompt-log rows at or after `since` (ISO time; rows with an unparseable date are kept), oldest
+ * first, numbers only, with per-model totals. Used by prompt-log.mjs to read a manual run's bill.
+ * @param {unknown} response  the `response` field of get-user-logs
+ * @param {string} [since]
+ */
+export function rowsSince(response, since) {
+  const t0 = since ? Date.parse(since) : NaN;
+  const rows = (Array.isArray(response) ? response : [])
+    .filter((r) => r && typeof r.id === 'number')
+    .map(logNumbers)
+    .filter((r) => {
+      if (Number.isNaN(t0)) return true;
+      const t = Date.parse(String(r.date_time ?? ''));
+      return Number.isNaN(t) || t >= t0;
+    })
+    .sort((a, b) => a.id - b.id);
+  /** @type {Record<string, { requests: number, prompt_tokens: number, completion_tokens: number, total_tokens: number }>} */
+  const byModel = {};
+  for (const r of rows) {
+    const m = (byModel[r.model] ||= { requests: 0, prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 });
+    m.requests++;
+    m.prompt_tokens += Number(r.prompt_tokens) || 0;
+    m.completion_tokens += Number(r.completion_tokens) || 0;
+    m.total_tokens += Number(r.total_tokens) || 0;
+  }
+  return { rows, byModel };
+}

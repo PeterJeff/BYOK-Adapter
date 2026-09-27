@@ -1,7 +1,8 @@
 // @ts-check
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { logNumbers, rowsAfter, maxLogId, cacheRule, expectedBill, verdict } from '../../phase0/probe/lib/billing.mjs';
+import { logNumbers, rowsAfter, rowsSince, maxLogId, cacheRule, expectedBill, verdict } from '../../phase0/probe/lib/billing.mjs';
+import { parseArgs as parsePromptLogArgs } from '../../phase0/probe/prompt-log.mjs';
 import { normalize } from '../../phase0/probe/lib/usage.mjs';
 import { parseArgs, buildPlan, renderSummary } from '../../phase0/probe/billing-probe.mjs';
 
@@ -56,4 +57,26 @@ test('billing-probe parseArgs and plan', () => {
   assert.equal(plan.find((p) => p.name === 'loop uncached round 3')?.body.tools.at(-1).cache_control, undefined);
   const md = renderSummary([{ experiment: 'loop', name: 'loop cached round 1', flavor: 'M', model: 'c-1', norm: null, log: { model: 'c-1', total_tokens: 10 }, logRows: 1, expected: 8, verdict: 'fits', error: null }], { alias: 'x', run: 'r1', startedAt: 'a', endedAt: 'b' });
   assert.match(md, /Agent loop totals: uncached 0, cached 10/);
+});
+
+test('rowsSince: numbers only, filtered by time, with per-model totals', () => {
+  const rows = [
+    { ...ROW, id: 3, date_time: '2026-09-27T23:10:00Z', model: 'gpt-4.1', prompt_tokens: 100, completion_tokens: 10, total_tokens: 50 },
+    { ...ROW, id: 1, date_time: '2026-09-27T22:00:00Z', model: 'gpt-4.1', total_tokens: 999 },
+    { ...ROW, id: 4, date_time: '2026-09-27T23:11:00Z', model: 'gpt-4.1', prompt_tokens: 200, completion_tokens: 20, total_tokens: 70 },
+    { ...ROW, id: 5, date_time: 'not a date', model: 'gpt-6-astra', prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 },
+  ];
+  const r = rowsSince(rows, '2026-09-27T23:00:00Z');
+  assert.deepEqual(r.rows.map((x) => x.id), [3, 4, 5]);
+  for (const x of r.rows) assert.ok(!('prompt' in x) && !('response' in x) && !('user_id' in x) && !('ip' in x));
+  assert.deepEqual(r.byModel['gpt-4.1'], { requests: 2, prompt_tokens: 300, completion_tokens: 30, total_tokens: 120 });
+  assert.equal(rowsSince(rows).rows.length, 4);
+  assert.deepEqual(rowsSince({ error: 'x' }), { rows: [], byModel: {} });
+});
+
+test('prompt-log parseArgs', () => {
+  assert.deepEqual(parsePromptLogArgs(['--api', 'api.asksage.ai', '--since', '2026-09-27T23:00:00Z', '--limit', '100']), { api: 'api.asksage.ai', since: '2026-09-27T23:00:00Z', limit: 100, json: false });
+  assert.throws(() => parsePromptLogArgs([]), /usage/);
+  assert.throws(() => parsePromptLogArgs(['--api', 'h', '--limit', '500']), /1..100/);
+  assert.throws(() => parsePromptLogArgs(['--api', 'h', '--since', 'yesterday-ish']), /not a date/);
 });

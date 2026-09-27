@@ -1,0 +1,79 @@
+{
+ "source": "owner's extension ledger and asksage.debug.logRequests records (Phase 1, commit 3d22ea0), numbers and tool names only",
+ "route": "this extension, R (/server/openai/v1/responses), gpt-5.4-nano, Agent mode",
+ "task": "Earlier wording of the same task, two user turns: 'Review the main readme and todo files in this project, then write your opinion in a small file that is ignored by gitignore (you can also edit the gitignore). This is test T12', then 'Add to gitignore and add notes you would leave for Claude Code working in this repo to the file.' Not identical to 001's task or model, so not a like-for-like comparison.",
+ "rows": [
+  {
+   "time": "2026-09-27T22:50:33Z",
+   "turn": 1,
+   "tools": 39,
+   "input": 15296,
+   "cached": 0,
+   "output": 125,
+   "estAs": 230.17
+  },
+  {
+   "time": "2026-09-27T22:50:38Z",
+   "turn": 1,
+   "tools": 39,
+   "input": 18255,
+   "cached": 15360,
+   "output": 230,
+   "estAs": 84
+  },
+  {
+   "time": "2026-09-27T22:50:40Z",
+   "turn": 1,
+   "tools": 39,
+   "input": 18523,
+   "cached": 18176,
+   "output": 49,
+   "estAs": 35.37
+  },
+  {
+   "time": "2026-09-27T22:52:14Z",
+   "turn": 2,
+   "tools": 40,
+   "input": 18716,
+   "cached": 4096,
+   "output": 99,
+   "estAs": 224.03
+  },
+  {
+   "time": "2026-09-27T22:52:18Z",
+   "turn": 2,
+   "tools": 40,
+   "input": 19147,
+   "cached": 18688,
+   "output": 175,
+   "estAs": 48.97
+  },
+  {
+   "time": "2026-09-27T22:52:26Z",
+   "turn": 2,
+   "tools": 40,
+   "input": 19352,
+   "cached": 19200,
+   "output": 532,
+   "estAs": 77.21
+  },
+  {
+   "time": "2026-09-27T22:52:28Z",
+   "turn": 2,
+   "tools": 40,
+   "input": 19922,
+   "cached": 19712,
+   "output": 71,
+   "estAs": 37.57
+  }
+ ],
+ "titleCall": {
+  "input": 292,
+  "estAs": 4.9
+ },
+ "cacheBreak": "Between turns Copilot added one tool (renderMermaidDiagram, 39 -> 40). src/convert/messages.js sortedTools() put it at position 24 of 40. The input items were byte-identical up to the new messages, yet only 4,096 of 18,716 tokens were read from cache: the tool list precedes the input in the cached prefix, so a tool inserted mid-list invalidates everything after it.",
+ "cacheReadFromRequest2": {
+  "pct": 83.6,
+  "pctWithoutTheToolBreak": 95.7
+ }
+}
