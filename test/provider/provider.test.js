@@ -61,9 +61,19 @@ const R_SSE_CACHE_WRITE =
   'data: {"type":"response.completed","response":{"model":"gpt-5.6-luna","status":"completed","usage":{"input_tokens":3,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":10000},"output_tokens":41,"output_tokens_details":{"reasoning_tokens":19}}}}\n\n' +
   'data: [DONE]\n\n';
 
-/** @param {{ models: unknown[], cc?: string, r?: string }} o */
+/** @param {string} message */
+function openaiErrorResponse(message) {
+  return {
+    status: 400,
+    headers: { get: (/** @type {string} */ h) => (h.toLowerCase() === 'content-type' ? 'application/json' : null) },
+    text: async () => JSON.stringify({ error: { message, type: 'invalid_request_error' } }),
+  };
+}
+
+/** @param {{ models: unknown[], cc?: string, r?: string, rSequence?: unknown[] }} o */
 function createFakeFetch(o) {
   const calls = /** @type {{ url: string, body: any }[]} */ ([]);
+  const rQueue = o.rSequence ? [...o.rSequence] : null;
   const fn = async (/** @type {string} */ url, /** @type {any} */ init) => {
     const body = init && init.body ? JSON.parse(init.body) : undefined;
     calls.push({ url, body });
@@ -79,7 +89,10 @@ function createFakeFetch(o) {
       return numResponse(isOne ? 0.06 : 100.01); // prompt rate 0.05, completion rate 0.25
     }
     if (url.endsWith('/server/openai/v1/chat/completions') && o.cc) return sseResponse(o.cc);
-    if (url.endsWith('/server/openai/v1/responses') && o.r) return sseResponse(o.r);
+    if (url.endsWith('/server/openai/v1/responses')) {
+      if (rQueue && rQueue.length) return rQueue.shift();
+      if (o.r) return sseResponse(o.r);
+    }
     throw new Error(`unexpected fetch in test: ${url}`);
   };
   return Object.assign(fn, { calls });
@@ -166,6 +179,35 @@ test('a non-reasoning model streams through CC and lands a normalized, estimated
     assert.equal(r.inputUncached, 50);
     assert.equal(r.visibleOutput, 5);
     assert.equal(r.estAsCost, 3.75); // 50*0.05 + 5*0.25
+  } finally {
+    restore();
+  }
+});
+
+test('a bogus catalog max_output is corrected from the server\'s rejection and remembered (live finding, 2026-09-27)', async () => {
+  // gpt-5.6-luna's real catalog reports limits.max_output: 900000; a real server rejected that
+  // with "supports at most 32768 completion tokens". First call must send the catalog value,
+  // get rejected, retry once with the corrected value, and a second request to the same model
+  // must go straight to the corrected value without hitting the error again.
+  const bogusModel = { id: 'gpt-5.6-luna', cui_capable: true, limits: { max_context: 1000000, max_output: 900000 } };
+  const rSequence = [openaiErrorResponse('max_tokens is too large: 900000. This model supports at most 32768 completion tokens, whereas you provided 900000.'), sseResponse(R_SSE)];
+  const fetchImpl = createFakeFetch({ models: [bogusModel], rSequence, r: R_SSE });
+  const { send, restore } = setup(fetchImpl);
+  try {
+    const out = await send('gpt-5.6-luna', [{ role: 1, content: [text('hi')] }]);
+    assert.ok(out.some((p) => p instanceof parts.LanguageModelTextPart), 'the retried request must still produce a reply');
+
+    const rCalls = fetchImpl.calls.filter((c) => c.url.endsWith('/server/openai/v1/responses'));
+    assert.equal(rCalls.length, 2, 'one rejected attempt, one corrected retry');
+    assert.equal(rCalls[0].body.max_output_tokens, 900000);
+    assert.equal(rCalls[1].body.max_output_tokens, 32768);
+
+    // A second request to the same model must use the learned cap from the first call, with no error.
+    const out2 = await send('gpt-5.6-luna', [{ role: 1, content: [text('hi again')] }]);
+    assert.ok(out2.some((p) => p instanceof parts.LanguageModelTextPart));
+    const rCallsAfter = fetchImpl.calls.filter((c) => c.url.endsWith('/server/openai/v1/responses'));
+    assert.equal(rCallsAfter.length, 3, 'the second request must not re-hit the rejection');
+    assert.equal(rCallsAfter[2].body.max_output_tokens, 32768);
   } finally {
     restore();
   }

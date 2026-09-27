@@ -5,7 +5,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { detectError, isAuthInvalid, toLanguageModelError } = require('../src/errors');
+const { detectError, isAuthInvalid, parseOutputCapTooLarge, toLanguageModelError } = require('../src/errors');
 
 test('detectError knows every shape seen in research/live fixtures', () => {
   assert.equal(detectError({ response: 'Token is invalid [1]', status: 400 })?.shape, 'asksage-envelope');
@@ -22,6 +22,14 @@ test('isAuthInvalid matches the bad-credential message every flavor returns', ()
   assert.ok(isAuthInvalid(detectError({ response: 'Token is invalid [1]', status: 400 })));
   assert.ok(!isAuthInvalid(detectError({ error: { code: 500, message: 'server error' } })));
   assert.ok(!isAuthInvalid(null));
+});
+
+test('parseOutputCapTooLarge extracts the real cap from a rejection (live finding, 2026-09-27)', () => {
+  const real = detectError({ error: { message: 'max_tokens is too large: 100000. This model supports at most 32768 completion tokens, whereas you provided 100000.', type: 'invalid_request_error' } });
+  assert.equal(parseOutputCapTooLarge(real), 32768);
+  assert.equal(parseOutputCapTooLarge(detectError({ error: { message: 'supports at most 4,096 output tokens', type: 'invalid_request_error' } })), 4096, 'handles a comma-grouped number and "output tokens" wording');
+  assert.equal(parseOutputCapTooLarge(detectError({ response: 'Token is invalid [1]', status: 400 })), null, 'an unrelated error must not match');
+  assert.equal(parseOutputCapTooLarge(null), null);
 });
 
 test('toLanguageModelError uses vscode.LanguageModelError.Blocked when present, else a plain Error', () => {

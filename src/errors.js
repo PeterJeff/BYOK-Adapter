@@ -50,6 +50,21 @@ function isAuthInvalid(e) {
   return !!e && AUTH_INVALID_RE.test(e.message);
 }
 
+/** The real cap, when a request is rejected for exceeding it (observed 2026-09-27, gpt-5.6-luna:
+ *  "max_tokens is too large: 100000. This model supports at most 32768 completion tokens..."). */
+const OUTPUT_CAP_RE = /supports at most ([\d,]+) (?:completion|output) tokens/i;
+
+/**
+ * @param {DetectedError | null} e
+ * @returns {number | null}
+ */
+function parseOutputCapTooLarge(e) {
+  const m = e && OUTPUT_CAP_RE.exec(e.message);
+  if (!m) return null;
+  const n = Number(m[1].replace(/,/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 /**
  * Converts a detected error (or a transport-level exception) into a vscode.LanguageModelError
  * when the API is present, else a plain Error. Feature-detected per CLAUDE.md's stable-API rule.
@@ -63,4 +78,4 @@ function toLanguageModelError(vscode, e) {
   return new Error(message);
 }
 
-module.exports = { detectError, isAuthInvalid, toLanguageModelError };
+module.exports = { detectError, isAuthInvalid, parseOutputCapTooLarge, toLanguageModelError };

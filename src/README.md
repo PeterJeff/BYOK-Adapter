@@ -68,6 +68,16 @@ message you're about to send.
   (or point `chat.utilitySmallModel` at a specific model, including one of ours, if you want
   those utility calls ledgered too).
 
+## Known Ask Sage data-quality issues (worked around here, not silently trusted)
+
+- **`get-models?format=full`'s `limits.max_output` is often not the real completion-token cap.**
+  77 of 105 models on the public catalog report a `max_output` within 70% of `max_context`
+  (2026-09-27 scan); a live request on gpt-5.6-luna sent its catalog value (900000) and was
+  rejected with "supports at most 32768 completion tokens". `src/rates/outputCaps.js` starts
+  from the catalog value, learns the real one from a rejection, and persists the correction per
+  model so it only happens once. If you see a request retried in the "Ask Sage" log with a
+  "rejected max output ... retrying once" message, this is why — it's expected, not a bug.
+
 ## Known gaps (tracked in `requirements/REQUIREMENTS.md` and `TODO.md`)
 
 - No Claude (M) or Gemini (G) transport, no cache breakpoints, no reasoning-state round-trip

@@ -15,6 +15,7 @@ const { createAccessTokenService } = require('./auth/accessToken');
 const { createUserInfoService } = require('./auth/userInfo');
 const { createCatalog } = require('./catalog');
 const { createTokenizerRates } = require('./rates/tokenizer');
+const { createOutputCaps } = require('./rates/outputCaps');
 const { cacheRule } = require('./rates/cacheRules');
 const { expectedBill } = require('./rates/formula');
 const { normalize } = require('./normalize');
@@ -26,7 +27,7 @@ const { createSpendCap } = require('./budget/spendCap');
 const { createBudgetService } = require('./budget/budgetService');
 const { createStatusBar } = require('./ui/statusBar');
 const { createLog } = require('./log');
-const { toLanguageModelError } = require('./errors');
+const { toLanguageModelError, parseOutputCapTooLarge } = require('./errors');
 
 const VENDOR = 'asksage';
 
@@ -48,7 +49,8 @@ let ledger;
 let servicesKey = null;
 /** @type {{ credentials: ReturnType<typeof createCredentials>, accessToken: ReturnType<typeof createAccessTokenService>,
  *   userInfo: ReturnType<typeof createUserInfoService>, catalog: ReturnType<typeof createCatalog>,
- *   tokenizerRates: ReturnType<typeof createTokenizerRates>, budgetService: ReturnType<typeof createBudgetService> } | null} */
+ *   tokenizerRates: ReturnType<typeof createTokenizerRates>, outputCaps: ReturnType<typeof createOutputCaps>,
+ *   budgetService: ReturnType<typeof createBudgetService> } | null} */
 let services = null;
 
 function partCtors() {
@@ -79,8 +81,12 @@ function getServices(settings) {
       set: (v) => ctx.globalState.update(`asksage.rates.${settings.apiBase}`, v),
     },
   });
+  const outputCaps = createOutputCaps({
+    get: () => ctx.globalState.get(`asksage.outputCaps.${settings.apiBase}`),
+    set: (v) => ctx.globalState.update(`asksage.outputCaps.${settings.apiBase}`, v),
+  });
   const budgetService = createBudgetService({ apiBase: settings.apiBase, accessToken, userInfo });
-  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, budgetService };
+  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, budgetService };
   servicesKey = key;
   return services;
 }
@@ -162,21 +168,49 @@ const provider = {
       throw toLanguageModelError(vscode, /** @type {Error} */ (e));
     }
 
+    /** @param {number | undefined} maxOutputTokens */
+    async function runOnce(maxOutputTokens) {
+      let streamedAnything = false;
+      const streamOpts = {
+        apiBase: settings.apiBase,
+        apiKey,
+        model: model.id,
+        messages,
+        ctors,
+        roleEnum: roleEnum(),
+        tools,
+        maxOutputTokens,
+        onText: (/** @type {string} */ text) => {
+          streamedAnything = true;
+          progress.report(new vs.LanguageModelTextPart(text));
+        },
+        onToolCall: (/** @type {{ callId: string, name: string, input: unknown }} */ call) => {
+          streamedAnything = true;
+          progress.report(new vs.LanguageModelToolCallPart(call.callId, call.name, call.input));
+        },
+        token,
+      };
+      const result = entry.flavor === 'R' ? await streamResponses(streamOpts) : await streamChatCompletions(streamOpts);
+      return { result, streamedAnything };
+    }
+
     const started = Date.now();
-    const streamOpts = {
-      apiBase: settings.apiBase,
-      apiKey,
-      model: model.id,
-      messages,
-      ctors,
-      roleEnum: roleEnum(),
-      tools,
-      maxOutputTokens: model.maxOutputTokens, // PLAN.md §3.5: always send an explicit cap, never rely on the server default
-      onText: (/** @type {string} */ text) => progress.report(new vs.LanguageModelTextPart(text)),
-      onToolCall: (/** @type {{ callId: string, name: string, input: unknown }} */ call) => progress.report(new vs.LanguageModelToolCallPart(call.callId, call.name, call.input)),
-      token,
-    };
-    const result = entry.flavor === 'R' ? await streamResponses(streamOpts) : await streamChatCompletions(streamOpts);
+    // PLAN.md §3.5: always send an explicit output cap, never rely on the server default. But
+    // the catalog's limits.max_output can't be trusted (77 of 105 models on the public catalog
+    // report one within 70% of max_context, and gpt-5.6-luna's 900000 was rejected outright by a
+    // server that actually caps at 32768) -- start from it, but learn and remember the real cap
+    // from a rejection instead of failing every request to that model forever.
+    let maxOutputTokens = svc.outputCaps.get(model.id, model.maxOutputTokens);
+    let { result, streamedAnything } = await runOnce(maxOutputTokens);
+    if (result.error && !streamedAnything) {
+      const corrected = parseOutputCapTooLarge(result.error);
+      if (corrected && corrected !== maxOutputTokens) {
+        log.warn(`Ask Sage: ${model.id} rejected max output ${maxOutputTokens}; retrying once at ${corrected} (its catalog limits.max_output is wrong)`);
+        svc.outputCaps.correct(model.id, corrected);
+        maxOutputTokens = corrected;
+        ({ result, streamedAnything } = await runOnce(maxOutputTokens));
+      }
+    }
     const latencyMs = Date.now() - started;
     const cancelled = !!token.isCancellationRequested;
 
