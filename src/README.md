@@ -2,9 +2,10 @@
 
 CC (OpenAI Chat Completions) and R (OpenAI Responses) transports only. No Claude (M), no
 Gemini (G), no cache breakpoints, no reasoning-state round-trip yet — those are Phase 2+
-(`PLAN.md` §9). This build has been unit-tested against an injected fake `fetch`
-(`test/provider/provider.test.js`) but not yet run against a live VS Code host or the real
-Ask Sage API.
+(`PLAN.md` §9). Unit-tested against an injected fake `fetch`
+(`test/provider/provider.test.js`); R is now also live-confirmed (2026-09-27, real `public`
+tenant traffic, gpt-5.4-nano and gpt-5.6-luna) — see `requirements/REQUIREMENTS.md` §5 for what
+that live pass caught and fixed.
 
 ## 1. Load it
 
@@ -50,6 +51,21 @@ message you're about to send.
   Useful for checking what was actually normalized and what it was estimated to cost.
 - The first message to any given model pays a small extra latency hit: five free
   `/server/tokenizer` calls to learn that model's billed rate, cached for 24h afterward.
+
+## Known VS Code / Copilot Chat interactions
+
+- **"No utility model is configured for 'copilot-utility-small' ... main agent model is BYOK"**
+  (2026-09-27, thrown from Copilot Chat's own bundle, not this extension — the stack trace is
+  entirely inside `extensions/copilot/dist/extension.js`). Copilot Chat uses a separate small
+  "utility model" internally (intent detection, gathering codebase references) and doesn't
+  automatically reuse a BYOK main model for that. It surfaced via `_getCodebaseReferences`,
+  which suggests it's tied to implicit codebase-context gathering (Agent mode or `#codebase`),
+  not plain Ask mode. Fix with a VS Code setting, not a code change here:
+  ```json
+  "chat.byokUtilityModelDefault": "mainAgent"
+  ```
+  (or point `chat.utilitySmallModel` at a specific model, including one of ours, if you want
+  those utility calls ledgered too).
 
 ## Known gaps (tracked in `requirements/REQUIREMENTS.md` and `TODO.md`)
 
