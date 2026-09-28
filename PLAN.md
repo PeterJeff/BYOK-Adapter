@@ -236,6 +236,13 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
   4. the last cacheable block of the second-most-recent message
 
   Never place a breakpoint on thinking blocks; put it on the `tool_result` block.
+
+  **Correction (2026-09-28, confirmed building `src/convert/messages.js`):** the stable VS Code
+  provider API has no System role -- only User/Assistant (`vscode-stub.js`'s
+  `LanguageModelChatMessageRole.System` is a "proposed" capability probe that has never been seen
+  present). So today Copilot's system-style instructions arrive folded into the first user
+  message, same as CC/R already assumed; breakpoint 2 (system) only fires on a future VS Code that
+  adds a System role, feature-detected via `roleEnum.System`.
 - **Mixed TTLs.** Human pauses between user turns often exceed 5 minutes. When T15 confirms support, breakpoints 1–2 (the stable tools+system prefix) use the 1-hour TTL and breakpoints 3–4 use 5 minutes. Longer TTLs must come before shorter ones. Test with and without the `extended-cache-ttl-2025-04-11` beta header, since hosts may differ. A setting chooses 5m-only, mixed, or 1h-only; the ledger's TTL-expiry attribution shows which pays off.
 - **Minimum length.** Each model has a minimum cacheable prefix (roughly 1–4k tokens). Breakpoints below it silently don't cache. The placer skips them, and the health check reports them.
 - **Lookback window.** Anthropic documents that a cache lookup only checks about 20 content blocks back from a breakpoint, but T16 read the whole cached prefix from 50 blocks past it (Vertex Haiku 4.5, `research/live/FINDINGS.md`). The rule below is kept as cheap insurance, not as a correctness requirement. A round with many parallel tool results can place the new breakpoint more than 20 blocks past the last cached one and miss. When a single message would exceed the window, the placer spends breakpoint 4 on an intermediate block instead. T16 verifies this.

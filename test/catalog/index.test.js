@@ -28,12 +28,12 @@ function jsonResponse(body) {
   return { status: 200, headers: { get: (/** @type {string} */ h) => (h.toLowerCase() === 'content-type' ? 'application/json' : null) }, text: async () => JSON.stringify(body) };
 }
 
-test('list(): filters cui_capable:false and retired, excludes M/G models, tags CC/R flavor', async () => {
+test('list(): filters cui_capable:false and retired, excludes G models, tags M/CC/R flavor', async () => {
   const models = [
     { id: 'gpt-5.4-nano', cui_capable: true },
     { id: 'gpt-4.1-nano', cui_capable: true },
-    { id: 'google-claude-45-haiku', cui_capable: true }, // M: not offered in Phase 1
-    { id: 'google-gemini-3.5-flash', cui_capable: true }, // G: not offered in Phase 1
+    { id: 'google-claude-45-haiku', cui_capable: true }, // M: Phase 2
+    { id: 'google-gemini-3.5-flash', cui_capable: true }, // G: still not offered (Phase 4)
     { id: 'some-gov-model', cui_capable: false },
     { id: 'retired-model', deprecation: { state: 'retired' } },
   ];
@@ -44,7 +44,11 @@ test('list(): filters cui_capable:false and retired, excludes M/G models, tags C
   };
   const catalog = createCatalog({ apiBase: 'https://api.test', fetchImpl });
   const list = await catalog.list();
-  assert.deepEqual(list.map((m) => [m.id, m.flavor]).sort(), [['gpt-4.1-nano', 'CC'], ['gpt-5.4-nano', 'R']]);
+  assert.deepEqual(list.map((m) => [m.id, m.flavor]).sort(), [
+    ['google-claude-45-haiku', 'M'],
+    ['gpt-4.1-nano', 'CC'],
+    ['gpt-5.4-nano', 'R'],
+  ]);
   await catalog.list(); // cached: no second fetch within the TTL
   assert.equal(calls, 1);
   catalog.invalidate();

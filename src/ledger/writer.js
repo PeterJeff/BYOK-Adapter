@@ -21,7 +21,7 @@ function monthKey(d = new Date()) {
  * @property {string} tenant
  * @property {string} model
  * @property {string | null} resolvedModel
- * @property {'CC' | 'R'} flavor
+ * @property {'M' | 'CC' | 'R' | 'n/a'} flavor  'n/a': an intercepted utility request (src/convert/utilityRequest.js), no transport used
  * @property {number} inputUncached
  * @property {number} cacheRead
  * @property {number} cacheWrite5m
@@ -32,10 +32,13 @@ function monthKey(d = new Date()) {
  * @property {number | null} estAsCost
  * @property {string} rateSource
  * @property {number} latencyMs
- * @property {string} status  "ok" | "error" | "cancelled"
+ * @property {string} status  "ok" | "error" | "cancelled" | "intercepted"
  * @property {string | null} errorClass
  * @property {boolean} cancelled
  * @property {number} toolCallCount
+ * @property {string} [toolSetHash]  PLAN.md §3.4: attributes a cold turn to tool-list churn
+ * @property {string} [thinkingConfigHash]  PLAN.md §3.4: attributes a cold turn to a thinking-config change
+ * @property {boolean} [reasoningStateLost]  PLAN.md §5: this round sent no thinking/reasoning block though the turn had one to carry
  */
 
 /**

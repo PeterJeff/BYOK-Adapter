@@ -14,7 +14,7 @@ const { toChatCompletionsMessages, toChatCompletionsTools } = require('../conver
 
 /**
  * @param {{ apiBase: string, apiKey: string, model: string, messages: readonly any[], ctors: PartCtors,
- *   roleEnum: Record<string, number>, tools?: readonly any[], maxOutputTokens?: number,
+ *   roleEnum: Record<string, number>, tools?: readonly any[], maxOutputTokens?: number, promptCacheKey?: string,
  *   onText?: (text: string) => void, onToolCall?: (call: { callId: string, name: string, input: unknown }) => void,
  *   token?: import('./httpClient').RequestOptions['token'], fetchImpl?: typeof fetch }} opts
  */
@@ -28,6 +28,7 @@ async function streamChatCompletions(opts) {
   };
   if (opts.tools && opts.tools.length) body.tools = toChatCompletionsTools(opts.tools);
   if (opts.maxOutputTokens) body.max_completion_tokens = opts.maxOutputTokens;
+  if (opts.promptCacheKey) body.prompt_cache_key = opts.promptCacheKey; // PLAN.md §4.2
 
   /** @type {Record<number, { id: string, name: string, args: string }>} */
   const calls = {};

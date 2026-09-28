@@ -3,9 +3,9 @@
 
 // Per-tenant model catalog (PLAN.md §2.3): POST /server/get-models?format=full (public,
 // unauthenticated), filtered by cui_capable and the org's force_models, with a default
-// transport flavor assigned per model (PLAN.md §2.2). Phase 1 only implements CC and R
-// transports, so only models whose default flavor is CC or R are offered; Claude (M) and
-// Gemini (G) models are left out rather than silently misrouted through the wrong endpoint.
+// transport flavor assigned per model (PLAN.md §2.2). Phase 2 adds the M (Anthropic Messages)
+// transport for Claude; Gemini (G) is still Phase 4 and stays excluded rather than silently
+// misrouted through the wrong endpoint.
 
 const { request, describeFailure } = require('../transport/httpClient');
 
@@ -90,7 +90,7 @@ function createCatalog(opts) {
   return {
     /**
      * @param {{ allowNonCui?: boolean, forceModels?: string[] }} [o]
-     * @returns {Promise<(CatalogModel & { flavor: 'CC' | 'R' })[]>}
+     * @returns {Promise<(CatalogModel & { flavor: 'M' | 'CC' | 'R' })[]>}
      */
     async list(o = {}) {
       if (!cached || Date.now() - cached.at > TTL_MS) cached = { at: Date.now(), models: await fetchRaw() };
@@ -102,13 +102,13 @@ function createCatalog(opts) {
           : '';
       if (warning && warning !== lastForceWarning && opts.warn) opts.warn(warning);
       lastForceWarning = warning;
-      /** @type {(CatalogModel & { flavor: 'CC' | 'R' })[]} */
+      /** @type {(CatalogModel & { flavor: 'M' | 'CC' | 'R' })[]} */
       const out = [];
       for (const m of forced.models) {
         if (!o.allowNonCui && m.cui_capable === false) continue;
         if (m.deprecation?.state === 'retired') continue;
         const flavor = classifyFlavor(m.id);
-        if (flavor !== 'CC' && flavor !== 'R') continue; // M/G: not built yet, don't misroute
+        if (flavor !== 'M' && flavor !== 'CC' && flavor !== 'R') continue; // G: not built yet, don't misroute
         out.push({ ...m, flavor });
       }
       return out;

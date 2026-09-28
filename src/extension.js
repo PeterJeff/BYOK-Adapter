@@ -1,9 +1,9 @@
 // @ts-check
 'use strict';
 
-// Phase 1 skeleton (PLAN.md §9): CC and R transports, the usage ledger, and the session spend
-// cap. M (Claude) and G (Gemini) transports, cache breakpoints and reasoning-state round-trip
-// are later phases (§7's state/, cache/, policy/, tools/ do not exist yet).
+// Phase 2 (PLAN.md §9): adds the M (Claude/Anthropic Messages) transport, cache breakpoints,
+// pinned tool lists and thinking config, and the reasoning-state round-trip on top of Phase 1's
+// CC/R transports, usage ledger, and session spend cap.
 
 const vscode = require('vscode');
 const fs = require('fs');
@@ -17,19 +17,25 @@ const { createUserInfoService } = require('./auth/userInfo');
 const { createCatalog } = require('./catalog');
 const { createTokenizerRates } = require('./rates/tokenizer');
 const { createOutputCaps } = require('./rates/outputCaps');
+const { createThinkingShapes, isThinkingShapeUnsupported, ADAPTIVE_FALLBACK } = require('./convert/thinking');
 const { cacheRule } = require('./rates/cacheRules');
 const { expectedBill } = require('./rates/formula');
 const { normalize } = require('./normalize');
 const { streamChatCompletions } = require('./transport/openaiChat');
 const { streamResponses } = require('./transport/openaiResponses');
-const { textOf, roleName } = require('./convert/messages');
+const { streamMessages } = require('./transport/anthropicMessages');
+const { textOf, roleName, sortedTools } = require('./convert/messages');
+const { classifyUtilityRequest, synthesizeProgressMessages, synthesizeTitle } = require('./convert/utilityRequest');
+const { createToolPinning } = require('./cache/toolPinning');
+const { createReasoningCache } = require('./state/reasoningCache');
 const { createLedgerWriter } = require('./ledger/writer');
 const { createRequestLog } = require('./debug/requestLog');
 const { createSpendCap } = require('./budget/spendCap');
 const { createBudgetService } = require('./budget/budgetService');
 const { createStatusBar } = require('./ui/statusBar');
+const { checkCacheHealth } = require('./ui/cacheHealth');
 const { createLog } = require('./log');
-const { toLanguageModelError, parseOutputCapTooLarge } = require('./errors');
+const { toLanguageModelError, parseOutputCapTooLarge, isThinkingBoundRejection } = require('./errors');
 
 const VENDOR = 'asksage';
 
@@ -90,11 +96,18 @@ let servicesKey = null;
 /** @type {{ credentials: ReturnType<typeof createCredentials>, accessToken: ReturnType<typeof createAccessTokenService>,
  *   userInfo: ReturnType<typeof createUserInfoService>, catalog: ReturnType<typeof createCatalog>,
  *   tokenizerRates: ReturnType<typeof createTokenizerRates>, outputCaps: ReturnType<typeof createOutputCaps>,
- *   budgetService: ReturnType<typeof createBudgetService> } | null} */
+ *   thinkingShapes: ReturnType<typeof createThinkingShapes>, budgetService: ReturnType<typeof createBudgetService> } | null} */
 let services = null;
 
+// PLAN.md §4.3/§5/TODO.md "pin the tool list per conversation": module-scoped, like
+// conversationIds below, so state survives across requests in the same extension host process.
+const toolPinning = createToolPinning();
+const reasoningCache = createReasoningCache();
+/** Pins the first request's thinking shape for a conversation's life (PLAN.md §4.1). */
+const thinkingConfigByConversation = new Map();
+
 function partCtors() {
-  return { TextPart: vs.LanguageModelTextPart, ToolCallPart: vs.LanguageModelToolCallPart, ToolResultPart: vs.LanguageModelToolResultPart };
+  return { TextPart: vs.LanguageModelTextPart, ToolCallPart: vs.LanguageModelToolCallPart, ToolResultPart: vs.LanguageModelToolResultPart, ThinkingPart: vs.LanguageModelThinkingPart };
 }
 
 function roleEnum() {
@@ -125,8 +138,12 @@ function getServices(settings) {
     get: () => ctx.globalState.get(`asksage.outputCaps.${settings.apiBase}`),
     set: (v) => ctx.globalState.update(`asksage.outputCaps.${settings.apiBase}`, v),
   });
+  const thinkingShapes = createThinkingShapes({
+    get: () => ctx.globalState.get(`asksage.thinkingShapes.${settings.apiBase}`),
+    set: (v) => ctx.globalState.update(`asksage.thinkingShapes.${settings.apiBase}`, v),
+  });
   const budgetService = createBudgetService({ apiBase: settings.apiBase, accessToken, userInfo });
-  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, budgetService };
+  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, thinkingShapes, budgetService };
   servicesKey = key;
   return services;
 }
@@ -191,7 +208,7 @@ const provider = {
         name: m.id,
         family: 'asksage',
         version: '0.1.0',
-        tooltip: `Ask Sage: ${m.id} (${m.flavor === 'R' ? 'Responses' : 'Chat Completions'})`,
+        tooltip: `Ask Sage: ${m.id} (${m.flavor === 'M' ? 'Anthropic Messages' : m.flavor === 'R' ? 'Responses' : 'Chat Completions'})`,
         maxInputTokens: m.limits?.max_context || 128000,
         maxOutputTokens: m.limits?.max_output || 8000,
         capabilities: { toolCalling: true, imageInput: false },
@@ -212,6 +229,43 @@ const provider = {
   async provideLanguageModelChatResponse(model, messages, options, progress, token) {
     const ctors = partCtors();
     const settings = readSettings(vscode);
+
+    // Copilot's own internal title/progress-message calls arrive as ordinary requests (PLAN.md
+    // has no separate channel for them); asksage.interceptUtilityRequests answers them locally
+    // for $0 instead of spending real tokens on cosmetic UI text (off by default: heuristic
+    // detection, not yet seen against live traffic).
+    if (settings.interceptUtilityRequests) {
+      const classified = classifyUtilityRequest(messages, ctors, textOf, options.tools);
+      if (classified) {
+        const text = classified.kind === 'progress' ? synthesizeProgressMessages(classified.userText) : synthesizeTitle(classified.userText);
+        progress.report(new vs.LanguageModelTextPart(text));
+        ledger.append({
+          ts: new Date().toISOString(),
+          conversationId: 'n/a',
+          tenant: settings.tenant,
+          model: model.id,
+          resolvedModel: null,
+          flavor: 'n/a',
+          inputUncached: 0,
+          cacheRead: 0,
+          cacheWrite5m: 0,
+          cacheWrite1h: 0,
+          visibleOutput: 0,
+          thinking: 0,
+          thinkingUnknown: false,
+          estAsCost: 0,
+          rateSource: 'intercepted',
+          latencyMs: 0,
+          status: 'intercepted',
+          errorClass: null,
+          cancelled: false,
+          toolCallCount: 0,
+        });
+        log.info(`Ask Sage: intercepted a Copilot utility request (${classified.kind}) -- answered locally, no Ask Sage tokens spent`);
+        return;
+      }
+    }
+
     const svc = getServices(settings);
     const models = await svc.catalog.list({ forceModels: await forceModelsFor(svc) });
     const entry = models.find((m) => m.id === model.id);
@@ -219,9 +273,28 @@ const provider = {
     const apiKey = await svc.credentials.getApiKey();
     if (!apiKey) throw toLanguageModelError(vscode, new Error('Ask Sage: no API key set (run "Ask Sage: Set API Key")'));
 
-    const tools = options.tools || [];
+    const rawTools = options.tools || [];
+    const rawToolSetHash = hash([...rawTools].map((t) => t.name).sort().join(','));
+    const conversationId = conversationIdFor(messages, ctors, options.modelOptions, rawToolSetHash);
+
+    // PLAN.md §4.3 / TODO.md "pin the tool list per conversation": send the first turn's tool
+    // list for the conversation's life instead of whatever Copilot sends this turn, so tool
+    // churn (an extension registering a tool mid-chat) doesn't bust the cached prefix every time.
+    const tools = settings.pinToolList ? toolPinning.resolve(conversationId, sortedTools(rawTools), { warn: (m) => log.warn(m) }) : rawTools;
     const toolSetHash = hash([...tools].map((t) => t.name).sort().join(','));
-    const conversationId = conversationIdFor(messages, ctors, options.modelOptions, toolSetHash);
+
+    // PLAN.md §4.1: the thinking config is pinned to the conversation's first request too --
+    // M-only; other flavors just don't have one.
+    let thinkingShape;
+    let thinkingConfigHash = '';
+    if (entry.flavor === 'M') {
+      thinkingShape = thinkingConfigByConversation.get(conversationId);
+      if (!thinkingShape) {
+        thinkingShape = svc.thinkingShapes.get(model.id);
+        thinkingConfigByConversation.set(conversationId, thinkingShape);
+      }
+      thinkingConfigHash = hash(JSON.stringify(thinkingShape));
+    }
 
     try {
       spendCap.check(conversationId);
@@ -230,9 +303,29 @@ const provider = {
       throw toLanguageModelError(vscode, /** @type {Error} */ (e));
     }
 
+    const promptCacheKey = hash(`${conversationId}::${model.id}`);
+    let reasoningStateLostThisTurn = false;
+    /** @type {(toolCallId: string) => void} */
+    const onReasoningStateLost = (toolCallId) => {
+      reasoningStateLostThisTurn = true;
+      log.debug(`Ask Sage: ${model.id} sent no reasoning state for tool call ${toolCallId} this round (dropped or never cached); the model will just re-reason`);
+    };
+    /** @type {(t: { toolCallId: string, value: string, signature: string }) => void} */
+    const onThinking = (t) => {
+      reasoningCache.set(t.toolCallId, { thinking: t.value, signature: t.signature });
+      if (typeof vs.LanguageModelThinkingPart === 'function') {
+        try {
+          progress.report(new vs.LanguageModelThinkingPart(t.value || ' ', t.toolCallId, { signature: t.signature }));
+        } catch {
+          // proposed API, feature-detected above but still best-effort (PLAN.md §7)
+        }
+      }
+    };
+
     let attempt = 0;
-    /** @param {number | undefined} maxOutputTokens */
-    async function runOnce(maxOutputTokens) {
+    let includeThinking = true;
+    let maxOutputTokens = svc.outputCaps.get(model.id, model.maxOutputTokens);
+    async function runOnce() {
       attempt++;
       let streamedAnything = false;
       let debugText = '';
@@ -245,6 +338,14 @@ const provider = {
         roleEnum: roleEnum(),
         tools,
         maxOutputTokens,
+        promptCacheKey,
+        thinkingShape,
+        includeThinking,
+        includeReasoning: includeThinking,
+        ttlMode: settings.cacheTtlMode,
+        getReasoningState: (/** @type {string} */ id) => reasoningCache.get(id),
+        onReasoningStateLost,
+        onThinking,
         onText: (/** @type {string} */ text) => {
           streamedAnything = true;
           if (settings.debugLogRequests) debugText += text;
@@ -256,7 +357,7 @@ const provider = {
         },
         token,
       };
-      const result = entry.flavor === 'R' ? await streamResponses(streamOpts) : await streamChatCompletions(streamOpts);
+      const result = entry.flavor === 'M' ? await streamMessages(streamOpts) : entry.flavor === 'R' ? await streamResponses(streamOpts) : await streamChatCompletions(streamOpts);
       if (settings.debugLogRequests) {
         getDebugLog().write({
           ts: new Date().toISOString(),
@@ -280,16 +381,34 @@ const provider = {
     // report one within 70% of max_context, and gpt-5.6-luna's 900000 was rejected outright by a
     // server that actually caps at 32768) -- start from it, but learn and remember the real cap
     // from a rejection instead of failing every request to that model forever.
-    let maxOutputTokens = svc.outputCaps.get(model.id, model.maxOutputTokens);
-    let { result, streamedAnything } = await runOnce(maxOutputTokens);
+    let { result, streamedAnything } = await runOnce();
     if (result.error && !streamedAnything) {
       const corrected = parseOutputCapTooLarge(result.error);
       if (corrected && corrected !== maxOutputTokens) {
         log.warn(`Ask Sage: ${model.id} rejected max output ${maxOutputTokens}; retrying once at ${corrected} (its catalog limits.max_output is wrong)`);
         svc.outputCaps.correct(model.id, corrected);
         maxOutputTokens = corrected;
-        ({ result, streamedAnything } = await runOnce(maxOutputTokens));
+        ({ result, streamedAnything } = await runOnce());
       }
+    }
+    if (entry.flavor === 'M' && result.error && !streamedAnything && isThinkingShapeUnsupported(result.error)) {
+      // PLAN.md §4.1: the older enabled+budget_tokens shape is rejected on some Claude
+      // generations (measured on Sonnet 5, T22); learn the adaptive shape from the rejection the
+      // same way outputCaps learns a real max_output.
+      log.warn(`Ask Sage: ${model.id} rejected its thinking shape; retrying once with the adaptive shape and remembering it`);
+      svc.thinkingShapes.correct(model.id, ADAPTIVE_FALLBACK);
+      thinkingShape = ADAPTIVE_FALLBACK;
+      thinkingConfigByConversation.set(conversationId, thinkingShape);
+      ({ result, streamedAnything } = await runOnce());
+    }
+    if (entry.flavor === 'M' && result.error && !streamedAnything && includeThinking && isThinkingBoundRejection(result.error)) {
+      // PLAN.md §5: a resent signed-thinking block bound to a prefix that changed underneath it
+      // (preserved thinking, Opus 5.5/Fable 5.1) -- unconfirmed through Ask Sage yet
+      // (REQUIREMENTS.md §3), handled defensively: strip every thinking block and retry once.
+      log.warn(`Ask Sage: ${model.id} rejected a resent thinking block (preserved-thinking check); retrying once with thinking stripped`);
+      includeThinking = false;
+      reasoningStateLostThisTurn = true;
+      ({ result, streamedAnything } = await runOnce());
     }
     const latencyMs = Date.now() - started;
     const cancelled = !!token.isCancellationRequested;
@@ -343,6 +462,9 @@ const provider = {
       errorClass: null,
       cancelled,
       toolCallCount: 0,
+      toolSetHash,
+      thinkingConfigHash: thinkingConfigHash || undefined,
+      reasoningStateLost: reasoningStateLostThisTurn || undefined,
     });
 
     if (typeof vs.LanguageModelDataPart?.json === 'function' && norm) {
@@ -395,8 +517,65 @@ function activate(context) {
       } catch (e) {
         vscode.window.showErrorMessage(`Ask Sage: ${/** @type {Error} */ (e).message}`);
       }
-    })
+    }),
+    vscode.commands.registerCommand('asksage.checkCacheHealth', () => runCheckCacheHealth())
   );
+}
+
+/**
+ * PLAN.md §4.3: sends real, billed requests, so this asks first (CLAUDE.md: paid probes need the
+ * owner's go-ahead) and is never invoked automatically -- only from the command palette.
+ */
+async function runCheckCacheHealth() {
+  const settings = readSettings(vscode);
+  const svc = getServices(settings);
+  let models;
+  try {
+    models = await svc.catalog.list({ forceModels: await forceModelsFor(svc) });
+  } catch (e) {
+    vscode.window.showErrorMessage(`Ask Sage: could not load the model catalog: ${/** @type {Error} */ (e).message}`);
+    return;
+  }
+  const picked = await vscode.window.showQuickPick(
+    models.map((m) => ({ label: m.id, description: m.flavor, model: m })),
+    { title: 'Ask Sage: Check Cache Health -- pick a model' }
+  );
+  if (!picked) return;
+  const proceed = await vscode.window.showWarningMessage(
+    `This sends four real requests to Ask Sage on ${picked.model.id} (a long, repeated prefix) and spends real tokens. Continue?`,
+    { modal: true },
+    'Send the requests'
+  );
+  if (proceed !== 'Send the requests') return;
+
+  const apiKey = await svc.credentials.getApiKey();
+  if (!apiKey) {
+    vscode.window.showErrorMessage('Ask Sage: no API key set (run "Ask Sage: Set API Key")');
+    return;
+  }
+  const ctors = partCtors();
+  const entry = picked.model;
+  const streamFn = entry.flavor === 'M' ? streamMessages : entry.flavor === 'R' ? streamResponses : streamChatCompletions;
+
+  log.channel.show(true);
+  log.info(`Ask Sage: Check Cache Health starting for ${entry.id} (${entry.flavor})`);
+  try {
+    const results = await checkCacheHealth({
+      ctors,
+      roleEnum: roleEnum(),
+      flavor: entry.flavor,
+      normalize,
+      cacheRuleForModel: cacheRule(entry.flavor, entry.id),
+      send: (msgs) => streamFn({ apiBase: settings.apiBase, apiKey, model: entry.id, messages: msgs, ctors, roleEnum: roleEnum(), maxOutputTokens: 16 }),
+    });
+    for (const r of results) log.info(`Ask Sage: Check Cache Health -- ${r.pass ? 'PASS' : 'FAIL'} ${r.name}: ${r.detail}`);
+    const failed = results.filter((r) => !r.pass);
+    if (failed.length) vscode.window.showWarningMessage(`Ask Sage: Check Cache Health found ${failed.length} problem(s) on ${entry.id} -- see the Ask Sage output channel.`);
+    else vscode.window.showInformationMessage(`Ask Sage: Check Cache Health passed on ${entry.id}.`);
+  } catch (e) {
+    log.error(`Ask Sage: Check Cache Health failed: ${/** @type {Error} */ (e).message}`);
+    vscode.window.showErrorMessage(`Ask Sage: Check Cache Health failed: ${/** @type {Error} */ (e).message}`);
+  }
 }
 
 /**

@@ -44,6 +44,7 @@ function sseResponse(sseText) {
 
 const CC_MODEL = { id: 'gpt-4.1-nano', cui_capable: true, limits: { max_context: 128000, max_output: 4096 } };
 const R_MODEL = { id: 'gpt-5.4-nano', cui_capable: true, limits: { max_context: 128000, max_output: 4096 } };
+const M_MODEL = { id: 'google-claude-sonnet-5', cui_capable: true, limits: { max_context: 200000, max_output: 8192 } };
 
 const CC_SSE =
   'data: {"id":"1","model":"gpt-4.1-nano-2026-01-01","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}\n\n' +
@@ -62,6 +63,14 @@ const R_SSE_CACHE_WRITE =
   'data: {"type":"response.completed","response":{"model":"gpt-5.6-luna","status":"completed","usage":{"input_tokens":3,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":10000},"output_tokens":41,"output_tokens_details":{"reasoning_tokens":19}}}}\n\n' +
   'data: [DONE]\n\n';
 
+const M_SSE =
+  'data: {"type":"message_start","message":{"id":"msg_1","model":"claude-sonnet-5-2026-01-01","usage":{"input_tokens":60,"cache_read_input_tokens":0,"cache_creation_input_tokens":0}}}\n\n' +
+  'data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}\n\n' +
+  'data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hi there"}}\n\n' +
+  'data: {"type":"content_block_stop","index":0}\n\n' +
+  'data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"output_tokens":4}}\n\n' +
+  'data: {"type":"message_stop"}\n\n';
+
 /** @param {string} message */
 function openaiErrorResponse(message) {
   return {
@@ -71,7 +80,7 @@ function openaiErrorResponse(message) {
   };
 }
 
-/** @param {{ models: unknown[], cc?: string, r?: string, rSequence?: unknown[], forceModels?: unknown }} o */
+/** @param {{ models: unknown[], cc?: string, r?: string, m?: string, rSequence?: unknown[], forceModels?: unknown }} o */
 function createFakeFetch(o) {
   const calls = /** @type {{ url: string, body: any }[]} */ ([]);
   const rQueue = o.rSequence ? [...o.rSequence] : null;
@@ -94,6 +103,7 @@ function createFakeFetch(o) {
       if (rQueue && rQueue.length) return rQueue.shift();
       if (o.r) return sseResponse(o.r);
     }
+    if (url.endsWith('/server/anthropic/v1/messages') && o.m) return sseResponse(o.m);
     throw new Error(`unexpected fetch in test: ${url}`);
   };
   return Object.assign(fn, { calls });
@@ -185,6 +195,90 @@ test('a non-reasoning model streams through CC and lands a normalized, estimated
   }
 });
 
+test('Claude streams through M and lands a normalized, estimated-cost ledger record (Phase 2)', async () => {
+  const fetchImpl = createFakeFetch({ models: [M_MODEL], m: M_SSE });
+  const { send, context, restore } = setup(fetchImpl);
+  try {
+    const out = await send('google-claude-sonnet-5', [{ role: 1, content: [text('hi')] }]);
+    const textOut = out.filter((p) => p instanceof parts.LanguageModelTextPart).map((p) => p.value).join('');
+    assert.equal(textOut, 'Hi there');
+
+    const records = readAll(path.join(context.globalStorageUri.fsPath, 'ledger'));
+    assert.equal(records.length, 1);
+    const r = records[0];
+    assert.equal(r.flavor, 'M');
+    assert.equal(r.model, 'google-claude-sonnet-5');
+    assert.equal(r.resolvedModel, 'claude-sonnet-5-2026-01-01');
+    assert.equal(r.inputUncached, 60);
+    assert.equal(r.visibleOutput, 4);
+    assert.ok(r.toolSetHash, 'toolSetHash must be recorded (PLAN §3.4)');
+    assert.ok(r.thinkingConfigHash, 'thinkingConfigHash must be recorded for M (PLAN §3.4)');
+
+    const mCall = fetchImpl.calls.find((c) => c.url.endsWith('/server/anthropic/v1/messages'));
+    assert.equal(mCall?.body.max_tokens, 8192);
+    assert.ok(mCall?.body.thinking, 'a thinking shape must be sent for a non-opus-5.5/fable model');
+  } finally {
+    restore();
+  }
+});
+
+test('the tool list is pinned per conversation (PLAN §4.3): a tool added mid-conversation is held back', async () => {
+  const fetchImpl = createFakeFetch({ models: [M_MODEL], m: M_SSE });
+  const { provider, restore } = setup(fetchImpl);
+  try {
+    const models = await provider.provideLanguageModelChatInformation({}, token());
+    const model = models.find((/** @type {any} */ m) => m.id === 'google-claude-sonnet-5');
+    const messages = [{ role: 1, content: [text('hi')] }];
+    const opts1 = { toolMode: 1, tools: [{ name: 'readFile', inputSchema: {} }], modelOptions: { _conversationId: 'conv-fixed' } };
+    await provider.provideLanguageModelChatResponse(model, messages, opts1, { report() {} }, token());
+    const opts2 = { toolMode: 1, tools: [{ name: 'readFile', inputSchema: {} }, { name: 'newTool', inputSchema: {} }], modelOptions: { _conversationId: 'conv-fixed' } };
+    await provider.provideLanguageModelChatResponse(model, messages, opts2, { report() {} }, token());
+
+    const mCalls = fetchImpl.calls.filter((c) => c.url.endsWith('/server/anthropic/v1/messages'));
+    assert.equal(mCalls.length, 2);
+    assert.deepEqual(mCalls[0].body.tools.map((/** @type {any} */ t) => t.name), ['readFile']);
+    assert.deepEqual(mCalls[1].body.tools.map((/** @type {any} */ t) => t.name), ['readFile'], 'newTool must be held back until a new conversation');
+  } finally {
+    restore();
+  }
+});
+
+test('asksage.interceptUtilityRequests (opt-in): a title-generation call is answered locally, no network call', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL] });
+  const { send, context, restore } = setup(fetchImpl, { 'asksage.interceptUtilityRequests': true });
+  try {
+    const titleSystem =
+      'You are an expert in crafting ultra-compact titles for chatbot conversations. You are presented with a chat request, and you reply with only a brief title.';
+    const titleUser = 'Please write a brief title for the following request:\n\nFix the login bug';
+    const out = await send('gpt-4.1-nano', [{ role: 1, content: [text(titleSystem)] }, { role: 1, content: [text(titleUser)] }]);
+    const textOut = out.filter((p) => p instanceof parts.LanguageModelTextPart).map((p) => p.value).join('');
+    assert.ok(textOut.length > 0);
+
+    const modelCalls = fetchImpl.calls.filter((c) => c.url.includes('/chat/completions') || c.url.includes('/responses') || c.url.includes('/messages'));
+    assert.equal(modelCalls.length, 0, 'an intercepted request must never reach the network');
+
+    const records = readAll(path.join(context.globalStorageUri.fsPath, 'ledger'));
+    assert.equal(records.length, 1);
+    assert.equal(records[0].status, 'intercepted');
+    assert.equal(records[0].estAsCost, 0);
+  } finally {
+    restore();
+  }
+});
+
+test('asksage.interceptUtilityRequests off by default: the same title-shaped call goes through as a normal request', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  const { send, restore } = setup(fetchImpl);
+  try {
+    const titleSystem = 'You are an expert in crafting ultra-compact titles for chatbot conversations.';
+    await send('gpt-4.1-nano', [{ role: 1, content: [text(titleSystem)] }]);
+    const modelCalls = fetchImpl.calls.filter((c) => c.url.endsWith('/server/openai/v1/chat/completions'));
+    assert.equal(modelCalls.length, 1, 'off by default: must go through to Ask Sage like any other request');
+  } finally {
+    restore();
+  }
+});
+
 test('a bogus catalog max_output is corrected from the server\'s rejection and remembered (live finding, 2026-09-27)', async () => {
   // gpt-5.6-luna's real catalog reports limits.max_output: 900000; a real server rejected that
   // with "supports at most 32768 completion tokens". First call must send the catalog value,
@@ -251,12 +345,12 @@ test('sends the model\'s maxOutputTokens as an explicit output cap on both flavo
   }
 });
 
-test('provideLanguageModelChatInformation only lists CC/R models (Claude/Gemini excluded, Phase 1)', async () => {
-  const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL, { id: 'google-claude-45-haiku', cui_capable: true }] });
+test('provideLanguageModelChatInformation lists M/CC/R models (Gemini still excluded, Phase 4)', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL, R_MODEL, { id: 'google-claude-45-haiku', cui_capable: true }, { id: 'google-gemini-3.5-flash', cui_capable: true }] });
   const { provider, restore } = setup(fetchImpl);
   try {
     const models = await provider.provideLanguageModelChatInformation({}, token());
-    assert.deepEqual(models.map((/** @type {any} */ m) => m.id).sort(), ['gpt-4.1-nano', 'gpt-5.4-nano']);
+    assert.deepEqual(models.map((/** @type {any} */ m) => m.id).sort(), ['google-claude-45-haiku', 'gpt-4.1-nano', 'gpt-5.4-nano']);
   } finally {
     restore();
   }

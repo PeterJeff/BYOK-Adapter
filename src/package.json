@@ -62,6 +62,11 @@
         "command": "asksage.openDebugLogFolder",
         "title": "Open Request Log Folder",
         "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.checkCacheHealth",
+        "title": "Check Cache Health",
+        "category": "Ask Sage"
       }
     ],
     "configuration": {
@@ -101,6 +106,22 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "**Writes full request/response text (prompt content included) to local files** under the extension's global storage, for debugging only. Off by default: the ledger never contains prompt text (`CLAUDE.md` security rule), and this setting is the one opt-in exception. Requests are sent to Ask Sage exactly as with this off; the log files themselves stay on this machine and are never uploaded. [Open the request log folder](command:asksage.openDebugLogFolder)."
+        },
+        "asksage.cache.ttlMode": {
+          "type": "string",
+          "enum": ["5m", "mixed", "1h"],
+          "default": "mixed",
+          "markdownDescription": "Claude (M) cache breakpoint TTLs (PLAN.md §4.1). `mixed` (recommended): the stable tools+system prefix uses the 1-hour TTL and the two most recent message breakpoints use 5 minutes, so a human pause between turns doesn't cost a cold prefix. `5m` or `1h` use one TTL throughout."
+        },
+        "asksage.cache.pinToolList": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Send the conversation's first tool list for its whole life instead of whatever Copilot sends each turn. Copilot's tool set can change mid-conversation (an extension registering a tool once it activates), and any change busts the cached prefix on every flavor. Tools added later are held back until a new chat; tools Copilot later removes are still sent, so the cached prefix stays stable."
+        },
+        "asksage.interceptUtilityRequests": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "**Off by default.** Detects Copilot's internal 'utility' calls -- generating a chat title or a progress message, not a real answer to you -- by their fixed system-prompt wording, and answers them locally (a title derived from your own request text, a generic progress phrase) instead of spending Ask Sage tokens on them. Detection is a heuristic on exact known phrasing, so it fails open: anything that doesn't match goes through as a normal request. Every intercepted call still appears in the [ledger](command:asksage.openLedgerFolder) as a $0 'intercepted' entry."
         }
       }
     }

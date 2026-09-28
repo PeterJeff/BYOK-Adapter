@@ -16,8 +16,12 @@ const { toResponsesInput, toResponsesTools } = require('../convert/messages');
 
 /**
  * @param {{ apiBase: string, apiKey: string, model: string, messages: readonly any[], ctors: PartCtors,
- *   roleEnum: Record<string, number>, tools?: readonly any[], maxOutputTokens?: number,
+ *   roleEnum: Record<string, number>, tools?: readonly any[], maxOutputTokens?: number, promptCacheKey?: string,
+ *   includeReasoning?: boolean,
+ *   getReasoningState?: (toolCallId: string) => { thinking: string, signature: string } | undefined,
+ *   onReasoningStateLost?: (toolCallId: string) => void,
  *   onText?: (text: string) => void, onToolCall?: (call: { callId: string, name: string, input: unknown }) => void,
+ *   onThinking?: (t: { toolCallId: string, value: string, signature: string }) => void,
  *   token?: import('./httpClient').RequestOptions['token'], fetchImpl?: typeof fetch }} opts
  */
 async function streamResponses(opts) {
@@ -26,13 +30,21 @@ async function streamResponses(opts) {
     model: opts.model,
     stream: true,
     store: false,
-    input: toResponsesInput(opts.messages, opts.ctors, opts.roleEnum),
+    include: ['reasoning.encrypted_content'], // PLAN.md §5: needed for the reasoning item to round-trip (measured, T22)
+    input: toResponsesInput(opts.messages, opts.ctors, opts.roleEnum, {
+      getReasoningState: opts.getReasoningState,
+      onReasoningStateLost: opts.onReasoningStateLost,
+      includeReasoning: opts.includeReasoning !== false,
+    }),
   };
   if (opts.tools && opts.tools.length) body.tools = toResponsesTools(opts.tools);
   if (opts.maxOutputTokens) body.max_output_tokens = opts.maxOutputTokens;
+  if (opts.promptCacheKey) body.prompt_cache_key = opts.promptCacheKey; // PLAN.md §4.2
 
   /** @type {{ callId: string, name: string, args: string }[]} */
   const calls = [];
+  /** @type {{ encryptedContent: string } | null} */
+  let lastReasoning = null;
   /** @type {Record<string, any> | null} */
   let usage = null;
   /** @type {string | null} */
@@ -54,6 +66,9 @@ async function streamResponses(opts) {
       if (d.type === 'response.output_item.done' && d.item?.type === 'function_call') {
         calls.push({ callId: d.item.call_id, name: d.item.name, args: d.item.arguments || '' });
       }
+      if (d.type === 'response.output_item.done' && d.item?.type === 'reasoning' && d.item.encrypted_content) {
+        lastReasoning = { encryptedContent: d.item.encrypted_content };
+      }
       if (d.type === 'response.completed' || d.type === 'response.incomplete') {
         if (d.response?.usage) usage = d.response.usage;
         if (d.response?.model) resolvedModel = d.response.model;
@@ -62,7 +77,7 @@ async function streamResponses(opts) {
     },
   });
 
-  if (!result.error && !result.transportError && opts.onToolCall) {
+  if (!result.error && !result.transportError) {
     for (const c of calls) {
       /** @type {unknown} */
       let input = {};
@@ -71,7 +86,10 @@ async function streamResponses(opts) {
       } catch {
         input = {};
       }
-      opts.onToolCall({ callId: c.callId, name: c.name, input });
+      if (opts.onToolCall) opts.onToolCall({ callId: c.callId, name: c.name, input });
+      // As with M's thinking block (anthropicMessages.js): the one reasoning item in a turn
+      // precedes all of that turn's function_call items, so it pairs with each of them.
+      if (lastReasoning && opts.onThinking) opts.onThinking({ toolCallId: c.callId, value: '', signature: lastReasoning.encryptedContent });
     }
   }
 

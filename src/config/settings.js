@@ -36,8 +36,11 @@ function readSettings(vscode) {
   const sessionCapTokens = /** @type {number} */ (cfg.get('budget.sessionCapTokens', 50000));
   const hourlyCapTokens = /** @type {number} */ (cfg.get('budget.hourlyCapTokens', 200000));
   const debugLogRequests = /** @type {boolean} */ (cfg.get('debug.logRequests', false));
+  const cacheTtlMode = /** @type {'5m' | 'mixed' | '1h'} */ (cfg.get('cache.ttlMode', 'mixed'));
+  const pinToolList = /** @type {boolean} */ (cfg.get('cache.pinToolList', true));
+  const interceptUtilityRequests = /** @type {boolean} */ (cfg.get('interceptUtilityRequests', false));
   const apiBase = `https://${resolveHost({ tenant, host })}`;
-  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens, debugLogRequests };
+  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens, debugLogRequests, cacheTtlMode, pinToolList, interceptUtilityRequests };
 }
 
 module.exports = { readSettings, SECTION, USER_ONLY };

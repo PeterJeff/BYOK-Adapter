@@ -65,6 +65,22 @@ function parseOutputCapTooLarge(e) {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+/** Preserved-thinking rejection (PLAN.md §5, Opus 5.5/Fable 5.1): editing the prefix a signed
+ *  thinking block is bound to (a changed system prompt, a summarized/trimmed history) returns a
+ *  400 on accounts that enforce the check. The exact wording is unconfirmed through Ask Sage
+ *  (REQUIREMENTS.md §3, "untested"), so this matches loosely on the concepts Anthropic's own docs
+ *  use rather than one exact string, and a false negative just surfaces the raw error instead of
+ *  retrying -- the safe failure direction. */
+const THINKING_BOUND_RE = /thinking/i;
+const SIGNATURE_OR_PREFIX_RE = /signature|bound to|different conversation|prefix/i;
+
+/**
+ * @param {DetectedError | null} e
+ */
+function isThinkingBoundRejection(e) {
+  return !!e && THINKING_BOUND_RE.test(e.message) && SIGNATURE_OR_PREFIX_RE.test(e.message);
+}
+
 /**
  * Converts a detected error (or a transport-level exception) into a vscode.LanguageModelError
  * when the API is present, else a plain Error. Feature-detected per CLAUDE.md's stable-API rule.
@@ -78,4 +94,4 @@ function toLanguageModelError(vscode, e) {
   return new Error(message);
 }
 
-module.exports = { detectError, isAuthInvalid, parseOutputCapTooLarge, toLanguageModelError };
+module.exports = { detectError, isAuthInvalid, parseOutputCapTooLarge, isThinkingBoundRejection, toLanguageModelError };
