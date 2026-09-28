@@ -38,6 +38,7 @@ function monthKey(d = new Date()) {
  * @property {number} toolCallCount
  * @property {string} [toolSetHash]  PLAN.md §3.4: attributes a cold turn to tool-list churn
  * @property {string} [thinkingConfigHash]  PLAN.md §3.4: attributes a cold turn to a thinking-config change
+ * @property {string} [prefixHash]  PLAN.md §3.4: hash of the deterministic cacheable prefix (first user message text + full tool definitions), to attribute a cold turn to the prefix's *content* changing rather than tool/thinking churn
  * @property {boolean} [reasoningStateLost]  PLAN.md §5: this round sent no thinking/reasoning block though the turn had one to carry
  */
 

@@ -54,3 +54,29 @@ test('a getter is read on every check, so a lowered cap applies without a reload
   limits = { sessionCapTokens: 100, hourlyCapTokens: 0 };
   assert.throws(() => cap.check('conv-1'), /session spend cap reached \(160 of 100/);
 });
+
+test('bump: asksage.requestMoreTokens raises one conversation\'s effective session cap, additively', () => {
+  const cap = createSpendCap({ sessionCapTokens: 100, hourlyCapTokens: 0 });
+  cap.record('conv-1', 150);
+  assert.throws(() => cap.check('conv-1'), /session spend cap reached \(150 of 100/);
+  cap.bump('conv-1', 100);
+  assert.equal(cap.bumpFor('conv-1'), 100);
+  assert.doesNotThrow(() => cap.check('conv-1')); // 150 of 200 now
+  cap.bump('conv-1', 100); // stacks
+  assert.equal(cap.bumpFor('conv-1'), 200);
+});
+
+test('bump: only affects the conversation it was applied to', () => {
+  const cap = createSpendCap({ sessionCapTokens: 100, hourlyCapTokens: 0 });
+  cap.bump('conv-1', 500);
+  assert.equal(cap.bumpFor('conv-2'), 0);
+  cap.record('conv-2', 150);
+  assert.throws(() => cap.check('conv-2'), /session spend cap reached/);
+});
+
+test('bump: ignores a non-positive amount', () => {
+  const cap = createSpendCap({ sessionCapTokens: 100, hourlyCapTokens: 0 });
+  cap.bump('conv-1', 0);
+  cap.bump('conv-1', -5);
+  assert.equal(cap.bumpFor('conv-1'), 0);
+});

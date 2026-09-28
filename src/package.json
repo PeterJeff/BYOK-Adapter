@@ -67,6 +67,16 @@
         "command": "asksage.checkCacheHealth",
         "title": "Check Cache Health",
         "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.reconcileCacheHealth",
+        "title": "Check Cache Health: Reconcile Recent Usage (free)",
+        "category": "Ask Sage"
+      },
+      {
+        "command": "asksage.requestMoreTokens",
+        "title": "Request More Tokens",
+        "category": "Ask Sage"
       }
     ],
     "configuration": {
@@ -101,6 +111,19 @@
           "default": 200000,
           "minimum": 0,
           "description": "Hard stop: maximum estimated Ask Sage tokens across all conversations in a rolling hour before requests are refused. 0 disables the cap."
+        },
+        "asksage.budget.warnFraction": {
+          "type": "number",
+          "default": 0.8,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Pre-flight estimate (PLAN.md §3.5): warn in the Ask Sage output channel once a request's estimated cost would push a session or hourly cap's projected spend past this fraction of the cap."
+        },
+        "asksage.budget.reserveTokens": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Pre-flight estimate (PLAN.md §3.5): headroom the hard stop keeps back below a session/hourly cap, in Ask Sage tokens. 0 stops only once the estimate would reach the cap itself."
         },
         "asksage.debug.logRequests": {
           "type": "boolean",

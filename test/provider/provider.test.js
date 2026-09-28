@@ -213,6 +213,7 @@ test('Claude streams through M and lands a normalized, estimated-cost ledger rec
     assert.equal(r.visibleOutput, 4);
     assert.ok(r.toolSetHash, 'toolSetHash must be recorded (PLAN §3.4)');
     assert.ok(r.thinkingConfigHash, 'thinkingConfigHash must be recorded for M (PLAN §3.4)');
+    assert.ok(r.prefixHash, 'prefixHash must be recorded (PLAN §3.4)');
 
     const mCall = fetchImpl.calls.find((c) => c.url.endsWith('/server/anthropic/v1/messages'));
     assert.equal(mCall?.body.max_tokens, 8192);
@@ -404,14 +405,16 @@ test('the spend cap stops a synthetic runaway loop wired through the real reques
   const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
   // A tiny session cap (3 AS tokens): the first request (~3.75 AS tokens) is let through (the
   // cap only blocks *before* sending, per PLAN §3.5), but it pushes the conversation over the
-  // cap, so a second request in the same conversation must be refused before any bytes go out.
+  // cap, so a second request in the same conversation must be refused before any bytes go out --
+  // now caught by the pre-flight estimate (PLAN §3.5) before spendCap.check()'s own post-hoc
+  // "spend cap reached" guard is even reached.
   const { send, context, restore } = setup(fetchImpl, { 'asksage.budget.sessionCapTokens': 3 });
   try {
     const messages = [{ role: 1, content: [text('hi')] }]; // same first message -> same conversationId
     const first = await send('gpt-4.1-nano', messages);
     assert.ok(first.some((p) => p instanceof parts.LanguageModelTextPart));
 
-    await assert.rejects(() => send('gpt-4.1-nano', messages), /spend cap reached/);
+    await assert.rejects(() => send('gpt-4.1-nano', messages), /spend cap reached|would push the session spend/);
 
     const records = readAll(path.join(context.globalStorageUri.fsPath, 'ledger'));
     assert.equal(records.length, 1, 'the blocked second request never reached the transport or the ledger');
@@ -428,7 +431,7 @@ test('a session cap lowered after activation applies to the next request (live f
     const messages = [{ role: 1, content: [text('hi')] }];
     await send('gpt-4.1-nano', messages);
     config['asksage.budget.sessionCapTokens'] = 3;
-    await assert.rejects(() => send('gpt-4.1-nano', messages), /spend cap reached/);
+    await assert.rejects(() => send('gpt-4.1-nano', messages), /spend cap reached|would push the session spend/);
     assert.equal(readAll(path.join(context.globalStorageUri.fsPath, 'ledger')).length, 1);
   } finally {
     restore();

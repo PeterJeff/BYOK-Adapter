@@ -19,6 +19,11 @@ function createSpendCap(limitsOrGetter) {
   const perConversation = new Map();
   /** @type {{ at: number, cost: number }[]} */
   const hourly = [];
+  // PLAN.md §3.5's hard-stop error offers "request tokens" as a way past a cap without editing
+  // Settings; asksage.requestMoreTokens (src/extension.js) raises this conversation's effective
+  // session cap by a one-time amount instead. In-memory only, like the rest of this module.
+  /** @type {Map<string, number>} */
+  const conversationBumps = new Map();
 
   /** @param {number} now */
   function prune(now) {
@@ -41,8 +46,9 @@ function createSpendCap(limitsOrGetter) {
       const now = Date.now();
       const limits = getLimits();
       const convTotal = perConversation.get(conversationId) || 0;
-      if (limits.sessionCapTokens > 0 && convTotal >= limits.sessionCapTokens) {
-        throw new Error(`Ask Sage: session spend cap reached (${convTotal} of ${limits.sessionCapTokens} AS tokens) for this conversation`);
+      const sessionCap = limits.sessionCapTokens > 0 ? limits.sessionCapTokens + (conversationBumps.get(conversationId) || 0) : limits.sessionCapTokens;
+      if (sessionCap > 0 && convTotal >= sessionCap) {
+        throw new Error(`Ask Sage: session spend cap reached (${convTotal} of ${sessionCap} AS tokens) for this conversation`);
       }
       const hTotal = hourlyTotal(now);
       if (limits.hourlyCapTokens > 0 && hTotal >= limits.hourlyCapTokens) {
@@ -65,6 +71,20 @@ function createSpendCap(limitsOrGetter) {
     snapshot(conversationId) {
       const now = Date.now();
       return { conversation: perConversation.get(conversationId) || 0, hourly: hourlyTotal(now) };
+    },
+    /**
+     * Raises this conversation's effective session cap by `extraTokens`, on top of whatever the
+     * setting currently says (asksage.requestMoreTokens). Adds, so repeated requests stack.
+     * @param {string} conversationId
+     * @param {number} extraTokens
+     */
+    bump(conversationId, extraTokens) {
+      if (!(extraTokens > 0)) return;
+      conversationBumps.set(conversationId, (conversationBumps.get(conversationId) || 0) + extraTokens);
+    },
+    /** @param {string} conversationId */
+    bumpFor(conversationId) {
+      return conversationBumps.get(conversationId) || 0;
     },
   };
 }

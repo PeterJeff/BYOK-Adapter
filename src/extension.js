@@ -14,12 +14,13 @@ const { readSettings } = require('./config/settings');
 const { createCredentials, registerCommands: registerCredentialCommands } = require('./auth/credentials');
 const { createAccessTokenService } = require('./auth/accessToken');
 const { createUserInfoService } = require('./auth/userInfo');
+const { createPromptLogService } = require('./auth/promptLog');
 const { createCatalog } = require('./catalog');
 const { createTokenizerRates } = require('./rates/tokenizer');
 const { createOutputCaps } = require('./rates/outputCaps');
 const { createThinkingShapes, isThinkingShapeUnsupported, ADAPTIVE_FALLBACK } = require('./convert/thinking');
 const { cacheRule } = require('./rates/cacheRules');
-const { expectedBill } = require('./rates/formula');
+const { expectedBill, verdict } = require('./rates/formula');
 const { normalize } = require('./normalize');
 const { streamChatCompletions } = require('./transport/openaiChat');
 const { streamResponses } = require('./transport/openaiResponses');
@@ -29,8 +30,12 @@ const { classifyUtilityRequest, synthesizeProgressMessages, synthesizeTitle } = 
 const { createToolPinning } = require('./cache/toolPinning');
 const { createReasoningCache } = require('./state/reasoningCache');
 const { createLedgerWriter } = require('./ledger/writer');
+const { readAll: readLedger } = require('./ledger/reader');
+const { reconcile } = require('./ledger/reconcile');
 const { createRequestLog } = require('./debug/requestLog');
 const { createSpendCap } = require('./budget/spendCap');
+const { charsOfRequest, estimatePreflightCost, checkPreflight } = require('./budget/preflight');
+const { forecastBurnRate } = require('./budget/forecast');
 const { createBudgetService } = require('./budget/budgetService');
 const { createStatusBar } = require('./ui/statusBar');
 const { checkCacheHealth } = require('./ui/cacheHealth');
@@ -81,7 +86,13 @@ function refreshBalance(o = {}) {
       if (!(await svc.credentials.getApiKey())) return;
       const status = await svc.budgetService.getStatus();
       balanceRefreshedAt = Date.now();
-      if (typeof status.remaining === 'number') statusBar.update({ remaining: status.remaining });
+      if (typeof status.remaining === 'number') {
+        // PLAN.md §3.5 burn-rate forecast: this week's spend rate from the ledger against the
+        // freshly-fetched remaining balance, shown in the status bar tooltip.
+        const records = readLedger(path.join(ctx.globalStorageUri.fsPath, 'ledger'));
+        const forecast = forecastBurnRate(records, status.remaining);
+        statusBar.update({ remaining: status.remaining, forecast });
+      }
     } catch (e) {
       log.debug(`balance refresh failed: ${/** @type {Error} */ (e).message}`);
     } finally {
@@ -96,7 +107,8 @@ let servicesKey = null;
 /** @type {{ credentials: ReturnType<typeof createCredentials>, accessToken: ReturnType<typeof createAccessTokenService>,
  *   userInfo: ReturnType<typeof createUserInfoService>, catalog: ReturnType<typeof createCatalog>,
  *   tokenizerRates: ReturnType<typeof createTokenizerRates>, outputCaps: ReturnType<typeof createOutputCaps>,
- *   thinkingShapes: ReturnType<typeof createThinkingShapes>, budgetService: ReturnType<typeof createBudgetService> } | null} */
+ *   thinkingShapes: ReturnType<typeof createThinkingShapes>, budgetService: ReturnType<typeof createBudgetService>,
+ *   promptLog: ReturnType<typeof createPromptLogService> } | null} */
 let services = null;
 
 // PLAN.md §4.3/§5/TODO.md "pin the tool list per conversation": module-scoped, like
@@ -105,6 +117,13 @@ const toolPinning = createToolPinning();
 const reasoningCache = createReasoningCache();
 /** Pins the first request's thinking shape for a conversation's life (PLAN.md §4.1). */
 const thinkingConfigByConversation = new Map();
+/** The most recent conversationId seen, so asksage.requestMoreTokens has a target without the
+ *  command palette being able to pass one in. */
+let lastConversationId = null;
+/** Running per-conversation state (PLAN.md §3.5): cumulative cache stats for the pre-flight
+ *  estimate's expected cache split, plus the cache-health alarm's consecutive-cold-round streak,
+ *  last resolvedModel (a silent host failover) and last toolSetHash (informational). */
+const conversationCacheState = new Map();
 
 function partCtors() {
   return { TextPart: vs.LanguageModelTextPart, ToolCallPart: vs.LanguageModelToolCallPart, ToolResultPart: vs.LanguageModelToolResultPart, ThinkingPart: vs.LanguageModelThinkingPart };
@@ -143,7 +162,8 @@ function getServices(settings) {
     set: (v) => ctx.globalState.update(`asksage.thinkingShapes.${settings.apiBase}`, v),
   });
   const budgetService = createBudgetService({ apiBase: settings.apiBase, accessToken, userInfo });
-  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, thinkingShapes, budgetService };
+  const promptLog = createPromptLogService({ apiBase: settings.apiBase, accessToken });
+  services = { credentials, accessToken, userInfo, catalog, tokenizerRates, outputCaps, thinkingShapes, budgetService, promptLog };
   servicesKey = key;
   return services;
 }
@@ -276,12 +296,22 @@ const provider = {
     const rawTools = options.tools || [];
     const rawToolSetHash = hash([...rawTools].map((t) => t.name).sort().join(','));
     const conversationId = conversationIdFor(messages, ctors, options.modelOptions, rawToolSetHash);
+    lastConversationId = conversationId; // asksage.requestMoreTokens targets the most recent conversation
 
     // PLAN.md §4.3 / TODO.md "pin the tool list per conversation": send the first turn's tool
     // list for the conversation's life instead of whatever Copilot sends this turn, so tool
     // churn (an extension registering a tool mid-chat) doesn't bust the cached prefix every time.
     const tools = settings.pinToolList ? toolPinning.resolve(conversationId, sortedTools(rawTools), { warn: (m) => log.warn(m) }) : rawTools;
     const toolSetHash = hash([...tools].map((t) => t.name).sort().join(','));
+
+    // PLAN.md §3.4: a hash of the deterministic cacheable prefix (first user message text + full
+    // tool definitions, not just their names) -- lets the passive reconciliation mode
+    // (src/ledger/reconcile.js) tell a prefix *content* change (a mutated instructions block,
+    // server-side injection, a tool's schema changing) apart from tool-list churn or a
+    // thinking-config change, which toolSetHash/thinkingConfigHash already cover.
+    const firstUserMessage = messages.find((m) => roleName(m.role, roleEnum()) === 'user');
+    const firstUserText = firstUserMessage ? textOf(firstUserMessage, ctors) : '';
+    const prefixHash = hash(`${firstUserText}::${JSON.stringify(sortedTools(tools).map((t) => ({ name: t.name, description: t.description, inputSchema: t.inputSchema })))}`);
 
     // PLAN.md §4.1: the thinking config is pinned to the conversation's first request too --
     // M-only; other flavors just don't have one.
@@ -295,6 +325,35 @@ const provider = {
       }
       thinkingConfigHash = hash(JSON.stringify(thinkingShape));
     }
+
+    // PLAN.md §3.5 pre-flight estimate: before anything is sent, estimate this request's cost
+    // from a local char count and this conversation's own recent cache-read share, and warn or
+    // hard-stop against the remaining session/hourly budget. Best-effort: a rate-lookup failure
+    // just skips the estimate for this turn rather than blocking the request.
+    /** @type {{ level: 'ok' | 'warn' | 'stop', message: string | null } | null} */
+    let preflight = null;
+    try {
+      const rates = await svc.tokenizerRates.rateFor(entry);
+      const stats = conversationCacheState.get(conversationId);
+      const recentCacheReadRatio = stats && stats.cacheableTotal > 0 ? stats.cacheReadTotal / stats.cacheableTotal : 0;
+      const chars = charsOfRequest(messages, tools, ctors);
+      const estimatedCost = estimatePreflightCost(chars, rates, cacheRule(entry.flavor, model.id), recentCacheReadRatio);
+      const effectiveSessionCap = settings.sessionCapTokens > 0 ? settings.sessionCapTokens + spendCap.bumpFor(conversationId) : settings.sessionCapTokens;
+      preflight = checkPreflight({
+        estimatedCost,
+        spent: spendCap.snapshot(conversationId),
+        limits: { sessionCapTokens: effectiveSessionCap, hourlyCapTokens: settings.hourlyCapTokens },
+        warnFraction: settings.budgetWarnFraction,
+        reserve: settings.budgetReserveTokens,
+      });
+    } catch (e) {
+      log.debug(`Ask Sage: pre-flight estimate skipped for ${model.id}: ${/** @type {Error} */ (e).message}`);
+    }
+    if (preflight?.level === 'stop') {
+      log.warn(/** @type {string} */ (preflight.message));
+      throw toLanguageModelError(vscode, new Error(/** @type {string} */ (preflight.message)));
+    }
+    if (preflight?.level === 'warn') log.warn(/** @type {string} */ (preflight.message));
 
     try {
       spendCap.check(conversationId);
@@ -465,7 +524,38 @@ const provider = {
       toolSetHash,
       thinkingConfigHash: thinkingConfigHash || undefined,
       reasoningStateLost: reasoningStateLostThisTurn || undefined,
+      prefixHash,
     });
+
+    // PLAN.md §3.5 cache-health alarm: warn when a cache-capable model's cache-read share stays
+    // under 50% for 2+ consecutive rounds, or when the host silently failed over to a different
+    // resolved model mid-conversation (the cache is cold either way); note a tool-list change
+    // informationally, since it's an expected, one-time cold turn rather than a problem.
+    if (norm && !cancelled) {
+      const state = conversationCacheState.get(conversationId) || { cacheableTotal: 0, cacheReadTotal: 0, coldStreak: 0, lastResolvedModel: null, lastToolSetHash: null };
+      const roundTotal = norm.inputUncached + norm.cacheRead + norm.cacheWrite5m + norm.cacheWriteUnsplit + norm.cacheWrite1h;
+      const hasCacheRule = !!cacheRule(entry.flavor, model.id);
+      if (roundTotal > 0) {
+        state.cacheableTotal += roundTotal;
+        state.cacheReadTotal += norm.cacheRead;
+        if (hasCacheRule) {
+          const cold = norm.cacheRead / roundTotal < 0.5;
+          state.coldStreak = cold ? state.coldStreak + 1 : 0;
+          if (state.coldStreak >= 2) {
+            log.warn(`Ask Sage: cache-health alarm -- ${model.id} (${entry.flavor}) has read under 50% of its cacheable input for ${state.coldStreak} consecutive rounds in this conversation (last round: ${Math.round((norm.cacheRead / roundTotal) * 100)}%).`);
+          }
+        }
+      }
+      if (state.lastResolvedModel && result.resolvedModel && state.lastResolvedModel !== result.resolvedModel) {
+        log.warn(`Ask Sage: cache-health alarm -- ${model.id} failed over from ${state.lastResolvedModel} to ${result.resolvedModel} mid-conversation; the cache is cold for this conversation now.`);
+      }
+      if (result.resolvedModel) state.lastResolvedModel = result.resolvedModel;
+      if (state.lastToolSetHash && state.lastToolSetHash !== toolSetHash) {
+        log.info(`Ask Sage: the tool list changed this round for conversation ${conversationId} (cache-health, informational) -- one cold turn is expected.`);
+      }
+      state.lastToolSetHash = toolSetHash;
+      conversationCacheState.set(conversationId, state);
+    }
 
     if (typeof vs.LanguageModelDataPart?.json === 'function' && norm) {
       const promptTokens = norm.inputUncached + norm.cacheRead + norm.cacheWrite5m + norm.cacheWrite1h;
@@ -518,8 +608,34 @@ function activate(context) {
         vscode.window.showErrorMessage(`Ask Sage: ${/** @type {Error} */ (e).message}`);
       }
     }),
-    vscode.commands.registerCommand('asksage.checkCacheHealth', () => runCheckCacheHealth())
+    vscode.commands.registerCommand('asksage.checkCacheHealth', () => runCheckCacheHealth()),
+    vscode.commands.registerCommand('asksage.reconcileCacheHealth', () => runReconcileCacheHealth()),
+    vscode.commands.registerCommand('asksage.requestMoreTokens', () => runRequestMoreTokens())
   );
+}
+
+/**
+ * PLAN.md §3.5: the pre-flight/session-cap hard stop's "request tokens" offer -- raises the
+ * current conversation's effective session cap by a one-time amount without editing Settings.
+ * In-memory only (src/budget/spendCap.js), like the caps themselves; it doesn't touch the
+ * setting, so a reload or a new conversation goes back to the configured cap.
+ */
+async function runRequestMoreTokens() {
+  if (!lastConversationId) {
+    vscode.window.showInformationMessage('Ask Sage: no conversation has sent a request yet in this window.');
+    return;
+  }
+  const settings = readSettings(vscode);
+  const input = await vscode.window.showInputBox({
+    title: 'Ask Sage: Request More Tokens',
+    prompt: `Extra Ask Sage tokens to allow for the current conversation, on top of its session cap (${settings.sessionCapTokens || 'unlimited'})`,
+    value: String(settings.sessionCapTokens || 10000),
+    validateInput: (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? null : 'enter a positive number of AS tokens'),
+  });
+  if (!input) return;
+  spendCap.bump(lastConversationId, Number(input));
+  log.info(`Ask Sage: raised the session cap for conversation ${lastConversationId} by ${input} AS tokens (total bump now ${spendCap.bumpFor(lastConversationId)}).`);
+  vscode.window.showInformationMessage(`Ask Sage: this conversation can spend ${input} more AS tokens before the session cap stops it again.`);
 }
 
 /**
@@ -575,6 +691,40 @@ async function runCheckCacheHealth() {
   } catch (e) {
     log.error(`Ask Sage: Check Cache Health failed: ${/** @type {Error} */ (e).message}`);
     vscode.window.showErrorMessage(`Ask Sage: Check Cache Health failed: ${/** @type {Error} */ (e).message}`);
+  }
+}
+
+/**
+ * PLAN.md §4.3's passive analysis mode / §3.7's cold-turn attribution: reconciles this
+ * extension's own ledger against Ask Sage's real prompt log for the same recent requests. Spends
+ * no tokens (get-user-logs is a free read), so unlike runCheckCacheHealth this needs no
+ * confirmation dialog and is safe to run any time.
+ */
+async function runReconcileCacheHealth() {
+  const settings = readSettings(vscode);
+  const svc = getServices(settings);
+  log.channel.show(true);
+  log.info('Ask Sage: reconciling the ledger against the Ask Sage prompt log (no tokens spent)...');
+  try {
+    const allRecords = readLedger(path.join(ctx.globalStorageUri.fsPath, 'ledger'));
+    const recent = allRecords.filter((r) => r.status === 'ok').slice(-100);
+    if (!recent.length) {
+      vscode.window.showInformationMessage('Ask Sage: the ledger has no completed requests yet to reconcile.');
+      return;
+    }
+    const logRows = await svc.promptLog.getRecent({ limit: 100 });
+    const { rows, summary } = reconcile({ ledgerRecords: recent, logRows, verdict, ttlMode: settings.cacheTtlMode });
+    for (const r of rows) {
+      const billed = r.billed ?? 'unmatched';
+      const cause = r.coldCause ? ` cold: ${r.coldCause}` : '';
+      log.info(`Ask Sage: reconcile -- ${r.ledger.ts} ${r.ledger.model} est ${r.ledger.estAsCost ?? 'n/a'} vs billed ${billed} (${r.verdict})${cause}`);
+    }
+    const causes = Object.entries(summary.coldByCause).map(([k, n]) => `${k}=${n}`).join(', ') || 'none';
+    log.info(`Ask Sage: reconcile summary -- ${summary.matched} matched, ${summary.unmatched} unmatched, ${summary.cacheReadPct}% of cacheable input tokens were cache reads, cold turns by cause: ${causes}`);
+    vscode.window.showInformationMessage(`Ask Sage: reconciled ${summary.matched} of ${rows.length} recent requests against the prompt log (${summary.cacheReadPct}% cache reads) -- see the Ask Sage output channel.`);
+  } catch (e) {
+    log.error(`Ask Sage: reconcile failed: ${/** @type {Error} */ (e).message}`);
+    vscode.window.showErrorMessage(`Ask Sage: reconcile failed: ${/** @type {Error} */ (e).message}`);
   }
 }
 

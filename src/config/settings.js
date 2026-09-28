@@ -35,12 +35,14 @@ function readSettings(vscode) {
   const email = userValue(cfg, 'email', '');
   const sessionCapTokens = /** @type {number} */ (cfg.get('budget.sessionCapTokens', 50000));
   const hourlyCapTokens = /** @type {number} */ (cfg.get('budget.hourlyCapTokens', 200000));
+  const budgetWarnFraction = /** @type {number} */ (cfg.get('budget.warnFraction', 0.8));
+  const budgetReserveTokens = /** @type {number} */ (cfg.get('budget.reserveTokens', 0));
   const debugLogRequests = /** @type {boolean} */ (cfg.get('debug.logRequests', false));
   const cacheTtlMode = /** @type {'5m' | 'mixed' | '1h'} */ (cfg.get('cache.ttlMode', 'mixed'));
   const pinToolList = /** @type {boolean} */ (cfg.get('cache.pinToolList', true));
   const interceptUtilityRequests = /** @type {boolean} */ (cfg.get('interceptUtilityRequests', false));
   const apiBase = `https://${resolveHost({ tenant, host })}`;
-  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens, debugLogRequests, cacheTtlMode, pinToolList, interceptUtilityRequests };
+  return { tenant, host, email, apiBase, sessionCapTokens, hourlyCapTokens, budgetWarnFraction, budgetReserveTokens, debugLogRequests, cacheTtlMode, pinToolList, interceptUtilityRequests };
 }
 
 module.exports = { readSettings, SECTION, USER_ONLY };

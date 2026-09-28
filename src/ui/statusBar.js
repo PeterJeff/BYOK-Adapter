@@ -15,20 +15,23 @@ function createStatusBar(vscode) {
     item.text = '$(sparkle) Ask Sage';
     item.show();
   }
-  /** @type {{ remaining?: number | null, lastCostAs?: number | null }} */
+  /** @type {{ remaining?: number | null, lastCostAs?: number | null, forecast?: string | null }} */
   const state = {};
   return {
     item,
     /**
      * Merges into the last known state, so a cost-only update keeps the known balance.
-     * @param {{ remaining?: number | null, lastCostAs?: number | null }} status
+     * @param {{ remaining?: number | null, lastCostAs?: number | null, forecast?: string | null }} status
      */
     update(status) {
       Object.assign(state, status);
       if (!item) return;
       const remainingText = typeof state.remaining === 'number' ? state.remaining.toLocaleString() : '?';
       item.text = `$(sparkle) Ask Sage: ${remainingText} left`;
-      item.tooltip = typeof state.lastCostAs === 'number' ? `Last request: ~${state.lastCostAs} Ask Sage tokens` : 'Ask Sage';
+      const lines = [];
+      if (typeof state.lastCostAs === 'number') lines.push(`Last request: ~${state.lastCostAs} Ask Sage tokens`);
+      if (state.forecast) lines.push(state.forecast); // PLAN.md §3.5 burn-rate forecast
+      item.tooltip = lines.length ? lines.join('\n') : 'Ask Sage';
     },
     state,
     dispose() {
