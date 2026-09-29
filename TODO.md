@@ -1,39 +1,73 @@
 # TODO
 
-Working list. The phase plan is `PLAN.md`; expectations vs. what is verified is `requirements/REQUIREMENTS.md`. Delete an item when it is done and its evidence is in `research/live/`.
+The open-work list, **in priority order**. Each item is one line and points to where its detail lives. The kinds of detail live in different files:
+- the design: `PLAN.md`
+- status: `REQUIREMENTS.md`
+- defects: `DEFECTS.md`
+- evidence and the probe queue: `research/live/FINDINGS.md`
 
-## Open
+Delete an item when it is done and its evidence is recorded.
 
-- [ ] **Beta on the target** once Phase 1 works here (Phase 2 for agent use): the owner installs from the folder and describes any failure in writing. No data comes back (PLAN §9), so every build needs a local diagnostics report and clear error messages. The smoke extension can go first as a zero-cost check that the target can load and select a provider model at all.
-- [ ] Find out why 1.139.0 asked for a sign-in in a fresh profile and 1.139.1 did not (version, or first-run state). If it is first-run state, the README must tell a new user what to do, since nobody can debug it remotely on the target. (lowered priority - will check later)
-- [ ] Explain the 78k `provideTokenCount` calls: after the reload, read the report's "Token count calls" lines (calls before/during each request, repeat percentage). Decides the size and shape of the count cache. (low priority)
-- [ ] Phase 1 design inputs from 0a: cheap cached `provideTokenCount`, `_conversationId`/`_enableThinking` from `modelOptions`, side cache keyed by tool-call id.
-- [ ] Optional: an opt-in, local-only "save last prompt" command in the smoke extension, to read what Copilot's system prompt and tool definitions actually say (never committed). Feeds the question of whether the provider should trim or replace them.
-- [ ] Optional, for the owner's own use only (nothing from it comes back to this project; PLAN §9): **measure a private instance** with `research/handoff/private-instance-billing-run.md` (free steps first; the owner approves any spend). Results stay out of this repo: `--alias private-<name>` or `--out private/...` (both gitignored); the owner decides review and channel. Template: `research/reports/TEMPLATE-instance-billing-report.md`.
-- [ ] **Post the public caching and billing report to Ask Sage** (`research/reports/ask-sage-caching-and-billing.md`, commercial test account only) after the owner has read it; commit `research/live/manual-run/` (independent run, checked: no keys, ids or hosts) with it.
-- [ ] **Decide what research to import into the public repo.** Recommended: the analysis docs from the earlier `Ask Sage Model Provider/research` folder, with a caveat where they quote rates; `vscode-lm-provider-research.md` first (it documents that extension-provided models work signed out from VS Code 1.122). Not recommended: the scraped rate table, `evidence.zip`, raw bundles, Copilot source snapshots.
-- [ ] **Review the rates/billing findings** (`research/rate-sources-investigation.md`, branch `claude/rates-billing-findings`); PLAN §2, §2.1, §3.1, §3.5, §3.6 and REQUIREMENTS §3 are already updated from it.
-- [ ] **Report to Ask Sage support:** Bedrock Nemotron on `/openai/v1/chat/completions` fails with "does not support the '/openai/v1/responses' API" on a bare request (`research/live/test-tenant/cc-bedrock/2026-09-27/003-*`), although the model is listed on `/openai/v1/models`. Claude through `/server/openai/v1/chat/completions` is logged and billed 0 (every shape tried, 2026-09-25); ask whether `/server/tokenizer` `convert_to_asksage` is the supported way to read billed rates, and for cache/long-context rates by API.
-- [ ] **Run `phase0/probe/billing-probe.mjs --yes` once on the test tenant** (about 9k tokens) to validate the committed tool live; its first live run from the cloud session was blocked by Claude Code's auto-mode classifier.
-- [ ] Billing still unmeasured: Claude 1h cache after ≥60 min idle; Claude thinking (billed as output?); long-context thresholds (T13); Fable 5.1 cache-read multiplier (table: 0.025×; Opus 5.5's 0.05× is now measured); images; embeddings (T20).
-- [ ] Switch `api-probe.mjs` budget measurement (T1–T4, T19) from counter deltas to the prompt log (`lib/billing.mjs`), and its estimates from `get-models` rates to the tokenizer's.
-- [ ] Ask Ask Sage support: which rate set is billed; an endpoint for cache, thinking and long-context rates; what `-ts` and `-sec` mean (`research/model-catalog-findings.md` §5).
-- [ ] **Phase 0b follow-ups, in this order** (author-run, dry run first; queue and reasons in `research/live/FINDINGS.md` "Still open"): (1) **`--matrix breadth,gpt-5.6-luna-gov@M,google-gemini-3.5-flash-gov@M`** (~36k estimate, likely ~10k): coverage beyond Claude, and whether M serves non-Claude ids; (2) the Gemini loop on **`streamGenerateContent`**, and the placeholder retry on `3.1-flash-lite-gov` (needs a small probe change); (3) `partners` and `hosts` presets after the monthly reset; later and optional: the Opus 5.5 preserved-thinking variant, `premium`.
-- [ ] **Phase 2 tool conversion input:** Bedrock Gemma (`aws-bedrock-gemma-4-e2b-gov`, `-31b-gov`) rejects Copilot's 20-tool list on CC ("The task request was rejected by the target") but accepts one tool. Find the offending schema feature (`pattern`, `minItems`/`maxItems`, `maxLength`, nested object arrays, empty `properties`; list in `research/live/test-tenant/cc-bedrock/2026-09-27/004-*`) by bisecting from the logged request; failed requests bill 0. Then decide per model: strip the keyword, or report `toolCalling: false`.
-- [x] ~~Phase 2 cache input: pin the tool list per conversation~~ built 2026-09-28 (`src/cache/toolPinning.js`, `asksage.cache.pinToolList`, default on, branch `claude/phase2-m-and-caching`): the conversation's first tool list is sent for its whole life; tools added later are held back and logged once; tools Copilot removes are still sent. **Still open, needs a real Copilot session (not just Ask Sage tokens):** what Copilot does when the model calls a tool it has since removed from `options.tools` -- untested either way.
-- [ ] **Phase 2 live acceptance** (built and unit-tested 2026-09-28, branch `claude/phase2-m-and-caching`; requirements/REQUIREMENTS.md §5 phase-2 row): PLAN §9's checks were never run against real Ask Sage traffic, deliberately -- the owner is conserving tokens until the monthly reset. Once ready to spend again: (1) a multi-step agent task on GPT-5.x (R) and on a Claude model (M), checking ≥80% cache reads from round 2; (2) a 5+ round reasoning tool loop with no errors on both; (3) estimate accuracy within ±10% (or batch mode, T19); (4) run `asksage.checkCacheHealth` on at least one M and one R model.
-- [ ] **`asksage.interceptUtilityRequests`** (built 2026-09-28, off by default): turn it on with `asksage.debug.logRequests` also on, open a real chat, and confirm (a) a title-generation and a progress-message call actually get classified and answered locally (check the Ask Sage output channel for the "intercepted a Copilot utility request" line) and (b) no real chat turn is ever misclassified. Only then consider flipping the default.
-- [ ] **Check Cache Health's parallel-tool-results case is not built** (`src/ui/cacheHealth.js`, PLAN §4.3): a synthetic one would need to fake Copilot's real tool definitions to mean anything. Build it against a real conversation's tool list instead of a fabricated one.
-- [ ] **T12 before Phase 2** (first run 2026-09-27, `research/live/test-tenant/t12/README.md`): through the Custom Endpoint with Ask Sage's documented config, GPT-4.1 on Chat Completions cached normally but GPT-6 Astra on Responses cached nothing (72,598 billed for one short task). Still to run, cheap models only: (1) the same task via the Custom Endpoint with `gpt-5.4-nano` on `responses`, to tell a Custom Endpoint problem from an Astra one; (2) the same task and wording through the extension on `gpt-5.4-nano`; (3) Claude on Messages with an exact Ask Sage id (`google-claude-45-haiku`). Read bills with `phase0/probe/prompt-log.mjs` (free).
-- [ ] **Plan review, not Phase 1 work** (raised 2026-09-27, decide before the phase that owns each): whether the picker should also intersect with the public `/server/openai/v1/models` and `/server/anthropic/v1/models` lists (§2.3 only names `force_models`); a per-model learned flavor (CC↔R retry on "unsupported" errors, remembered like `src/rates/outputCaps.js`; failed attempts bill 0) vs. the static `classifyFlavor` table; whether N (Phase 5) should become a user-chosen fallback for models no provider-compatible endpoint serves (no tool results, no cache discount, injected persona); a `dryRun` setting that builds and logs the request without sending it. **"How to surface a reroute" is now answered** (owner, 2026-09-28, PLAN.md §2.2/Phase 4): a settings panel, not a notification/tooltip — see the next item. A learned CC↔R retry, if built, only ever changes the *dynamic* default there; it can't override a manual pin.
+**Token budget.** The owner is conserving Ask Sage tokens until the monthly reset (early October 2026). Items marked 💲 spend tokens and need the owner's go-ahead each time (CLAUDE.md). Everything else is free.
 
-- [ ] **Flavor settings panel** (specified 2026-09-28, owner request; PLAN.md §2.2, Phase 4; REQUIREMENTS.md §5 Phase 4 row — not built): a settings-panel UI listing every catalog model against the flavor/sub-endpoint `classifyFlavor(id)` currently routes it to (M/CC/R/G) and the resolved network path. Dynamic (the existing `classifyFlavor` table, plus any future learned/retry layer above) stays the default and is preferred; a manual per-model pin set in the panel always wins, stored per model **and per tenant** (§2.3), and is read before `src/catalog/index.js`'s `classifyFlavor(id)` assigns `entry.flavor` — `src/extension.js`'s two transport-dispatch points (`entry.flavor === 'M' ? ... : entry.flavor === 'R' ? ...`) don't need to change. Concrete use case that motivated this: a GPT model whose Responses (R) traffic caches at 0% every round on the target machine (matches the T12 finding on `gpt-6-astra` through the Custom Endpoint, `research/live/test-tenant/t12/README.md`, though the target-machine model's identity isn't known here, PLAN §9 "no data back from target") — the owner needs to pin it to CC without a code change, and without the extension guessing wrong for every other model. Shares a settings surface with Phase 4's already-planned rate-override editor (REQUIREMENTS.md §5).
+## 1. Now: free work
+1. Merge `claude/phase2-m-and-caching` into `main`, labeled "built, not live-verified". Then delete the stale local branches (`claude/e4-multi-round` and the merged ones). DEFECTS P4.
+2. Fix the blockers for Phase 2's live acceptance: DEFECTS D1 (Claude output cap), D2 (stream timeout) and D3 (duplicated thinking blocks). Test each against recorded fixtures (PLAN §10).
+3. Fix D6 (a balance-based stop and visible warnings) and D7 (tool pinning withholds tools) before anyone else uses a build.
+4. Build the health report, H1 (PLAN §14): plain-language chat errors, error records in the ledger (DEFECTS D8) plus the failure recorder, and the Show Health Report command. This is required before the next build goes to the target.
+5. Fix the remaining Medium defects (D4, D5, D9–D12), then the Low ones.
+6. Free live checks for Phase 1:
+   - A workspace `.vscode/settings.json` setting `asksage.tenant: "custom"` and `asksage.host: "example.invalid"`, trusted and untrusted, must not redirect anything (REQUIREMENTS §2).
+   - `force_models` can only be checked on an account whose organization sets it.
 
-- [x] ~~Check Cache Health: passive analysis mode~~ built 2026-09-28 (`src/ledger/reconcile.js`, `src/auth/promptLog.js`, `asksage.reconcileCacheHealth`, unit-tested, branch `claude/phase2-m-and-caching`): reads the ledger and reconciles it against Ask Sage's real prompt log (`POST /user/get-user-logs`, free, matched by model + nearest timestamp), checking `estAsCost` against `total_tokens` billed (`src/rates/formula.js`'s `verdict`) and attributing each cold turn to tool churn, thinking-config change, host failover, prefix change (`prefixHash`, also built 2026-09-28) or TTL expiry, in that priority order. **Still open:** live-confirm against a real ledger + prompt log once the owner is spending tokens again; diffing exact request bodies in the debug request log when a `prefixHash` mismatch is found (PLAN §4.3).
-- [x] ~~Phase 3: pre-flight estimate, warn, hard stop~~ built 2026-09-28 (`src/budget/preflight.js`, wired into `src/extension.js` ahead of the Phase-1 spend cap; `asksage.budget.warnFraction`/`reserveTokens`, unit-tested). Input-only by design (PLAN §3.5: the catalog's `limits.max_output` is too unreliable to use as an output guess, REQUIREMENTS.md §5 phase-1 row). **Still open:** the optional free remote token count (`count_tokens`/`/server/tokenizer`) PLAN §3.5 allows near a guard threshold, and learning a per-model chars/token ratio from real responses; live-confirm the warn/stop thresholds against real traffic.
-- [x] ~~Phase 3: cache-health alarm, burn-rate forecast, Request More Tokens~~ built 2026-09-28 (`src/extension.js` inline after each ledger write; `src/budget/forecast.js` wired into the existing balance refresh/status bar tooltip; `asksage.requestMoreTokens` + `src/budget/spendCap.js`'s `bump`/`bumpFor`, unit-tested). The cache-health alarm only warns on a mid-conversation `resolvedModel` change (a real host failover), not a `resolvedModel` that differs from the requested id from the first turn on, since telling a real different model apart from just another alias needs a canonical mapping this project doesn't have (PLAN §3.5). **Still open:** live-confirm against real traffic.
-- [ ] **Phase 3: budget-mode experiment** (PLAN §3.5, Phase 3 — not built, and can't be unit-tested into existence): advertise a smaller `maxInputTokens` and measure it against normal mode (compaction cost, cold-cache-turn frequency) before recommending either way. Needs the owner's go-ahead to spend tokens on the comparison (CLAUDE.md paid-probe rule).
-- [ ] Open decisions in `PLAN.md` §12 (data-handling policy, terms for third-party clients, one user or shared).
-- [ ] **Phase 1 skeleton: all three acceptance checks live-confirmed (2026-09-27)** (`src/`, branch `claude/phase1-skeleton`, 2026-09-27). Real folder-installed testing against the `public` tenant found and fixed three bugs unit tests couldn't catch (see `requirements/REQUIREMENTS.md` §5 phase-1 row for detail): the catalog response is wrapped (`{response: [...]}`, not a bare array), the ledger was silently dropping CC/R's unsplit cache write, and the catalog's `limits.max_output` is unreliable on 77 of 105 models (now self-corrected from a rejection, see `src/rates/outputCaps.js`). Cost-estimate accuracy checked out against the owner's real Ask Sage usage (within the documented +1.3..+5.3 residual). **Still open to fully close Phase 1:**
-  - Model picker offers ids that fail on the flavor they're routed to (2026-09-27): `grok-4-1-fast-non-reasoning` is "Unsupported model" on CC (not on the public `/server/openai/v1/models` list; 21 of the 65 CC/R candidates aren't), and `aws-bedrock-nemotron-30b-gov` is on that list but fails with "does not support the '/openai/v1/responses' API" although it is routed to CC (Ask Sage forwards it to Bedrock's Responses API; fails even on a bare request, FINDINGS §2.2 CC row). Raw VS Code stack traces are shown for both. Whether the picker should hide such models is on the plan-review list below.
-  - ~~`force_models` intersection~~ and ~~`restrictedConfigurations`~~: built and unit-tested 2026-09-27. Free live check left: open a folder whose `.vscode/settings.json` sets `asksage.tenant: "custom"` and `asksage.host: "example.invalid"`, trusted and untrusted, and confirm the picker still lists the `public` catalog (the Output channel shows no requests to the bogus host). `force_models` can only be checked on an account whose org sets it (the test account's is `[]`).
+## 2. After the reset: live (💲)
+7. 💲 T12's remaining legs, cheap models only (`research/live/test-tenant/t12/README.md`). **This decides priorities** (DEFECTS P1, PLAN §1):
+   - (a) the Custom Endpoint with `gpt-5.4-nano` on `responses`
+   - (b) the same task and wording through the extension
+   - (c) Claude on Messages through the Custom Endpoint, with an exact id (`google-claude-45-haiku`)
+8. 💲 Phase 2's live acceptance (PLAN §9):
+   - ≥80% cache reads from round 2 on R and on M
+   - a 5+ round reasoning loop that includes a round of parallel tool calls
+   - the estimate within ±10%
+   - `asksage.checkCacheHealth` on one M and one R model
+9. 💲 Confirm `asksage.interceptUtilityRequests` against real Copilot traffic (with `asksage.debug.logRequests` on): titles and progress calls are intercepted, and no real turn is. Only then consider making it the default.
+10. 💲 Phase 3's live acceptance (PLAN §9).
+11. 💲 The health report's self-test, H2 (PLAN §14.4), after item 8.
+12. 💲 The FINDINGS "Still open" probe queue, in its order:
+    - the `breadth` matrix
+    - the Gemini loop on `streamGenerateContent`
+    - the `partners` and `hosts` presets
+    - later: Opus 5.5 preserved thinking, and `premium`
+13. 💲 Bisect the Bedrock Gemma tool-schema rejection from a logged request (FINDINGS "Corrected", §2.2 CC row). Then decide per model: strip the keyword, or report `toolCalling: false`.
+14. 💲 Find out what Copilot does when the model calls a tool Copilot has since removed (needed for D7's fix).
+15. 💲 Build the Check Cache Health parallel-tool-results case against a real conversation's tool list (PLAN §4.3).
+16. 💲 The budget-mode experiment (PLAN §3.5).
+17. 💲 Billing still unmeasured:
+    - the Claude 1h cache after 60 minutes or more idle
+    - whether Claude thinking is billed as output
+    - long-context thresholds (T13)
+    - Fable 5.1's read multiplier
+    - images
+18. 💲 Run `phase0/probe/billing-probe.mjs --yes` once (about 9k tokens) to validate it live.
+
+## 3. Reports and questions to Ask Sage
+19. Post the public caching and billing report (`research/reports/ask-sage-caching-and-billing.md`, commercial test account only) once the owner has read it. Commit `research/live/manual-run/` with it.
+20. Report to Ask Sage support:
+    - Claude through CC is billed 0.
+    - Bedrock Nemotron on CC is routed to the Responses API.
+    - Ask whether the tokenizer's `convert_to_asksage` is the supported way to read billed rates, and for cache and long-context rates by API.
+    - Ask what `-ts` and `-sec` mean (`research/model-catalog-findings.md` §5).
+
+## 4. Decide before the phase that owns it
+21. Picker (Phase 4): whether to also intersect with the public `/server/openai/v1/models` and `/server/anthropic/v1/models` lists, and whether to hide models that fail on their flavor (DEFECTS D20).
+22. Flavor choice (Phase 4): a learned CC↔R retry on "unsupported" errors, versus the static table. It only ever changes the dynamic default; a manual pin (PLAN §2.2) always wins.
+23. N as a user-chosen fallback for models no provider-compatible endpoint serves (Phase 5). A `dryRun` setting that builds and logs a request without sending it.
+24. Decide what research to import into the public repo. Recommended: the analysis docs from the earlier research folder, starting with `vscode-lm-provider-research.md`. Not the scraped rate table, raw bundles or Copilot source snapshots.
+25. The open decisions in PLAN §12: the data-handling policy, and one user or shared.
+
+## 5. Low priority and optional
+26. Switch `api-probe.mjs`'s budget measurement (T1–T4, T19) from counter deltas to the prompt log. Its estimates already use tokenizer rates.
+27. Why 1.139.0 asked for a sign-in in a fresh profile and 1.139.1 did not. If it is first-run state, the README must tell a new user what to do.
+28. Explain the 78k `provideTokenCount` calls: the smoke report's "Token count calls" lines.
+29. Optional: a local-only "save last prompt" command in the smoke extension, to read Copilot's system prompt and tools. Never committed.
+30. Optional, for the owner only: measure a private instance with `research/handoff/private-instance-billing-run.md`. The results stay out of this repo.

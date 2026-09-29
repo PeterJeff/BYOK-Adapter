@@ -1,6 +1,6 @@
-# Phase 0b findings (test tenant)
+# Live findings (test tenant)
 
-The Phase 0b exit document (PLAN §9). It confirms or corrects the plan's defaults from recorded fixtures on the public test tenant (`api.asksage.ai`), the development reference (PLAN §9: no data comes back from other environments, so tenant differences are handled at runtime).
+The one home for measured evidence. It began as the Phase 0b exit document (PLAN §9): it confirms or corrects the plan's defaults from recorded fixtures on the public test tenant (`api.asksage.ai`). That tenant is the development reference; no data comes back from other environments, so tenant differences are handled at runtime. "Extension live checks" records what the extension itself did against real traffic.
 
 **Sources.**
 - **Probe run** `research/live/manual-run/probe/2026-09-26-0402-c5ced6/` (`api-probe.mjs`, all default tests, run by the author 2026-09-26; 8,550 Ask Sage tokens by the used counter). Fixture paths below are relative to that folder. Models: `google-claude-45-haiku` (served `claude-haiku-4-5-20251001`), `gpt-5.4-nano`, `google-gemini-3.1-flash-lite-gov` (served `gemini-3.1-flash-lite`).
@@ -76,7 +76,7 @@ Where the docs and the fixtures disagree, the fixtures win for this tenant; the 
 | The VS Code BYOK page's model tables list every Gemini id (`3.1-flash-lite-com`, `-gov`, `3.5-flash-*`, `3.1-pro-com`, 2.5) under "Chat Completions" | CC answers "Unsupported model" for every Gemini id tried, and the live `/server/openai/v1/models` (unauthenticated, 49 ids) lists no Gemini chat model, only image models. The page itself warns that its tables come from client config and that the live list is a static catalog. | G stays the only Gemini path. Decide per tenant from the live list, not from the docs: if a tenant ever serves Gemini on CC, T18's CC shim checks apply. |
 | Bad or missing credentials give HTTP 401 on the provider-compatible endpoints | HTTP 200 with `{"status":400,"response":"Token is invalid"}` on M, CC, R, G and native (T0, every run) | Unchanged: the normalizer keys on the envelope, and also accepts a real 401. |
 | Instances with a locked model profile answer any model outside it with `403 model_not_allowed` | Not observable on the test tenant | Add the 403 to the error normalizer ("model not approved on this instance") and drop the model from the picker for the session. |
-| The VS Code BYOK page now configures Claude on Messages with `"thinking": true` and `supportsReasoningEffort` up to `max`, and requires `"zeroDataRetentionEnabled": true` on Responses models so VS Code stops sending `previous_response_id` | Matches what the probe found (M takes adaptive thinking + effort; R works only stateless) | PLAN §1's reasons 2 and 4 (no thinking; stateful Responses) are fixed by configuration in Ask Sage's current guide. The case for the extension now rests on caching, cost awareness and error handling, so T12 should measure the built-in Custom Endpoint with that documented config before Phase 2. |
+| The VS Code BYOK page now configures Claude on Messages with `"thinking": true` and `supportsReasoningEffort` up to `max`, and requires `"zeroDataRetentionEnabled": true` on Responses models so VS Code stops sending `previous_response_id` | Matches what the probe found (M takes adaptive thinking + effort; R works only stateless) | PLAN §1's reasons 2 and 4 (no thinking; stateful Responses) are fixed by configuration in Ask Sage's current guide. The case for the extension now rests on caching, cost awareness and error handling, so T12 should measure the built-in Custom Endpoint with that documented config before Phase 2's acceptance (first run 2026-09-27; the Claude leg is still open). |
 | The Gemini guide's `generationConfig` lists no `thinkingConfig`, and responses list only `promptTokenCount`, `candidatesTokenCount`, `totalTokenCount` | Thought parts, `thoughtsTokenCount` and `thoughtSignature` are stripped (T18, T22) | Consistent: stripping looks deliberate, not a bug to wait out. All G fixtures are non-streaming, though; PLAN's G endpoint is `streamGenerateContent`, which is untested. |
 
 **Anthropic's rules for the M converter** (Anthropic API reference, current as of 2026-09; Ask Sage forwards to Vertex and Bedrock, so these apply unless a fixture says otherwise):
@@ -86,11 +86,25 @@ Where the docs and the fixtures disagree, the fixtures win for this tenant; the 
 - **Forced tool choice** (`tool_choice` `any` or `tool`) is rejected on Opus 5.5 and Fable 5.1. VS Code's "required" tool mode must become `auto` plus an instruction on those models.
 - **Preserved thinking** on Opus 5.5 and Fable 5.1: a thinking block's signature is bound to the conversation prefix before it (system prompt, tool set, earlier messages). Editing that prefix (a changed system prompt, a summarized or trimmed history) gets a 400 ("The block is bound to a different conversation") on accounts that enforce it. Enforcement applies to accounts created on or after 2026-08-31, and here the account is Ask Sage's upstream Vertex or Bedrock one, which we cannot see. Copilot rebuilds its system prompt and summarizes long conversations, so this can bite inside agent mode. The documented recovery is to strip every thinking block and retry once. It needs a probe on Opus 5.5 (Still open) and a handler in the M converter either way.
 
+## Extension live checks (Phase 1, dev machine, 2026-09-27)
+
+A folder-installed extension against real `public`-tenant traffic, in Copilot Chat. The ledger records (`<globalStorageUri>/ledger/2026-09.*.jsonl`) and the owner's prompt log are the evidence. They are not committed, because they belong to the owner's account.
+
+| Finding | Detail |
+|---|---|
+| R and non-GPT CC stream in Ask mode | `gpt-5.4-nano` and `gpt-5.6-luna` streamed on R. `aws-bedrock-gemma-4-e2b-gov` streamed on CC (4,838 prompt / 661 completion tokens) once only one tool was sent. With the full tool list it is rejected ("Corrected", §2.2 CC row) |
+| The catalog response is wrapped | On this tenant, `get-models?format=full` returns `{response: [...]}`, not a bare array |
+| The catalog's `limits.max_output` is not the real cap | 77 of 105 public models report a `max_output` within 70% of `max_context`. `gpt-5.6-luna`'s 900,000 was rejected ("supports at most 32768 completion tokens"). Claude's values (135k–990k) are far above the real 64k–128k too; the Anthropic wording of the rejection is in `manual-run/probe/2026-09-26-0402-c5ced6/T8/061-over-limit.json` |
+| The estimate matches the bill | Five requests estimated at 272.22, 189.67, 38.77, 229.8 and 80.31 were billed 273, 192, 42, 232 and 84. Each is within +0.5 to +3.7, inside the per-request constant (PLAN §3.1) |
+| The spend cap trips | At a cap of 100, one request plus three tool rounds ran, and the next round was refused at 161.67 AS. A cap lowered after activation had first been ignored until a reload; fixed in `12bc8c7` |
+| Utility calls are real requests | With `chat.byokUtilityModelDefault: "mainAgent"`, the chat title and the rotating progress messages are real inference calls through the provider. One visible question produced 4 requests on two models within about a second |
+| The "no API key" error | VS Code shows a raw stack trace. It works, but looks rough |
+
 ## Still open
 
 | Question | Next step | Cost |
 |---|---|---|
-| Coverage beyond Claude (new) | Most measurements so far ran on Claude (T1, T7, T15, T16 and half of T22). Before Phase 2, run `--matrix breadth,gpt-5.6-luna-gov@M,google-gemini-3.5-flash-gov@M`: reasoning loops and caching on Azure Gov GPT (R), Gemini 3.5 Flash Gov and 2.5 Pro (G), and Bedrock partner models (CC). The two `@M` entries answer whether M serves non-Claude ids, which decides whether one converter could cover more families. A rejection there costs nothing. | about 36k estimate; recent runs cost a quarter to a third of the estimate |
+| Coverage beyond Claude (new) | Most measurements so far ran on Claude (T1, T7, T15, T16 and half of T22). Before Phase 2's live acceptance, run `--matrix breadth,gpt-5.6-luna-gov@M,google-gemini-3.5-flash-gov@M`: reasoning loops and caching on Azure Gov GPT (R), Gemini 3.5 Flash Gov and 2.5 Pro (G), and Bedrock partner models (CC). The two `@M` entries answer whether M serves non-Claude ids, which decides whether one converter could cover more families. A rejection there costs nothing. | about 36k estimate; recent runs cost a quarter to a third of the estimate |
 | Gemini tool loops (T18) | Answered for Gemini 3.7 Flash on non-streaming `generateContent` (placeholder signature works, above). Still open: the same loop on `streamGenerateContent`, which the extension will use (signatures might survive in the stream); the placeholder on `3.1-flash-lite-gov` (the as-returned 400 there is recorded, the placeholder retry is not); Gemini 3.1 Pro or 3.5 Flash before offering them for agent mode. | small |
 | BYOK baseline (T12) with Ask Sage's documented config | **First run 2026-09-27** (`test-tenant/t12/`), config "Option D" verbatim: GPT-4.1 on Chat Completions cached normally (85–99% from round 2, 3,706 billed for 4 requests), but **GPT-6 Astra on Responses was billed at full price on every round** (72,598 for 4 requests; 0% cache inferred from the bills). Open: whether that is the Custom Endpoint's Responses requests or Astra itself. Next: the same task via the Custom Endpoint with `gpt-5.4-nano` on `responses` (its R caching is measured through the extension); then the same task and wording through the extension, for a like-for-like comparison. Claude on Messages not run yet (needs an exact Ask Sage id, not the page's `claude-opus-5`). | small with `gpt-5.4-nano`; avoid Astra (about 18k per request) |
 | Long-context pricing (T13) | Opt-in, expensive. Needed only before long-context models are offered. | large |
@@ -104,10 +118,11 @@ Where the docs and the fixtures disagree, the fixtures win for this tenant; the 
 
 The dry run's "pessimistic" estimate priced requests at the catalog rate, which is below the bill on most models (PLAN §3.1). The Opus 5.5 run was estimated at 17,992 and cost 24,284. The probe now prices at the tokenizer's billed rate when a key and email are set (free calls), else the catalog rate × 1.3, both in the dry run and in the spend cap.
 
-## Effect on Phase 1
+## Effect on the build
 
-Phase 1 (CC and R, ledger, spend cap; PLAN §9) has what it needs. The CC and R request shapes (`max_completion_tokens` on GPT-5, `store:false` and full history on R), usage normalization, error normalization, output caps and per-request reconciliation are all confirmed or corrected above. M's shapes are confirmed too, for Phase 2.
-
-## Effect on Phase 2
-
-Reasoning state across tool rounds is now measured on one flagship per family: GPT on R (encrypted reasoning), Gemini (placeholder signature) and Claude (signed thinking). What still needs a fixture before code depends on it: the `breadth` matrix (reasoning loops on Azure Gov GPT, Gemini tiers and Bedrock partner models), and Gemini signatures on the streaming endpoint. For the M converter, "Checked against the docs" lists the Claude rules: a per-model thinking table, dropping sampling parameters on newer models, "required" tool mode as `auto` on Opus 5.5 and Fable 5.1, and strip-and-retry on a preserved-thinking 400.
+- The CC, R and M request shapes, usage normalization, error normalization, output caps and per-request reconciliation are confirmed or corrected above.
+- Reasoning state across tool rounds is measured on one flagship per family: GPT on R, Gemini with the placeholder signature, and Claude with signed thinking.
+- Still needed before code depends on it:
+  - the `breadth` matrix: reasoning loops on Azure Gov GPT, the Gemini tiers and Bedrock partner models
+  - Gemini signatures on the streaming endpoint
+- For the M converter, "Checked against the docs" lists the Claude rules. `DEFECTS.md` records where the built code departs from these findings (D1, D12, D22).

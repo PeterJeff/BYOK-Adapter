@@ -1,11 +1,8 @@
-# Ask Sage provider (Phase 1 skeleton)
+# Ask Sage provider (the extension)
 
-CC (OpenAI Chat Completions) and R (OpenAI Responses) transports only. No Claude (M), no
-Gemini (G), no cache breakpoints, no reasoning-state round-trip yet — those are Phase 2+
-(`PLAN.md` §9). Unit-tested against an injected fake `fetch`
-(`test/provider/provider.test.js`); R is now also live-confirmed (2026-09-27, real `public`
-tenant traffic, gpt-5.4-nano and gpt-5.6-luna) — see `requirements/REQUIREMENTS.md` §5 for what
-that live pass caught and fixed.
+It routes each model to one of three transports: CC (OpenAI Chat Completions), R (OpenAI Responses) or M (Anthropic Messages, for Claude). Gemini (G) is not built, so Gemini models are not listed.
+
+The CC and R paths are live-tested (Phase 1). M, the cache breakpoints, tool and thinking pinning, the reasoning round-trip and the budget guards (Phases 2 and 3) are unit-tested only. **Read `DEFECTS.md` before relying on them.** In particular, Claude requests are likely to fail on the output cap (D1). Status: `REQUIREMENTS.md` §5.
 
 ## 1. Load it
 
@@ -31,22 +28,18 @@ cannot redirect requests or the API key.
 
 ## 3. Try it
 
-Open Copilot Chat and pick a model under the **Ask Sage** vendor. Only CC/R-flavored models
-are listed — Claude and Gemini ids are filtered out rather than silently misrouted through the
-wrong endpoint. If your organization restricts models (`force_models` in your account info),
-only those are listed; this needs `asksage.email`, and without it the list is unrestricted
-(Ask Sage still refuses a model the org doesn't allow). Use **Ask mode**: Phase 1's accept criteria and tests only cover plain
-streaming, not an agent tool loop. Tool calls are wired (basic passthrough) but untested at any
-scale, and there is no cache-breakpoint or reasoning-state logic yet, so an agent-mode session
-will re-send the full context uncached every round and may lose reasoning between rounds.
+Open Copilot Chat and pick a model under the **Ask Sage** vendor.
+- Models are listed with their flavor in the tooltip. Gemini ids are left out rather than misrouted.
+- Some listed models fail on the flavor they are routed to (DEFECTS D20).
+- If your organization restricts models (`force_models` in your account info), only those are listed. That needs `asksage.email`; without it the list is unrestricted, and Ask Sage still refuses a model the organization doesn't allow.
 
-Every real message spends real Ask Sage tokens. The default spend caps
-(`asksage.budget.sessionCapTokens` 50,000 / `asksage.budget.hourlyCapTokens` 200,000 per hour)
-are generous enough not to interfere with ordinary testing, but they only block a request
-*before* it's sent if the running total is already over — they don't project the cost of the
-message you're about to send. So the request that crosses the cap still completes and the next one
-is refused. A changed cap applies to the next request, no reload needed. The "Ask Sage" output
-channel logs each request's estimate, conversation id and running totals (no prompt text).
+Ask mode on CC and R is the tested path. Agent mode and Claude are built but not yet live-tested.
+
+Every real message spends real Ask Sage tokens.
+- **Caps.** The spend caps default to 50,000 per conversation (`asksage.budget.sessionCapTokens`) and 200,000 per rolling hour (`asksage.budget.hourlyCapTokens`). They are not tied to your monthly balance: set them to fit it (DEFECTS D6).
+- **Pre-flight.** Before each request, an input-only estimate is checked against the caps. The request that crosses a cap on its output still completes, and the next one is refused.
+- **Where warnings go.** Warnings appear only in the "Ask Sage" output channel. So do each request's estimate, conversation id and running totals (no prompt text).
+- A changed cap applies to the next request, with no reload.
 
 ## If something looks wrong
 
@@ -98,17 +91,14 @@ channel logs each request's estimate, conversation id and running totals (no pro
 
 ## Known Ask Sage data-quality issues (worked around here, not silently trusted)
 
-- **`get-models?format=full`'s `limits.max_output` is often not the real completion-token cap.**
-  77 of 105 models on the public catalog report a `max_output` within 70% of `max_context`
-  (2026-09-27 scan); a live request on gpt-5.6-luna sent its catalog value (900000) and was
-  rejected with "supports at most 32768 completion tokens". `src/rates/outputCaps.js` starts
-  from the catalog value, learns the real one from a rejection, and persists the correction per
-  model so it only happens once. If you see a request retried in the "Ask Sage" log with a
-  "rejected max output ... retrying once" message, this is why — it's expected, not a bug.
+- **`get-models?format=full`'s `limits.max_output` is often not the real completion-token cap**
+  (`research/live/FINDINGS.md`, "Extension live checks"). `src/rates/outputCaps.js` starts
+  from the catalog value, learns the real cap from an OpenAI-worded rejection, and remembers it
+  per model. A "rejected max output ... retrying once" line in the "Ask Sage" log is this
+  mechanism working. The Anthropic wording is not recognized yet (DEFECTS D1).
 
-## Known gaps (tracked in `requirements/REQUIREMENTS.md` and `TODO.md`)
+## Known defects and gaps
 
-- No Claude (M) or Gemini (G) transport, no cache breakpoints, no reasoning-state round-trip
-- No pre-flight cost estimate before sending, only the after-the-fact ledger/cap accounting
-- No retry-on-transport-failure logic for CC/R model calls (the JWT-based `/server`/`/user`
-  calls do retry once on an auth-invalid response)
+`DEFECTS.md` lists them all, with the most serious first. Model calls are never
+retried on a transport failure; the JWT-based `/server` and `/user` calls retry once on an
+auth-invalid response.

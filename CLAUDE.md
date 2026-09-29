@@ -20,7 +20,9 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 
 ## Layout
 
-- `PLAN.md`: the plan (v3 plus the JavaScript-only note).
+- `PLAN.md`: the design and phase plan (v3.5). No build status in it.
+- `src/`: the extension itself (`src/README.md`: load, configure, troubleshoot). The Phase 2 and 3 code is on branch `claude/phase2-m-and-caching` until it is merged.
+- `DEFECTS.md`: known defects (D1…) and project-level problems (P1…), with their evidence. Not fixed yet.
 - `phase0/smoke-extension/`: Phase 0a echo provider for tests E1–E5. Pure logic in `lib/` has no `vscode` import.
 - `scripts/pack-vsix.mjs`: zero-dependency `.vsix` packer (`scripts/lib/zip.mjs` is the zip writer).
 - `scripts/run-tests.mjs`: runs every `test/**/*.test.{js,mjs}` with `node:test`.
@@ -28,19 +30,32 @@ A VS Code language-model provider extension that connects Copilot Chat to the As
 - `phase0/probe/catalog-audit.mjs`: public, unauthenticated model-catalog audit for an instance (pure checks in `phase0/probe/lib/catalog.mjs`).
 - `phase0/probe/rate-sources.mjs` (free): compares `get-models` rates, the web app's table and the tokenizer's billed conversion. `phase0/probe/billing-probe.mjs` (spends tokens): exact per-request bills from the prompt log. `phase0/probe/prompt-log.mjs` (free): prints the numbers of your recent prompt-log rows, for manual runs such as T12 that bypass the ledger. Findings: `research/rate-sources-investigation.md`.
 - `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T22 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). T1–T21 use the cheapest model per role; `--matrix <presets,ids>` (T22, `lib/matrix.mjs`) covers other models. Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first. With no key set (or `--no-auth-headers`), it sends no client credential and assumes a gateway in front of `--api` authenticates requests instead.
-- `research/live/FINDINGS.md`: the Phase 0b exit document: what the probes confirmed or corrected, and the "Still open" queue of probes still to run.
+- `research/live/FINDINGS.md`: all measured evidence. It holds what the probes confirmed or corrected, the extension's own live checks, and the "Still open" queue of probes still to run.
 - `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
 - `TODO.md`: the open-work list. `research/handoff/`: briefing notes for other Claude instances (the cloud session's rates investigation; measuring a private instance). `research/reports/`: reports meant to be read by people outside the project (the public caching and billing report; a template for per-instance reports).
 - **Results from a private instance never go in this public repo.** Run the probes with `--alias private-<name>` (default output lands in `research/live/private-*/`) or `--out private/<...>`; both are gitignored. See `research/handoff/private-instance-billing-run.md`.
-- `requirements/REQUIREMENTS.md`: expectations (hard constraints, security rules, LIVE-TEST assumptions, phase acceptance criteria) vs. what's actually built and verified. Update it in the same commit that changes a status.
+- `REQUIREMENTS.md`: expectations (hard constraints, security rules, LIVE-TEST assumptions, phase acceptance criteria) vs. what's actually built and verified. Update it in the same commit that changes a status.
 
 ## Keeping sessions coherent
 
 Several Claude sessions (cloud and desktop) work on this repo, each starting cold, so the repo is the only shared memory.
 - **Start from the newest branch, not only `main`.** Findings often sit on an unmerged `claude/*` branch for a while: `git fetch` and compare `git log origin/main..origin/<branch>` before trusting `main`'s status. Ask the author to merge finished work so `main` stays current.
-- **One home per fact, updated in the same commit.** Evidence goes in `research/live/FINDINGS.md` (with fixture paths). The design goes in `PLAN.md`, the status in `requirements/REQUIREMENTS.md`, open work in `TODO.md` and the one-line phase status in `README.md`. When a fact changes, grep for its other mentions and fix or date them; don't leave a superseded statement in the present tense.
+- **One home per fact, updated in the same commit.**
+
+  | Kind of fact | Its one home |
+  |---|---|
+  | Measured evidence | `research/live/FINDINGS.md`, with fixture paths |
+  | Design | `PLAN.md` (never status, never "built on <date>") |
+  | Status | `REQUIREMENTS.md` |
+  | Defects | `DEFECTS.md` |
+  | Open work and its priority | `TODO.md` |
+  | One-line phase status | `README.md` |
+
+  Everywhere else, point to that home instead of restating the fact. When a fact changes, grep for its other mentions and fix them; don't leave a superseded statement in the present tense.
+- **Keep the documents short.** A table cell is one or two sentences plus a pointer. A TODO item is one line. History belongs in git and PLAN §11, not in running text. If a status note grows past a few lines, the detail belongs in FINDINGS (evidence) or DEFECTS (a problem).
+- **Check a "correction" against the evidence before writing it.** A statement that contradicts FINDINGS or a Phase 0 report needs a fixture of its own, not an inference from typings or stubs (see DEFECTS D11).
 - **Handoffs cite a commit.** A summary pasted from another session is a pointer, not the state: check it against the repo at its newest commit, which wins.
-- **The priority order is the one in `TODO.md` and FINDINGS "Still open".** Follow it rather than re-deriving it.
+- **The priority order is the one in `TODO.md`.** FINDINGS "Still open" gives the order of the probe queue within it. Follow it rather than re-deriving it.
 
 ## Commands
 
@@ -50,6 +65,8 @@ Several Claude sessions (cloud and desktop) work on this repo, each starting col
 ## Conventions
 
 - Keep pure logic (converters, normalizers, parsers, cost formula, cache placement) free of `vscode` imports so it is unit-testable; inject what it needs.
+- Test parsers and converters against recorded responses in `research/live/` wherever one exists (PLAN §10). A fake written by the same session that wrote the code tests only that session's assumptions (DEFECTS P3).
+- User-visible errors and health-report lines are plain language. They name the feature the way PLAN §14.2 does, give the likely cause and what to try, and never show the API key or tokens. Nothing physical comes back from the target, only the owner's spoken account of what they read (PLAN §14).
 - Every **LIVE-TEST** assumption in PLAN.md must be confirmed by a recorded fixture for the tenant before code depends on it.
 - Type-checking is optional in a dev environment that has `tsc` and `@types/vscode` (for example `tsc --allowJs --checkJs --noEmit --strict`); never make it a requirement.
 

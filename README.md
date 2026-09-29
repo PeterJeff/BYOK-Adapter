@@ -1,24 +1,37 @@
 # BYOK-Adapter
 
-An Ask Sage model provider for VS Code chat: Copilot Chat talks to Ask Sage's API endpoints through a language-model provider extension instead of the built-in Custom Endpoint (BYOK) route, with working prompt caching, per-model endpoint choice, and budget and cost visibility.
+An Ask Sage model provider for VS Code chat. Copilot Chat talks to Ask Sage's API endpoints through a language-model provider extension instead of the built-in Custom Endpoint (BYOK) route, with working prompt caching, a per-model choice of endpoint, and visibility of budget and cost.
 
-The extension is plain JavaScript with no dependencies and no build step, because the machine it runs on has VS Code and nothing else. It is loaded manually.
+The extension is plain JavaScript with no dependencies and no build step, because the machine it runs on has VS Code and nothing else. It is loaded manually (`src/README.md`).
 
 ## Status
 
 | Phase | State |
 |---|---|
-| 0a Environment smoke test (E1–E5) | Passed on the dev machine: [`phase0/smoke-extension`](phase0/smoke-extension/README.md), results in [`research/live/test-tenant/`](research/live/test-tenant/phase0a-report.md). |
-| 0b API probes (T0–T22) | Done on the test tenant: [`research/live/FINDINGS.md`](research/live/FINDINGS.md) (its "Still open" table is the probe queue). Tools: [`api-probe.mjs`](phase0/probe/README.md), [`catalog-audit.mjs`](phase0/probe/README.md), [`rate-sources.mjs` and `billing-probe.mjs`](research/rate-sources-investigation.md). |
-| 1 CC/R skeleton, ledger, spend cap | Built (branch `claude/phase1-skeleton`, merged). All three acceptance checks passed live on the dev machine (2026-09-27): R and a non-GPT model on CC stream in Ask mode with ledger costs, and the spend cap trips. The last two scope items (`force_models` filtering, `restrictedConfigurations`) are built and unit-tested, not yet seen live. See [`requirements/REQUIREMENTS.md`](requirements/REQUIREMENTS.md) §5. |
-| 2 M transport, cache breakpoints, tool/thinking pinning, reasoning round-trip, Check Cache Health (active + passive) | Built and unit-tested (branch `claude/phase2-m-and-caching`, 2026-09-28), not yet run live: the owner is conserving Ask Sage tokens until the monthly reset, so the §9 acceptance checks (≥80% cache reads from round 2, a 5+ round reasoning loop) are still open. See [`requirements/REQUIREMENTS.md`](requirements/REQUIREMENTS.md) §5. |
-| 3 Budget guards: pre-flight estimate, warn/hard-stop, cache-health alarm, burn-rate forecast, Request More Tokens | Built and unit-tested (branch `claude/phase2-m-and-caching`, 2026-09-28), not yet run live for the same reason. The budget-mode experiment is not built: it needs a live A/B measurement before it can be recommended either way. See [`requirements/REQUIREMENTS.md`](requirements/REQUIREMENTS.md) §5. |
-| 4+ | Not started. |
+| 0a Environment smoke test (E1–E5) | Passed on the dev machine ([`phase0/smoke-extension`](phase0/smoke-extension/README.md)) |
+| 0b API probes (T0–T22) | Done on the test tenant ([`research/live/FINDINGS.md`](research/live/FINDINGS.md)); T12 is partly run |
+| 1 CC/R skeleton, ledger, spend cap | Built; acceptance passed live on 2026-09-27 |
+| 2 M, caching, pinning, reasoning round-trip | Built, never run live; known blockers in [`DEFECTS.md`](DEFECTS.md) |
+| 3 Budget guards | Partly built, never run live |
+| On-machine health report (PLAN §14) | Designed, not built |
+| 4+ | Not started |
 
-See [`PLAN.md`](PLAN.md) for the design and the full phase plan, [`CLAUDE.md`](CLAUDE.md) for the working rules, and [`requirements/REQUIREMENTS.md`](requirements/REQUIREMENTS.md) for expectations vs. what's actually built and verified.
+Phases 2 and 3 are on branch `claude/phase2-m-and-caching`, not yet merged.
+
+## Documents
+
+| File | Holds |
+|---|---|
+| [`PLAN.md`](PLAN.md) | The design and the phase plan (no status) |
+| [`REQUIREMENTS.md`](REQUIREMENTS.md) | Status of every expectation: built, verified, or not |
+| [`DEFECTS.md`](DEFECTS.md) | Known defects and problems, not yet fixed |
+| [`TODO.md`](TODO.md) | Open work, in priority order |
+| [`research/live/FINDINGS.md`](research/live/FINDINGS.md) | Measured evidence, and the probe queue |
+| [`src/README.md`](src/README.md) | How to load, configure and troubleshoot the extension |
+| [`CLAUDE.md`](CLAUDE.md) | Working rules for Claude sessions |
 
 ## Tools
 
 - `scripts/pack-vsix.mjs <extension folder>` builds a `.vsix` with no npm, using Node 22 or newer, including the one inside VS Code:
-  `ELECTRON_RUN_AS_NODE=1 <path to Code executable> scripts/pack-vsix.mjs phase0/smoke-extension`
+  `ELECTRON_RUN_AS_NODE=1 <path to Code executable> scripts/pack-vsix.mjs src`
 - `scripts/run-tests.mjs` runs the `node:test` suite the same way.

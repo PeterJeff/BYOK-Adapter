@@ -4,7 +4,7 @@
 
 Written for: a Claude Opus 5.5 instance in Claude Code on the web, starting cold on this public repo. It has no access to the author's machine, no Ask Sage key of its own (check, don't assume; see `CLAUDE.md` "Where Phase 0b's paid probes may run"), and no permission to spend Ask Sage tokens.
 
-Read first: `CLAUDE.md`, then `PLAN.md` §2.1 and §3.1, then `requirements/REQUIREMENTS.md` §3 (the two rows dated 2026-09-25 about rates and cache multipliers), then `research/model-catalog-findings.md` §4.
+Read first: `CLAUDE.md`, then `PLAN.md` §2.1 and §3.1, then `REQUIREMENTS.md` §3 (the two rows dated 2026-09-25 about rates and cache multipliers), then `research/model-catalog-findings.md` §4.
 
 ## The question
 
@@ -48,5 +48,5 @@ These need only public, unauthenticated fetches (the catalog audit already does 
 
 - **Public repository.** Nothing unredacted: no key, token, email, user/org id, or tenant host other than the public `api.asksage.ai`/`chat.asksage.*`. Raw extracts go under `research/live/**/raw/` (gitignored). Do **not** commit the extracted web app rate table itself (or a translation of it into another format) without the author's approval; commit derived summaries (ratios, counts, which models differ) and the extractor code.
 - **No Ask Sage spend.** Do not run T1–T9, T11, T13, T15–T18, T20, and do not chunk them to get past the Claude Code safety classifier (see `CLAUDE.md`). If a measurement is needed, write the plan and stop; the author runs it.
-- **Repo rules** (`CLAUDE.md`): plain JavaScript, no npm, no dependencies, nothing copied from `asksageclient`, tests with `node scripts/run-tests.mjs`. Update `requirements/REQUIREMENTS.md` in the same commit that changes a status.
+- **Repo rules** (`CLAUDE.md`): plain JavaScript, no npm, no dependencies, nothing copied from `asksageclient`, tests with `node scripts/run-tests.mjs`. Update `REQUIREMENTS.md` in the same commit that changes a status.
 - **Voice of the deliverable:** put findings in a new file under `research/` (for example `research/rate-sources-investigation.md`), open a pull request, and say in it what is fact (fetched, computed) versus inference. Correct PLAN §3.1 only where your findings contradict it, and keep the author's decision (no hand-maintained table) unless the evidence forces otherwise, in which case say so plainly rather than quietly changing course.
