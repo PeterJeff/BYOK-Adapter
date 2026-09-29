@@ -36,7 +36,7 @@ Read on the request that carried round 3's tool result: 9 messages, roles `{"sys
 - Reasoning state can ride in the thinking part's metadata through a tool loop of at least three rounds, at sizes up to 64 KB. That covers Claude signatures (hundreds of bytes to a few KB) and leaves headroom for encrypted reasoning items.
 - The metadata is returned byte-for-byte, so the provider can hand a signature back to the API unchanged.
 - `LanguageModelThinkingPart` exists for an installed extension: the provider could not have emitted these parts otherwise. That settles the open point in `phase0a-report.md` item 5 for the thinking class.
-- E3 (side-loading) passes on this machine. Its `extensions.allowed` is `*`, so this says nothing about the target machine's policy.
+- E3 (side-loading) passes on this machine. Its `extensions.allowed` is `*`, so this says nothing about the machine's policy.
 - Six rounds (above) extend this to Phase 2's 5+ round target, with four 64 KB signatures in one history.
 
 ## Raw echo (placeholder path as sent)

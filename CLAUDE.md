@@ -1,81 +1,23 @@
-# BYOK-Adapter: working rules
+@AGENTS.md
 
-A VS Code language-model provider extension that connects Copilot Chat to the Ask Sage API with proper caching and cost awareness. `PLAN.md` is the design and the phase plan; follow it phase by phase and stop at the end of each phase to report against its acceptance criteria.
+# Claude Code specifics
 
-## Hard constraints (target machine has VS Code and nothing else)
+`AGENTS.md` (imported above) holds every rule that applies to all tools. This file adds only what is specific to Claude Code.
 
-- **Plain JavaScript only.** CommonJS (`require`/`module.exports`) for extension code, `// @ts-check` at the top of every file, types in JSDoc. No TypeScript sources, no transpiling, no bundling, no build step.
-- **No npm, no dependencies.** Only Node built-ins and the `vscode` API. Never add a `package.json` dependency, `devDependency` or lockfile, and never vendor third-party code (and never copy from `asksageclient`, which is proprietary).
-- **Scripts run on VS Code's bundled Node** (`ELECTRON_RUN_AS_NODE=1 <Code executable> script.mjs`), so they must work on the Node inside current VS Code (Node 22 or newer; VS Code 1.139 bundles Node 24.20) and on Windows paths. Standalone scripts are ES modules (`.mjs`).
-- **Manual loading.** The extension is side-loaded: a `.vsix` built by `scripts/pack-vsix.mjs`, an unpacked folder, or `--extensionDevelopmentPath`. Nothing may assume the Marketplace.
-- **No Copilot sign-in, ever.** The target machine and the dev machine are never signed in to GitHub Copilot. The extension relies on VS Code ≥1.122 letting extension-provided models work with no GitHub account or Copilot plan, so never design or test around a signed-in Copilot account, and never require one.
-- **Stable VS Code API only.** Proposed APIs and Copilot internals (`LanguageModelThinkingPart`, `modelOptions._conversationId`, the `usage` data part) are feature-detected and must degrade silently.
+- **Memory.** Claude Code's auto-memory for this project lives on the dev machine only. Cloud sessions cannot see it. Background that every session needs, and that cannot be public, goes in `private/CONTEXT.md` (AGENTS.md §3), never in a tracked file.
+- **Cloud sessions** see only what is committed and pushed, plus `private/` if their environment's setup provides it. They start from the newest branch (AGENTS.md §6).
 
-## Security rules (PLAN.md §6)
+## Where paid probes may run
 
-- The API key lives only in SecretStorage and is never logged, printed or written to a fixture.
-- Host, tenant and endpoint settings are `"scope": "application"` (or `"machine"`) so a workspace cannot redirect the bearer token.
-- No prompt text in the ledger or reports by default.
-- Recorded API fixtures are redacted before they are written (key, tokens, user/org ids, emails, tenant host → alias).
+Whether a hosted or cloud Claude Code session (a remote container, CI) has a working Ask Sage credential depends entirely on that session's own proxy configuration. Don't assume either way; check first, as below.
 
-## Layout
+This project's remote container has, at times, had a proxy that injects a real credential for `api.asksage.ai`, with no `ASKSAGE_API_KEY` or `ASKSAGE_EMAIL` needed in the process. `research/live/test-tenant/README.md` explains how that was confirmed. Two gotchas cost real debugging time:
+1. **The proxy may authenticate nothing at all.** Every call then gets the same "Token is invalid" that a real unauthenticated request would, even though the environment metadata claims a credential is injected. Verify with a real endpoint (for example `validate_token_with_full_user`) before trusting it. `research/live/sandbox-proxy/README.md` documents this dead end.
+2. **Node's built-in `fetch` ignores `HTTPS_PROXY`** unless `NODE_USE_ENV_PROXY=1` is set (Node 22.21 or newer). `curl` respects the proxy by default and `fetch` doesn't, which looks exactly like a broken credential until you notice the difference. Always run `api-probe.mjs`, and any other script that uses `fetch` against a real host, from such a session with `NODE_USE_ENV_PROXY=1` set.
 
-- `PLAN.md`: the design and phase plan (v3.5). No build status in it.
-- `src/`: the extension itself (`src/README.md`: load, configure, troubleshoot). The Phase 2 and 3 code is on branch `claude/phase2-m-and-caching` until it is merged.
-- `DEFECTS.md`: known defects (D1…) and project-level problems (P1…), with their evidence. Not fixed yet.
-- `phase0/smoke-extension/`: Phase 0a echo provider for tests E1–E5. Pure logic in `lib/` has no `vscode` import.
-- `scripts/pack-vsix.mjs`: zero-dependency `.vsix` packer (`scripts/lib/zip.mjs` is the zip writer).
-- `scripts/run-tests.mjs`: runs every `test/**/*.test.{js,mjs}` with `node:test`.
-- `test/helpers/vscode-stub.js`: minimal `vscode` module for driving extension code under `node:test`.
-- `phase0/probe/catalog-audit.mjs`: public, unauthenticated model-catalog audit for an instance (pure checks in `phase0/probe/lib/catalog.mjs`).
-- `phase0/probe/rate-sources.mjs` (free): compares `get-models` rates, the web app's table and the tokenizer's billed conversion. `phase0/probe/billing-probe.mjs` (spends tokens): exact per-request bills from the prompt log. `phase0/probe/prompt-log.mjs` (free): prints the numbers of your recent prompt-log rows, for manual runs such as T12 that bypass the ledger. Findings: `research/rate-sources-investigation.md`.
-- `phase0/probe/api-probe.mjs`: Phase 0b authenticated probes T0–T22 (tests in `lib/tests.mjs`, redaction in `lib/redact.mjs`). T1–T21 use the cheapest model per role; `--matrix <presets,ids>` (T22, `lib/matrix.mjs`) covers other models. Spends tokens; key from `ASKSAGE_API_KEY` + `ASKSAGE_EMAIL`; always `--dry-run` first. With no key set (or `--no-auth-headers`), it sends no client credential and assumes a gateway in front of `--api` authenticates requests instead.
-- `research/live/FINDINGS.md`: all measured evidence. It holds what the probes confirmed or corrected, the extension's own live checks, and the "Still open" queue of probes still to run.
-- `research/`: partly committed (see PLAN.md §0). `model-catalog-findings.md` explains model naming and the per-instance catalog mismatches. Phase 0 recordings go to `research/live/<tenant-alias>/`.
-- `TODO.md`: the open-work list. `research/handoff/`: briefing notes for other Claude instances (the cloud session's rates investigation; measuring a private instance). `research/reports/`: reports meant to be read by people outside the project (the public caching and billing report; a template for per-instance reports).
-- **Results from a private instance never go in this public repo.** Run the probes with `--alias private-<name>` (default output lands in `research/live/private-*/`) or `--out private/<...>`; both are gitignored. See `research/handoff/private-instance-billing-run.md`.
-- `REQUIREMENTS.md`: expectations (hard constraints, security rules, LIVE-TEST assumptions, phase acceptance criteria) vs. what's actually built and verified. Update it in the same commit that changes a status.
+**Even once auth works, don't run the full paid battery** (T1–T9, T11, T15–T18, T20; about 13k tokens) as one autonomous batch.
+- Claude Code's safety classifier blocks large unsupervised "real-world transaction" runs, including through `run_in_background`.
+- Per its own guidance, that block is not to be routed around by splitting the batch into smaller pieces run back to back without the owner present.
+- A small, individually approved test (T0, T19) is fine. The full battery needs the owner to run it directly, or to adjust their Bash permission settings to allow it.
 
-## Keeping sessions coherent
-
-Several Claude sessions (cloud and desktop) work on this repo, each starting cold, so the repo is the only shared memory.
-- **Start from the newest branch, not only `main`.** Findings often sit on an unmerged `claude/*` branch for a while: `git fetch` and compare `git log origin/main..origin/<branch>` before trusting `main`'s status. Ask the author to merge finished work so `main` stays current.
-- **One home per fact, updated in the same commit.**
-
-  | Kind of fact | Its one home |
-  |---|---|
-  | Measured evidence | `research/live/FINDINGS.md`, with fixture paths |
-  | Design | `PLAN.md` (never status, never "built on <date>") |
-  | Status | `REQUIREMENTS.md` |
-  | Defects | `DEFECTS.md` |
-  | Open work and its priority | `TODO.md` |
-  | One-line phase status | `README.md` |
-
-  Everywhere else, point to that home instead of restating the fact. When a fact changes, grep for its other mentions and fix them; don't leave a superseded statement in the present tense.
-- **Keep the documents short.** A table cell is one or two sentences plus a pointer. A TODO item is one line. History belongs in git and PLAN §11, not in running text. If a status note grows past a few lines, the detail belongs in FINDINGS (evidence) or DEFECTS (a problem).
-- **Check a "correction" against the evidence before writing it.** A statement that contradicts FINDINGS or a Phase 0 report needs a fixture of its own, not an inference from typings or stubs (see DEFECTS D11).
-- **Handoffs cite a commit.** A summary pasted from another session is a pointer, not the state: check it against the repo at its newest commit, which wins.
-- **The priority order is the one in `TODO.md`.** FINDINGS "Still open" gives the order of the probe queue within it. Follow it rather than re-deriving it.
-
-## Commands
-
-- Tests: `node scripts/run-tests.mjs [filter]` (on the target machine: `ELECTRON_RUN_AS_NODE=1 <Code> scripts/run-tests.mjs`).
-- Package: `node scripts/pack-vsix.mjs <extension folder> [--out file.vsix]`; inspect with `--list file.vsix`.
-
-## Conventions
-
-- Keep pure logic (converters, normalizers, parsers, cost formula, cache placement) free of `vscode` imports so it is unit-testable; inject what it needs.
-- Test parsers and converters against recorded responses in `research/live/` wherever one exists (PLAN §10). A fake written by the same session that wrote the code tests only that session's assumptions (DEFECTS P3).
-- User-visible errors and health-report lines are plain language. They name the feature the way PLAN §14.2 does, give the likely cause and what to try, and never show the API key or tokens. Nothing physical comes back from the target, only the owner's spoken account of what they read (PLAN §14).
-- Every **LIVE-TEST** assumption in PLAN.md must be confirmed by a recorded fixture for the tenant before code depends on it.
-- Type-checking is optional in a dev environment that has `tsc` and `@types/vscode` (for example `tsc --allowJs --checkJs --noEmit --strict`); never make it a requirement.
-
-## Where Phase 0b's paid probes may run
-
-Whether a hosted/cloud Claude Code session (a remote container, CI) has a working Ask Sage credential depends entirely on that session's own proxy configuration — don't assume either way; check first, as below. This project's remote container has, at times, had a proxy that injects a real credential for `api.asksage.ai` with no `ASKSAGE_API_KEY`/`ASKSAGE_EMAIL` needed in-process — see `research/live/test-tenant/README.md` for how that was confirmed and two gotchas that cost real debugging time:
-1. The proxy may silently authenticate nothing at all (every call gets the same "Token is invalid" a real unauthenticated request would) even though environment metadata claims it injects a credential — verify with a real endpoint (e.g. `validate_token_with_full_user`) before trusting it. `research/live/sandbox-proxy/README.md` documents this dead end.
-2. Node's built-in `fetch` ignores `HTTPS_PROXY` unless `NODE_USE_ENV_PROXY=1` is set (Node ≥22.21) — `curl` respects the proxy by default and `fetch` doesn't, which looks exactly like a broken credential until you notice the discrepancy. Always run `api-probe.mjs` (and any other script using `fetch` against a real host) from such a session with `NODE_USE_ENV_PROXY=1` set.
-
-Even once auth genuinely works, **don't spend Ask Sage tokens without the user's explicit go-ahead for that spend**, and don't try to run the full paid battery (T1–T9, T11, T15–T18, T20; ~13k tokens) as one autonomous batch — Claude Code's own safety classifier blocks large unsupervised "real-world transaction" runs (including via `run_in_background`), and per its own guidance that block is not something to route around by chunking the same batch into smaller pieces run back-to-back without the user present. A small, individually-approved test (T0, T19) is fine; the full battery needs the user running it directly, or explicitly adjusting their Bash permission settings to allow it.
-
-One more caveat found the hard way: if the proxy substitutes a real credential into *any* value in a recognized auth header (as opposed to routing unauthenticated requests through untouched), T0's "bad auth returns an error envelope" check cannot produce a real result — every flavor gets a real authenticated response instead of an auth rejection. That check needs a path to Ask Sage that isn't behind such a proxy.
+**T0's bad-auth check needs a path without such a proxy.** If the proxy substitutes a real credential into *any* value of a recognized auth header, the check cannot produce a real result: every flavor gets a real authenticated response instead of an auth rejection.

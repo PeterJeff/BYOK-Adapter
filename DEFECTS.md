@@ -149,7 +149,7 @@ Every piece of code named below is on the Phase 2 branch. `main` has the Phase 1
 
 ### D21 (Low, read): the declared minimum VS Code version is below what signed-out use needs
 - **Where.** `src/package.json` (`engines.vscode: ^1.104.0`), and the activation error message in `src/extension.js`.
-- **What.** Signed-out use needs 1.122 or later (CLAUDE.md). A signed-out 1.104–1.121 install loads without error, but chat cannot use it, and no message explains why.
+- **What.** Signed-out use needs 1.122 or later (AGENTS.md §2). A signed-out 1.104–1.121 install loads without error, but chat cannot use it, and no message explains why.
 
 ### D22 (Low, read): the failover alarm compares raw model strings and ignores substitution
 - **Where.** `src/extension.js`, in the cache-health alarm block.
@@ -187,6 +187,6 @@ These are gaps, not bugs. Each is designed in PLAN.md but not built, or only par
   - Phase 1's first live pass found three bugs its unit tests could not.
   - This review found D1–D4 by reading and small reproductions, and the existing tests could not catch any of them.
 - **P3. The tests share the code's assumptions.** PLAN §10 says unit tests run against the recorded Phase 0 fixtures. Most `src/` tests use hand-written fakes written by the same session that wrote the code, so they encode its assumptions. Examples: the OpenAI cap wording (D1), a single tool call per turn (D3), a stream that always ends (D2). `test/errors.test.js` is the exception: it reads `research/live` fixtures. Converter and transport tests should replay recorded responses the same way.
-- **P4. Phases 2 and 3 are unmerged.** They sit on `claude/phase2-m-and-caching`, and `main` still describes Phase 1. Cold sessions that trust `main` see a stale state; that is why CLAUDE.md's "start from the newest branch" rule exists. Several local branches are merged or gone upstream.
-- **P5. The target can't explain itself.** The owner has run the extension there, but nothing physical comes back, and working out from raw logs or the ledger what went wrong costs more of their time than it is worth. PLAN §14 designs a plain-language health report that the owner can read on the spot and describe aloud.
-- **P6. The documentation had outgrown the code.** Status paragraphs had spread into PLAN.md, and single table cells in REQUIREMENTS.md ran to 4,000 characters. Each fact was repeated in three to five places, so sessions skimmed. D11's wrong "correction" entered PLAN.md that way. Reorganized on 2026-09-29; the rule is now in CLAUDE.md.
+- **P4. Phases 2 and 3 are unmerged.** They sit on `claude/phase2-m-and-caching`, and `main` still describes Phase 1. Cold sessions that trust `main` see a stale state; that is why AGENTS.md §6's "start from the newest branch" rule exists. Several local branches are merged or gone upstream.
+- **P5. The machine can't explain itself.** The owner has run the extension there, but nothing physical comes back, and working out from raw logs or the ledger what went wrong costs more of their time than it is worth. PLAN §14 designs a plain-language health report that the owner can read on the spot and describe aloud.
+- **P6. The documentation had outgrown the code.** Status paragraphs had spread into PLAN.md, and single table cells in REQUIREMENTS.md ran to 4,000 characters. Each fact was repeated in three to five places, so sessions skimmed. D11's wrong "correction" entered PLAN.md that way. Reorganized on 2026-09-29; the rules are now in AGENTS.md §4–§5.

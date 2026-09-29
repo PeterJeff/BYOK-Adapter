@@ -3,7 +3,7 @@
 
 // Phase 0a environment smoke test (PLAN.md §9). Registers an echo language-model
 // provider that calls no API, and records what VS Code does with it so E1–E5
-// can be answered on the target machine before any real work depends on them.
+// can be answered on the machine before any real work depends on them.
 
 const vscode = require('vscode');
 const https = require('https');

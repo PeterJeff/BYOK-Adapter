@@ -20,15 +20,7 @@ Phases 2 and 3 are on branch `claude/phase2-m-and-caching`, not yet merged.
 
 ## Documents
 
-| File | Holds |
-|---|---|
-| [`PLAN.md`](PLAN.md) | The design and the phase plan (no status) |
-| [`REQUIREMENTS.md`](REQUIREMENTS.md) | Status of every expectation: built, verified, or not |
-| [`DEFECTS.md`](DEFECTS.md) | Known defects and problems, not yet fixed |
-| [`TODO.md`](TODO.md) | Open work, in priority order |
-| [`research/live/FINDINGS.md`](research/live/FINDINGS.md) | Measured evidence, and the probe queue |
-| [`src/README.md`](src/README.md) | How to load, configure and troubleshoot the extension |
-| [`CLAUDE.md`](CLAUDE.md) | Working rules for Claude sessions |
+Start with [`AGENTS.md`](AGENTS.md): the working rules for people and agents, and (§4) a map of every document and where each kind of information belongs. The main ones are [`PLAN.md`](PLAN.md) (the design), [`REQUIREMENTS.md`](REQUIREMENTS.md) (status), [`DEFECTS.md`](DEFECTS.md) (known defects), [`TODO.md`](TODO.md) (open work) and [`src/README.md`](src/README.md) (using the extension).
 
 ## Tools
 

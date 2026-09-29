@@ -7,14 +7,14 @@ This file is the **design**: what the extension does, why, and in which phase. I
 - Measured evidence: `research/live/FINDINGS.md`.
 - The revision history is §11.
 
-**Implementation constraint.** The target machine has VS Code and nothing else: no npm, no package manager, no build tools.
+**Implementation constraint.** The machine has VS Code and nothing else: no npm, no package manager, no build tools.
 - The extension is written in **plain JavaScript**: CommonJS, `// @ts-check` with JSDoc types.
 - It has no build step and uses only Node built-ins and the `vscode` API.
 - It is loaded manually: an unpacked folder, or a `.vsix` built by the repo's zero-dependency packer run on VS Code's bundled Node.
-- Where this document says `.ts`, read `.js`. `CLAUDE.md` has the working rules.
+- Where this document says `.ts`, read `.js`. `AGENTS.md` has the working rules.
 
 **Premises.**
-- **No Copilot sign-in, ever.** Neither the target machine nor the dev machine is ever signed in to GitHub Copilot. Per VS Code's documentation, since 1.122 extension-provided and BYOK models work in chat, agent mode and MCP with no GitHub account and no Copilot plan. Inline completions and anything embeddings-based still need GitHub. This project exists to use that route.
+- **No Copilot sign-in, ever.** Neither the machine nor the dev machine is ever signed in to GitHub Copilot. Per VS Code's documentation, since 1.122 extension-provided and BYOK models work in chat, agent mode and MCP with no GitHub account and no Copilot plan. Inline completions and anything embeddings-based still need GitHub. This project exists to use that route.
 - **Rates come from the API at runtime,** never from a hand-maintained table (§3.1).
 
 Items marked **LIVE-TEST** must be confirmed by a recorded fixture for the tenant before code depends on them. `REQUIREMENTS.md` §3 tracks which are. Test IDs (T0–T22, E1–E5) are defined in §9.
@@ -329,7 +329,7 @@ v2's "per-request state only" principle is relaxed, because reasoning models nee
 
 **Tag the blob with its origin.** Store the flavor and the model that produced it next to it, and resend it only to the same flavor and model. A chat can switch models mid-conversation, and one flavor's blob is meaningless, or rejected, on another.
 
-**Fallback (needed if the thinking part is absent on the target, drops the metadata or size-limits it): a bounded in-memory side cache in `state/`:**
+**Fallback (needed if the thinking part is absent on the machine, drops the metadata or size-limits it): a bounded in-memory side cache in `state/`:**
 - keyed by tool-call ID (and response item ID for R), which appears in the history VS Code sends back (E2 confirmed the provider's own call id returns on the tool result)
 - LRU-bounded by entry count and bytes, entries expire after 2 hours
 - memory only, never written to disk, cleared when the extension host exits
@@ -404,7 +404,7 @@ Copilot's `#codebase` semantic search cannot be pointed at a third-party backend
 
 ## 9. Phases
 
-**Where things are verified.** The dev machine and the public test tenant (`api.asksage.ai`) are the reference environment, and every phase is built and accepted there. The target environment is close enough that it is not measured separately.
+**Where things are verified.** The dev machine and the public test tenant (`api.asksage.ai`) are the reference environment, and every phase is built and accepted there. The machine is close enough that it is not measured separately.
 - It receives beta builds (alpha at worst), and **no data comes back from it**: no files, logs or copied text. The extension has been run there.
 - Feedback is the owner's spoken account of what they saw.
 
@@ -413,8 +413,8 @@ Two consequences:
 - **Tenant differences are handled at runtime** (§2.3): calibrate what can be calibrated, and degrade safely instead of relying on a measured per-tenant table.
 
 ### Phase 0a: environment smoke test (dev machine, no API)
-A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as an unpacked folder or a `.vsix` (built with `scripts/pack-vsix.mjs`). It costs nothing and is the go/no-go gate. It can also be installed on the target as a first beta: whether it works there is the useful signal, not its numbers.
-- **E1:** extension-contributed models appear in the chat model picker **with no GitHub or Copilot sign-in** (the state on the target machine), on VS Code 1.122 or later. Also record whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting applies to a signed-out machine (unverified in the research).
+A small provider that echoes the prompt (`phase0/smoke-extension/`), side-loaded as an unpacked folder or a `.vsix` (built with `scripts/pack-vsix.mjs`). It costs nothing and is the go/no-go gate. It can also be installed on the machine as a first beta: whether it works there is the useful signal, not its numbers.
+- **E1:** extension-contributed models appear in the chat model picker **with no GitHub or Copilot sign-in** (the state on the machine), on VS Code 1.122 or later. Also record whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting applies to a signed-out machine (unverified in the research).
 - **E2:** agent mode will use an extension-contributed model and pass it tools.
 - **E3:** `.vsix` side-loading is permitted (`extensions.allowed` and related policy).
 - **E4:** thinking parts and private-MIME `LanguageModelDataPart`s emitted by the provider come back in the history of later requests (§5).
@@ -450,8 +450,8 @@ A plain `.mjs` probe script with no dependencies (`phase0/probe/`), runnable thr
 
 Estimated cost: about 200–350k Ask Sage tokens. **Exit:** `research/live/FINDINGS.md`, with the default flavor table, cache policy and normalization rules confirmed or corrected for the test tenant.
 
-### Phase 0c: target-tenant subset (dropped)
-Dropped 2026-09-25: no measurements come back from the target environment. Test-tenant findings are the development reference; per-tenant differences are handled by runtime calibration and safe degradation (§2.3), and checked by beta use on the target.
+### Phase 0c: other-tenant subset (dropped)
+Dropped 2026-09-25: no measurements come back from the machine. Test-tenant findings are the development reference; per-tenant differences are handled by runtime calibration and safe degradation (§2.3), and checked by beta use on the machine.
 
 ### Phase 1: skeleton with CC and R, ledger and spend cap
 CC and R come first because R is the measured default for GPT-5.4 and later (§2.2) and CC serves every other family except Claude and Gemini, so together they reach the most models in any tenant's catalog (§2.3). M follows in Phase 2 with its breakpoints and thinking; G stays in Phase 4.
@@ -482,7 +482,7 @@ The M transport; tool conversion; cache breakpoints (M) with TTL, minimum and lo
 - the reconciliation display matches the prompt log to within the formula's +1 to +6 constant on the matched rows
 
 ### Health report track (§14)
-This runs alongside the phases rather than after them. H1 (the report) is required before the next build goes to the target. H2 (the self-test) follows Phase 2's acceptance.
+This runs alongside the phases rather than after them. H1 (the report) is required before the next build goes to the machine. H2 (the self-test) follows Phase 2's acceptance.
 
 ### Phase 4: remaining flavors and overrides
 - G.
@@ -528,12 +528,12 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
   - §4.1 and §5: the rules for resending reasoning blobs.
   - §7: idle timeouts and plain-language errors.
   - §9: Phase 2 acceptance now waits for T12 and needs a parallel-tool round; Phase 3 got acceptance criteria.
-  - §14: the on-machine health report added. It is a plain-language report the owner reads and describes aloud, because nothing physical returns from the target.
+  - §14: the on-machine health report added. It is a plain-language report the owner reads and describes aloud, because nothing physical returns from the machine.
   - §12: the third-party-terms question dropped.
 
 | Area | v2 | v3 |
 |---|---|---|
-| Phase 0 | API probes only | Environment smoke test first (E1–E5), run **signed out of Copilot** on VS Code ≥1.122 (v3.2); target-tenant subset (0c) |
+| Phase 0 | API probes only | Environment smoke test first (E1–E5), run **signed out of Copilot** on VS Code ≥1.122 (v3.2); other-tenant subset (0c) |
 | Rates | bundled table (v2), then bundled snapshot + override + refresher (v3) | live from `get-models` with calibration (v3.2), then live from the tokenizer's billed conversion, per-host cache rules, prompt-log reconciliation (v3.3) |
 | Tenant | implicit | first-class dimension for catalog, rates, defaults, fixtures and ledger |
 | Cost formula | raw counts | per-flavor normalization; Claude thinking handling; whole-request long-context rule |
@@ -553,7 +553,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
 ## 12. Open decisions
 - Data-handling policy for code sent to the API, and the default `asksage.workspacePolicy`.
 - Whether the extension is for one user or shared.
-- VS Code version and policy on the target machine. These are not measurable; §14's health report shows the version and what feature detection found. The extension must work on the oldest VS Code it declares, and say clearly when something it needs is missing.
+- VS Code version and policy on the machine. These are not measurable; §14's health report shows the version and what feature detection found. The extension must work on the oldest VS Code it declares, and say clearly when something it needs is missing.
 - Whether a Copilot Business/Enterprise "Bring Your Own Language Model Key" policy or MDM setting binds a machine that is not signed in. It did not on the dev machine (E1); elsewhere it is found out by beta use.
 
 Closed decisions, with their reasons, are listed in `REQUIREMENTS.md` §6:
@@ -587,7 +587,7 @@ Closed decisions, with their reasons, are listed in `REQUIREMENTS.md` §6:
 
 ## 14. On-machine health report
 
-**Why.** The target is where the extension matters. Nothing physical comes back from it: no files, logs or copied text. What comes back is the owner's **spoken account** of what they saw. That account is only cheap to give if the extension has already done the diagnosis.
+**Why.** The machine is where the extension matters. Nothing physical comes back from it: no files, logs or copied text. What comes back is the owner's **spoken account** of what they saw. That account is only cheap to give if the extension has already done the diagnosis.
 
 So the extension produces a **health report written for a person to read**. In plain sentences, it says which features work and which don't, and what was seen. The owner can look at it and say, for example:
 - "Claude doesn't work: every request is rejected for asking too much output."
@@ -688,7 +688,7 @@ The results appear in the report as plain rows, for example "Self-test, Claude: 
   - error records in the ledger (DEFECTS D8) and the failure recorder
   - the Show Health Report command
 
-  H1 is required before the next build goes to the target.
+  H1 is required before the next build goes to the machine.
 - **H2: the self-test.** After Phase 2's acceptance, so that it tests code already known to work.
 
 **Accept (H1, on the dev machine):**
