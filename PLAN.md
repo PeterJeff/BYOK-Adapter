@@ -207,7 +207,7 @@ Usage is also reported to Copilot through a `LanguageModelDataPart` with MIME ty
   - the per-conversation **session cap**
   - the per-hour **hourly cap**
 
-  Warn when the projected spend passes a fraction of any of them (`asksage.budget.warnFraction`, default 0.8; for the balance, when the request would leave less than the rest of that fraction, 20%, of the monthly limit). A cap the user has not set defaults to 10% (session) and 25% (hourly) of the monthly limit, never above the declared 50,000 and 200,000. In the last 6 hours before the monthly reset the balance stop only warns, and a stop on the balance is confirmed with a fresh read first. Stop when the estimate would cross one. **Warnings must reach the user in the chat UI** (in the response, or as a notification), not only in the output channel.
+  Warn when the projected spend passes a fraction of any of them (`asksage.budget.warnFraction`, default 0.8; for the balance, when the request would leave less than the rest of that fraction, 20%, of the monthly limit). A cap the user has not set defaults to 10% (session) and 25% (hourly) of the monthly limit, never above the declared 50,000 and 200,000. A cap set to 0 is off, so no cap at all is still possible. The balance stop is separate and always on, and is relaxed only by its reserve. In the last 6 hours before the monthly reset the balance stop only warns, and a stop on the balance is confirmed with a fresh read first. Stop when the estimate would cross one. **Warnings must reach the user in the chat UI** (in the response, or as a notification), not only in the output channel.
 
   The stop is a `LanguageModelError` that names the concrete options:
   - raise the cap setting

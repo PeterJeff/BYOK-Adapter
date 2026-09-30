@@ -133,7 +133,7 @@ Drift between the documents, and between the documents and the code, is expected
 
 ## 6. Working on the project
 
-- **Priority.** Follow `TODO.md`'s order rather than re-deriving it. FINDINGS "Still open" orders the probe queue within it.
+- **Priority.** Follow `TODO.md`'s order rather than re-deriving it. That includes its model-family order for testing and features (ChatGPT, Gemini, Grok, other third-party models, Claude last). FINDINGS "Still open" orders the probe queue within it.
 - **Start from the newest branch, not only `main`.** Work often sits on an unmerged branch for a while: `git fetch` and compare before trusting `main`. Merge finished work promptly so `main` stays current.
 - **LIVE-TEST.** Every assumption marked **LIVE-TEST** in PLAN must be confirmed by a recorded fixture before code depends on it.
 - **Pure logic stays free of `vscode` imports:** converters, normalizers, parsers, the cost formula, cache placement. Inject what it needs, so it can be unit-tested.
