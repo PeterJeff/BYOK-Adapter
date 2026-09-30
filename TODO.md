@@ -9,7 +9,7 @@ The open-work list, **in priority order**. Each item is one line and points to w
 ## 0. Before the token reset (2026-10-01, about 24 hours away) 💲
 The dev account has 29,081 tokens left, and unused tokens are lost at the reset. The owner has approved spending them on the items below, in this order and stopping at the budget. Dry-run every probe first (`phase0/probe/README.md`). Delete this section once the reset has passed.
 - A. ChatGPT, in VS Code, cheap model only (`gpt-5.4-nano`), about 2–4k in all:
-  - T12 (a): the Custom Endpoint on `responses`, then (b): the same task and wording through the extension (`research/live/test-tenant/t12/README.md`). Read the bills with `prompt-log.mjs`.
+  - T12 (a): the Custom Endpoint on `responses`, then (b): the same task through the extension, using the standard task in `research/live/test-tenant/t12/README.md`. Read the bills with `prompt-log.mjs`.
   - In the extension run, also cover the Phase 2 checks on R: a 5+ round loop that includes parallel tool calls, the cache-read share from round 2, the estimate against the bill (Reconcile command), and `asksage.checkCacheHealth` on the model.
   - With `asksage.debug.logRequests` on for a short chat, check that `asksage.interceptUtilityRequests` catches titles and progress calls and no real turn (item 11).
 - B. Probes from the owner's terminal, one `--dry-run` first, each capped with `--max-spend` (recent runs bill a quarter to a third of the estimate). Stop when about 4k remains:
