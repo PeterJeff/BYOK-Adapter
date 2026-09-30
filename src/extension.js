@@ -34,7 +34,9 @@ const { readAll: readLedger } = require('./ledger/reader');
 const { reconcile } = require('./ledger/reconcile');
 const { createRequestLog } = require('./debug/requestLog');
 const { createSpendCap } = require('./budget/spendCap');
-const { charsOfRequest, estimatePreflightCost, checkPreflight } = require('./budget/preflight');
+const { charsOfRequest, estimatePreflightCost, checkPreflight, hoursUntilMonthlyReset } = require('./budget/preflight');
+const { effectiveCaps } = require('./budget/caps');
+const { createWarnOnce } = require('./ui/warnOnce');
 const { forecastBurnRate } = require('./budget/forecast');
 const { createBudgetService } = require('./budget/budgetService');
 const { createStatusBar } = require('./ui/statusBar');
@@ -72,6 +74,58 @@ function getDebugLog() {
 /** @type {Promise<void> | null} */
 let balanceRefresh = null;
 let balanceRefreshedAt = 0;
+let balanceFailedAt = 0;
+/** The last balance read from Ask Sage (PLAN.md §3.3), for the pre-flight balance stop. */
+/** @type {{ remaining: number, maxTokens: number | null, at: number } | null} */
+let knownBalance = null;
+/** Estimated AS tokens spent since `knownBalance` was read, so the balance stays current between refreshes. */
+let spentSinceBalance = 0;
+/** @type {number | null} */
+let knownMonthlyLimit = null;
+
+const warnGate = createWarnOnce();
+/**
+ * A warning the user has to see: it goes to the output channel and, at most once per ten minutes
+ * per key, to a notification. The output channel alone is invisible during a chat.
+ * @param {string} key
+ * @param {string} message
+ */
+function warnUser(key, message) {
+  log.warn(message);
+  if (!warnGate(key)) return;
+  try {
+    void Promise.resolve(vscode.window.showWarningMessage(message)).catch(() => {});
+  } catch {
+    // a notification is best-effort
+  }
+}
+
+/** @param {number} at epoch ms */
+function sameUtcMonth(at) {
+  const a = new Date(at);
+  const b = new Date();
+  return a.getUTCFullYear() === b.getUTCFullYear() && a.getUTCMonth() === b.getUTCMonth();
+}
+
+/**
+ * The account's remaining monthly balance for the pre-flight check, or null when unknown. A
+ * balance read in an earlier month is never used (PLAN.md §3.3), and the first request of a
+ * session waits briefly for the first read.
+ */
+async function currentBalance() {
+  if (!knownBalance || !sameUtcMonth(knownBalance.at)) {
+    knownBalance = null;
+    if (Date.now() - balanceFailedAt < 60000) return null; // a read just failed: don't make every request wait on another
+    await Promise.race([refreshBalance(), new Promise((r) => setTimeout(r, 5000).unref?.())]);
+  }
+  if (!knownBalance || !sameUtcMonth(knownBalance.at)) return null;
+  return { remaining: knownBalance.remaining - spentSinceBalance, monthlyLimit: knownBalance.maxTokens, hoursToReset: hoursUntilMonthlyReset() };
+}
+
+/** @param {ReturnType<typeof readSettings>} settings */
+function capsNow(settings) {
+  return effectiveCaps(settings, knownMonthlyLimit);
+}
 
 /**
  * PLAN.md §3.3: refresh the remaining balance on activation and after each completed turn,
@@ -86,7 +140,10 @@ function refreshBalance(o = {}) {
       if (!(await svc.credentials.getApiKey())) return;
       const status = await svc.budgetService.getStatus();
       balanceRefreshedAt = Date.now();
+      if (typeof status.maxTokens === 'number') knownMonthlyLimit = status.maxTokens;
       if (typeof status.remaining === 'number') {
+        knownBalance = { remaining: status.remaining, maxTokens: status.maxTokens, at: Date.now() };
+        spentSinceBalance = 0;
         // PLAN.md §3.5 burn-rate forecast: this week's spend rate from the ledger against the
         // freshly-fetched remaining balance, shown in the status bar tooltip.
         const records = readLedger(path.join(ctx.globalStorageUri.fsPath, 'ledger'));
@@ -94,6 +151,7 @@ function refreshBalance(o = {}) {
         statusBar.update({ remaining: status.remaining, forecast });
       }
     } catch (e) {
+      balanceFailedAt = Date.now();
       log.debug(`balance refresh failed: ${/** @type {Error} */ (e).message}`);
     } finally {
       balanceRefresh = null;
@@ -301,7 +359,7 @@ const provider = {
     // PLAN.md §4.3 / TODO.md "pin the tool list per conversation": send the first turn's tool
     // list for the conversation's life instead of whatever Copilot sends this turn, so tool
     // churn (an extension registering a tool mid-chat) doesn't bust the cached prefix every time.
-    const tools = settings.pinToolList ? toolPinning.resolve(conversationId, sortedTools(rawTools), { warn: (m) => log.warn(m) }) : rawTools;
+    const tools = settings.pinToolList ? toolPinning.resolve(conversationId, sortedTools(rawTools), { onAdded: (m) => log.info(m) }) : rawTools;
     const toolSetHash = hash([...tools].map((t) => t.name).sort().join(','));
 
     // PLAN.md §3.4: a hash of the deterministic cacheable prefix (first user message text + full
@@ -338,14 +396,25 @@ const provider = {
       const recentCacheReadRatio = stats && stats.cacheableTotal > 0 ? stats.cacheReadTotal / stats.cacheableTotal : 0;
       const chars = charsOfRequest(messages, tools, ctors);
       const estimatedCost = estimatePreflightCost(chars, rates, cacheRule(entry.flavor, model.id), recentCacheReadRatio);
-      const effectiveSessionCap = settings.sessionCapTokens > 0 ? settings.sessionCapTokens + spendCap.bumpFor(conversationId) : settings.sessionCapTokens;
-      preflight = checkPreflight({
-        estimatedCost,
-        spent: spendCap.snapshot(conversationId),
-        limits: { sessionCapTokens: effectiveSessionCap, hourlyCapTokens: settings.hourlyCapTokens },
-        warnFraction: settings.budgetWarnFraction,
-        reserve: settings.budgetReserveTokens,
-      });
+      const runCheck = async () => {
+        const balance = await currentBalance(); // also learns the monthly limit that the unset caps follow
+        const caps = capsNow(settings);
+        return checkPreflight({
+          estimatedCost,
+          spent: spendCap.snapshot(conversationId),
+          limits: { sessionCapTokens: caps.sessionCapTokens > 0 ? caps.sessionCapTokens + spendCap.bumpFor(conversationId) : caps.sessionCapTokens, hourlyCapTokens: caps.hourlyCapTokens },
+          balance: balance || undefined,
+          warnFraction: settings.budgetWarnFraction,
+          reserve: settings.budgetReserveTokens,
+        });
+      };
+      preflight = await runCheck();
+      if (preflight.level === 'stop' && preflight.source === 'balance') {
+        // The balance can be stale (a reset or a top-up since it was read): confirm with a fresh
+        // read before refusing anything.
+        await Promise.race([refreshBalance({ force: true }), new Promise((r) => setTimeout(r, 5000).unref?.())]);
+        preflight = await runCheck();
+      }
     } catch (e) {
       log.debug(`Ask Sage: pre-flight estimate skipped for ${model.id}: ${/** @type {Error} */ (e).message}`);
     }
@@ -353,7 +422,7 @@ const provider = {
       log.warn(/** @type {string} */ (preflight.message));
       throw toLanguageModelError(vscode, new Error(/** @type {string} */ (preflight.message)));
     }
-    if (preflight?.level === 'warn') log.warn(/** @type {string} */ (preflight.message));
+    if (preflight?.level === 'warn') warnUser(`preflight:${conversationId}:${preflight.source}`, /** @type {string} */ (preflight.message));
 
     try {
       spendCap.check(conversationId);
@@ -488,7 +557,10 @@ const provider = {
         log.warn(`rate lookup failed for ${model.id}: ${/** @type {Error} */ (e).message}`);
       }
     }
-    if (typeof estAsCost === 'number') spendCap.record(conversationId, estAsCost);
+    if (typeof estAsCost === 'number') {
+      spendCap.record(conversationId, estAsCost);
+      spentSinceBalance += estAsCost;
+    }
     {
       // No prompt text: ids and totals only, so a cap that doesn't trip can be diagnosed.
       const idSource = options.modelOptions && '_conversationId' in options.modelOptions ? '_conversationId' : 'hash fallback';
@@ -542,12 +614,12 @@ const provider = {
           const cold = norm.cacheRead / roundTotal < 0.5;
           state.coldStreak = cold ? state.coldStreak + 1 : 0;
           if (state.coldStreak >= 2) {
-            log.warn(`Ask Sage: cache-health alarm -- ${model.id} (${entry.flavor}) has read under 50% of its cacheable input for ${state.coldStreak} consecutive rounds in this conversation (last round: ${Math.round((norm.cacheRead / roundTotal) * 100)}%).`);
+            warnUser(`cold:${conversationId}`, `Ask Sage: cache-health alarm -- ${model.id} (${entry.flavor}) has read under 50% of its cacheable input for ${state.coldStreak} consecutive rounds in this conversation (last round: ${Math.round((norm.cacheRead / roundTotal) * 100)}%).`);
           }
         }
       }
       if (state.lastResolvedModel && result.resolvedModel && state.lastResolvedModel !== result.resolvedModel) {
-        log.warn(`Ask Sage: cache-health alarm -- ${model.id} failed over from ${state.lastResolvedModel} to ${result.resolvedModel} mid-conversation; the cache is cold for this conversation now.`);
+        warnUser(`failover:${conversationId}`, `Ask Sage: cache-health alarm -- ${model.id} failed over from ${state.lastResolvedModel} to ${result.resolvedModel} mid-conversation; the cache is cold for this conversation now.`);
       }
       if (result.resolvedModel) state.lastResolvedModel = result.resolvedModel;
       if (state.lastToolSetHash && state.lastToolSetHash !== toolSetHash) {
@@ -581,7 +653,7 @@ function activate(context) {
   statusBar = createStatusBar(vscode);
   spendCap = createSpendCap(() => {
     const s = readSettings(vscode);
-    return { sessionCapTokens: s.sessionCapTokens, hourlyCapTokens: s.hourlyCapTokens };
+    return capsNow(s);
   });
   ledger = createLedgerWriter(path.join(context.globalStorageUri.fsPath, 'ledger'));
 
@@ -628,8 +700,8 @@ async function runRequestMoreTokens() {
   const settings = readSettings(vscode);
   const input = await vscode.window.showInputBox({
     title: 'Ask Sage: Request More Tokens',
-    prompt: `Extra Ask Sage tokens to allow for the current conversation, on top of its session cap (${settings.sessionCapTokens || 'unlimited'})`,
-    value: String(settings.sessionCapTokens || 10000),
+    prompt: `Extra Ask Sage tokens to allow for the current conversation, on top of its session cap (${capsNow(settings).sessionCapTokens || 'unlimited'})`,
+    value: String(capsNow(settings).sessionCapTokens || 10000),
     validateInput: (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? null : 'enter a positive number of AS tokens'),
   });
   if (!input) return;

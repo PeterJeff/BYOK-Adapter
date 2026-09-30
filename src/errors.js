@@ -50,16 +50,22 @@ function isAuthInvalid(e) {
   return !!e && AUTH_INVALID_RE.test(e.message);
 }
 
-/** The real cap, when a request is rejected for exceeding it (observed 2026-09-27, gpt-5.6-luna:
- *  "max_tokens is too large: 100000. This model supports at most 32768 completion tokens..."). */
-const OUTPUT_CAP_RE = /supports at most ([\d,]+) (?:completion|output) tokens/i;
+/** The real cap, when a request is rejected for exceeding it. Two wordings seen:
+ *  OpenAI (2026-09-27, gpt-5.6-luna): "max_tokens is too large: 100000. This model supports at
+ *  most 32768 completion tokens..."
+ *  Anthropic (research/live/manual-run/probe/2026-09-26-0402-c5ced6/T8/061-over-limit.json):
+ *  "max_tokens: 136000 > 64000, which is the maximum allowed number of output tokens for ...". */
+const OUTPUT_CAP_RES = [
+  /supports at most ([\d,]+) (?:completion|output) tokens/i,
+  /max_tokens: [\d,]+ > ([\d,]+), which is the maximum allowed number of output tokens/i,
+];
 
 /**
  * @param {DetectedError | null} e
  * @returns {number | null}
  */
 function parseOutputCapTooLarge(e) {
-  const m = e && OUTPUT_CAP_RE.exec(e.message);
+  const m = e && OUTPUT_CAP_RES.map((re) => re.exec(e.message)).find(Boolean);
   if (!m) return null;
   const n = Number(m[1].replace(/,/g, ''));
   return Number.isFinite(n) && n > 0 ? n : null;

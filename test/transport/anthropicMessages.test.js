@@ -136,3 +136,70 @@ test('streamMessages: an Anthropic error envelope is detected', async () => {
   assert.equal(result.error?.shape, 'anthropic-error');
   assert.match(result.error?.message ?? '', /bad request/);
 });
+
+// DEFECTS D3. No recorded stream has parallel tool calls yet (no live run has recorded one yet), so this
+// replays a recorded message (thinking block with its real signature, then a tool_use) as an SSE
+// stream and adds a second tool_use to it, the shape Anthropic emits for parallel calls.
+const fs = require('node:fs');
+const path = require('node:path');
+const { toAnthropicMessages } = require('../../src/convert/messages');
+
+/** @param {any} message a recorded non-streaming Messages response body */
+function sseFromMessage(message) {
+  const sse = (/** @type {any} */ d) => `event: ${d.type}\ndata: ${JSON.stringify(d)}\n\n`;
+  let out = sse({ type: 'message_start', message: { id: message.id, model: message.model, usage: { input_tokens: 10 } } });
+  message.content.forEach((/** @type {any} */ b, /** @type {number} */ i) => {
+    if (b.type === 'thinking') {
+      out += sse({ type: 'content_block_start', index: i, content_block: { type: 'thinking', thinking: '' } });
+      out += sse({ type: 'content_block_delta', index: i, delta: { type: 'thinking_delta', thinking: b.thinking } });
+      out += sse({ type: 'content_block_delta', index: i, delta: { type: 'signature_delta', signature: b.signature } });
+    } else {
+      out += sse({ type: 'content_block_start', index: i, content_block: { type: 'tool_use', id: b.id, name: b.name } });
+      out += sse({ type: 'content_block_delta', index: i, delta: { type: 'input_json_delta', partial_json: JSON.stringify(b.input) } });
+    }
+    out += sse({ type: 'content_block_stop', index: i });
+  });
+  return out + sse({ type: 'message_delta', delta: { stop_reason: 'tool_use' }, usage: { output_tokens: 5 } }) + sse({ type: 'message_stop' });
+}
+
+test('parallel tool calls: one thinking block is reported, and history resends it once (DEFECTS D3)', async () => {
+  const recorded = JSON.parse(fs.readFileSync(path.join(__dirname, '../../research/live/manual-run/probe/2026-09-26-0402-c5ced6/T7/050-m-round1.json'), 'utf8')).body;
+  const thinkingBlock = recorded.content.find((/** @type {any} */ b) => b.type === 'thinking');
+  const toolUse = recorded.content.find((/** @type {any} */ b) => b.type === 'tool_use');
+  const parallel = { ...recorded, content: [thinkingBlock, toolUse, { ...toolUse, id: 'toolu_second', input: { city: 'Berlin' } }, { ...toolUse, id: 'toolu_third', input: { city: 'Rome' } }] };
+
+  const calls = [];
+  const thinkings = [];
+  const result = await streamMessages({
+    apiBase: 'https://x.invalid', apiKey: 'k', model: 'google-claude-45-haiku',
+    messages: [{ role: 1, content: [text('weather in three cities')] }],
+    ctors: CTORS, roleEnum: ROLE_ENUM, token: token(),
+    onToolCall: (c) => calls.push(c),
+    onThinking: (t) => thinkings.push(t),
+    fetchImpl: async () => sseResponse(sseFromMessage(parallel)),
+  });
+  assert.equal(result.error, null);
+  assert.equal(calls.length, 3);
+  assert.equal(thinkings.length, 1, 'one thinking block for the turn, not one per tool call');
+  assert.deepEqual(thinkings[0], { toolCallId: toolUse.id, value: thinkingBlock.thinking, signature: thinkingBlock.signature });
+
+  // Replay the turn the way VS Code hands it back: the calls, and a thinking part per report.
+  const assistant = {
+    role: 2,
+    content: [
+      ...calls.map((c) => new parts.LanguageModelToolCallPart(c.callId, c.name, c.input)),
+      ...thinkings.map((t) => new parts.LanguageModelThinkingPart(t.value, t.toolCallId, { signature: t.signature })),
+    ],
+  };
+  const out = toAnthropicMessages([{ role: 1, content: [text('weather in three cities')] }, assistant], CTORS, ROLE_ENUM);
+  const types = out.messages[1].content.map((/** @type {any} */ b) => b.type);
+  assert.deepEqual(types, ['thinking', 'tool_use', 'tool_use', 'tool_use']);
+  assert.equal(out.messages[1].content[0].signature, thinkingBlock.signature, 'sent back unmodified');
+});
+
+test('toAnthropicMessages: a history with one thinking copy per tool call (older builds) still sends one (DEFECTS D3)', () => {
+  const calls = ['a', 'b'].map((id) => new parts.LanguageModelToolCallPart(id, 'search', {}));
+  const twins = ['a', 'b'].map((id) => new parts.LanguageModelThinkingPart('because', id, { signature: 'sig-same' }));
+  const out = toAnthropicMessages([{ role: 2, content: [calls[0], twins[0], calls[1], twins[1]] }], CTORS, ROLE_ENUM);
+  assert.deepEqual(out.messages[0].content.map((/** @type {any} */ b) => b.type), ['thinking', 'tool_use', 'tool_use']);
+});

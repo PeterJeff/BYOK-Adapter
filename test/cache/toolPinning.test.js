@@ -11,14 +11,24 @@ test('first request pins the tool list for that conversation', () => {
   assert.deepEqual(pinning.resolve('conv-1', tools), tools);
 });
 
-test('a later turn with an added tool still gets the original pinned list, and warns once', () => {
+test('a tool added later is sent from that turn on and noted once (DEFECTS D7)', () => {
   const pinning = createToolPinning();
-  pinning.resolve('conv-1', [{ name: 'a' }]);
-  const warnings = [];
-  const out = pinning.resolve('conv-1', [{ name: 'a' }, { name: 'newTool' }], { warn: (m) => warnings.push(m) });
-  assert.deepEqual(out.map((t) => t.name), ['a']);
-  assert.equal(warnings.length, 1);
-  assert.match(warnings[0], /newTool/);
+  pinning.resolve('conv-1', [{ name: 'a' }, { name: 'c' }]);
+  const notes = [];
+  const out = pinning.resolve('conv-1', [{ name: 'a' }, { name: 'b' }, { name: 'c' }], { onAdded: (m) => notes.push(m) });
+  assert.deepEqual(out.map((t) => t.name), ['a', 'c', 'b'], 'pinned tools first, then the additions');
+  assert.equal(notes.length, 1);
+  assert.match(notes[0], /b/);
+  const again = pinning.resolve('conv-1', [{ name: 'a' }, { name: 'b' }, { name: 'c' }], { onAdded: (m) => notes.push(m) });
+  assert.deepEqual(again.map((t) => t.name), ['a', 'c', 'b'], 'the merged list is the pinned list now');
+  assert.equal(notes.length, 1, 'no further note once the change has been absorbed');
+});
+
+test('an addition and a removal in the same turn: the removed tool stays, the added one joins', () => {
+  const pinning = createToolPinning();
+  pinning.resolve('conv-1', [{ name: 'a' }, { name: 'b' }]);
+  const out = pinning.resolve('conv-1', [{ name: 'a' }, { name: 'z' }]);
+  assert.deepEqual(out.map((t) => t.name), ['a', 'b', 'z']);
 });
 
 test('a later turn with a removed tool still gets the full pinned list (cache stability over churn)', () => {

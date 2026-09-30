@@ -2,7 +2,7 @@
 
 It routes each model to one of three transports: CC (OpenAI Chat Completions), R (OpenAI Responses) or M (Anthropic Messages, for Claude). Gemini (G) is not built, so Gemini models are not listed.
 
-The CC and R paths are live-tested (Phase 1). M, the cache breakpoints, tool and thinking pinning, the reasoning round-trip and the budget guards (Phases 2 and 3) are unit-tested only. **Read `DEFECTS.md` before relying on them.** In particular, Claude requests are likely to fail on the output cap (D1). Status: `REQUIREMENTS.md` §5.
+The CC and R paths are live-tested (Phase 1). M, the cache breakpoints, tool and thinking pinning, the reasoning round-trip and the budget guards (Phases 2 and 3) are unit-tested only. **Read `DEFECTS.md` before relying on them.** Status: `REQUIREMENTS.md` §5.
 
 ## 1. Load it
 
@@ -36,9 +36,10 @@ Open Copilot Chat and pick a model under the **Ask Sage** vendor.
 Ask mode on CC and R is the tested path. Agent mode and Claude are built but not yet live-tested.
 
 Every real message spends real Ask Sage tokens.
-- **Caps.** The spend caps default to 50,000 per conversation (`asksage.budget.sessionCapTokens`) and 200,000 per rolling hour (`asksage.budget.hourlyCapTokens`). They are not tied to your monthly balance: set them to fit it (DEFECTS D6).
-- **Pre-flight.** Before each request, an input-only estimate is checked against the caps. The request that crosses a cap on its output still completes, and the next one is refused.
-- **Where warnings go.** Warnings appear only in the "Ask Sage" output channel. So do each request's estimate, conversation id and running totals (no prompt text).
+- **Caps.** Left unset, the spend caps are 10% of your monthly limit per conversation (`asksage.budget.sessionCapTokens`) and 25% per rolling hour (`asksage.budget.hourlyCapTokens`), and never more than 50,000 and 200,000. Set either one and your number is used as written; 0 turns that cap off.
+- **Pre-flight.** Before each request, an input-only estimate is checked against your remaining monthly balance (minus `asksage.budget.reserveTokens`) and the caps. A request the balance cannot cover is refused, except in the last 6 hours before the monthly reset (00:00 UTC on the 1st), when it only warns. The request that crosses a cap on its output still completes, and the next one is refused.
+- **Where warnings go.** A warning from the pre-flight check or the cache-health alarm shows as a notification, at most once per 10 minutes for the same warning, and is also written to the "Ask Sage" output channel. So are each request's estimate, conversation id and running totals (no prompt text).
+- **Long answers.** A response that goes 180 seconds without a byte is stopped and reported as an error, with the text received so far left in the chat. A long answer that keeps streaming is never cut off.
 - A changed cap applies to the next request, with no reload.
 
 ## If something looks wrong
@@ -95,7 +96,7 @@ Every real message spends real Ask Sage tokens.
   (`research/live/FINDINGS.md`, "Extension live checks"). `src/rates/outputCaps.js` starts
   from the catalog value, learns the real cap from an OpenAI-worded rejection, and remembers it
   per model. A "rejected max output ... retrying once" line in the "Ask Sage" log is this
-  mechanism working. The Anthropic wording is not recognized yet (DEFECTS D1).
+  mechanism working. Both the OpenAI and the Anthropic wording are recognized.
 
 ## Known defects and gaps
 

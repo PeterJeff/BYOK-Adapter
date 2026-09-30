@@ -87,10 +87,10 @@ async function streamResponses(opts) {
         input = {};
       }
       if (opts.onToolCall) opts.onToolCall({ callId: c.callId, name: c.name, input });
-      // As with M's thinking block (anthropicMessages.js): the one reasoning item in a turn
-      // precedes all of that turn's function_call items, so it pairs with each of them.
-      if (lastReasoning && opts.onThinking) opts.onThinking({ toolCallId: c.callId, value: '', signature: lastReasoning.encryptedContent });
     }
+    // As with M's thinking block (anthropicMessages.js): one reasoning item per turn, reported
+    // once and paired with the first tool call (the converter looks it up by that id).
+    if (calls.length && lastReasoning && opts.onThinking) opts.onThinking({ toolCallId: calls[0].callId, value: '', signature: lastReasoning.encryptedContent });
   }
 
   return { usage, resolvedModel, stopReason, error: result.error, transportError: result.transportError, requestBody: body };

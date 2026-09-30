@@ -64,7 +64,7 @@ class LanguageModelError extends Error {
  * @param {{ thinking?: boolean }} [opts] thinking:false simulates a VS Code without the proposed class
  */
 function createStub(opts = {}) {
-  const registered = { providers: /** @type {Record<string, any>} */ ({}), commands: /** @type {Record<string, Function>} */ ({}), documents: /** @type {string[]} */ ([]), messages: /** @type {string[]} */ ([]), executed: /** @type {{ id: string, args: any[] }[]} */ ([]) };
+  const registered = { providers: /** @type {Record<string, any>} */ ({}), commands: /** @type {Record<string, Function>} */ ({}), documents: /** @type {string[]} */ ([]), messages: /** @type {string[]} */ ([]), warnings: /** @type {string[]} */ ([]), executed: /** @type {{ id: string, args: any[] }[]} */ ([]) };
   /** @type {Record<string, unknown>} user-settings values */
   const config = {};
   /** @type {Record<string, unknown>} workspace-settings values: win in get(), as in VS Code for a non-application setting */
@@ -130,7 +130,9 @@ function createStub(opts = {}) {
         registered.messages.push(m);
         return undefined;
       },
-      async showWarningMessage() {
+      /** @param {string} m */
+      async showWarningMessage(m) {
+        registered.warnings.push(m);
         return undefined;
       },
       /** @param {string} m */

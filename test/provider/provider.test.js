@@ -80,7 +80,7 @@ function openaiErrorResponse(message) {
   };
 }
 
-/** @param {{ models: unknown[], cc?: string, r?: string, m?: string, rSequence?: unknown[], forceModels?: unknown }} o */
+/** @param {{ models: unknown[], cc?: string, r?: string, m?: string, rSequence?: unknown[], forceModels?: unknown, remaining?: number }} o */
 function createFakeFetch(o) {
   const calls = /** @type {{ url: string, body: any }[]} */ ([]);
   const rQueue = o.rSequence ? [...o.rSequence] : null;
@@ -90,7 +90,7 @@ function createFakeFetch(o) {
     if (url.endsWith('/server/get-models?format=full')) return jsonResponse({ response: o.models }); // real tenants wrap the array (2026-09-27 live finding)
     if (url.endsWith('/user/get-token-with-api-key')) return jsonResponse({ response: { access_token: 'jwt-1' } });
     if (url.endsWith('/user/validate_token_with_full_user')) return jsonResponse({ response: { max_tokens: 200000, force_models: o.forceModels ?? [] } });
-    if (url.endsWith('/server/count-monthly-tokens-left-with-org')) return jsonResponse({ response: 150000 });
+    if (url.endsWith('/server/count-monthly-tokens-left-with-org')) return jsonResponse({ response: o.remaining ?? 150000 });
     if (url.endsWith('/server/count-monthly-tokens')) return jsonResponse({ response: 50000 });
     if (url.endsWith('/server/tokenizer')) {
       const isOne = body.content === 'x';
@@ -223,7 +223,7 @@ test('Claude streams through M and lands a normalized, estimated-cost ledger rec
   }
 });
 
-test('the tool list is pinned per conversation (PLAN §4.3): a tool added mid-conversation is held back', async () => {
+test('the tool list is pinned per conversation (PLAN §4.3): a tool added mid-conversation is sent from then on (DEFECTS D7)', async () => {
   const fetchImpl = createFakeFetch({ models: [M_MODEL], m: M_SSE });
   const { provider, restore } = setup(fetchImpl);
   try {
@@ -238,7 +238,11 @@ test('the tool list is pinned per conversation (PLAN §4.3): a tool added mid-co
     const mCalls = fetchImpl.calls.filter((c) => c.url.endsWith('/server/anthropic/v1/messages'));
     assert.equal(mCalls.length, 2);
     assert.deepEqual(mCalls[0].body.tools.map((/** @type {any} */ t) => t.name), ['readFile']);
-    assert.deepEqual(mCalls[1].body.tools.map((/** @type {any} */ t) => t.name), ['readFile'], 'newTool must be held back until a new conversation');
+    assert.deepEqual(mCalls[1].body.tools.map((/** @type {any} */ t) => t.name), ['newTool', 'readFile'], 'a tool Copilot adds must reach the model (tools go out sorted by name)');
+    const opts3 = { toolMode: 1, tools: [{ name: 'readFile', inputSchema: {} }], modelOptions: { _conversationId: 'conv-fixed' } };
+    await provider.provideLanguageModelChatResponse(model, messages, opts3, { report() {} }, token());
+    const third = fetchImpl.calls.filter((c) => c.url.endsWith('/server/anthropic/v1/messages'))[2];
+    assert.deepEqual(third.body.tools.map((/** @type {any} */ t) => t.name), ['newTool', 'readFile'], 'a tool Copilot drops stays pinned, so the prefix does not change again');
   } finally {
     restore();
   }
@@ -476,5 +480,52 @@ test('asksage.debug.logRequests is off by default, and writes the real request/r
     assert.equal(r.responseText, 'Hello world');
   } finally {
     on.restore();
+  }
+});
+
+// DEFECTS D6.
+test('a request the account balance cannot cover is refused before anything is sent', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE, remaining: 0 });
+  const { send, restore } = setup(fetchImpl);
+  try {
+    await assert.rejects(() => send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]), /only 0 remain of this month's tokens/);
+    assert.equal(fetchImpl.calls.filter((c) => c.url.includes('/chat/completions')).length, 0, 'nothing may be sent once the balance stop trips');
+  } finally {
+    restore();
+  }
+});
+
+test('a request that would leave little of the month is sent, with a notification the user can see (once)', async () => {
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE, remaining: 39000 }); // the limit is 200000: under 20% left
+  const { send, registered, restore } = setup(fetchImpl);
+  try {
+    await send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    assert.equal(fetchImpl.calls.filter((c) => c.url.includes('/chat/completions')).length, 1);
+    assert.equal(registered.warnings.length, 1, 'the warning must reach a notification, not only the output channel');
+    assert.match(registered.warnings[0], /would leave about \d+ of this month's 200000 tokens/);
+    await send('gpt-4.1-nano', [{ role: 1, content: [text('hi')] }]);
+    assert.equal(registered.warnings.filter((w) => /would leave/.test(w)).length, 1, 'the same warning is not repeated every round');
+    assert.match(registered.warnings[1] || '', /cache-health alarm/);
+  } finally {
+    restore();
+  }
+});
+
+test('an unset cap follows the monthly limit; a cap the user set is used as written', async () => {
+  // limit 200000: the unset session cap becomes 10% = 20000 (the declared default is 50000).
+  // A request of 1.5M characters is ~20300 AS tokens at the fake tokenizer's 0.05 rate.
+  const fetchImpl = createFakeFetch({ models: [CC_MODEL], cc: CC_SSE });
+  const big = 'x'.repeat(1_500_000);
+  const auto = setup(fetchImpl);
+  try {
+    await assert.rejects(() => auto.send('gpt-4.1-nano', [{ role: 1, content: [text(big)] }]), /session spend to ~\d+ of 20000 AS tokens/);
+  } finally {
+    auto.restore();
+  }
+  const explicit = setup(createFakeFetch({ models: [CC_MODEL], cc: CC_SSE }), { 'asksage.budget.sessionCapTokens': 50000 });
+  try {
+    await explicit.send('gpt-4.1-nano', [{ role: 1, content: [text(big)] }]); // 50000 as written: under it
+  } finally {
+    explicit.restore();
   }
 });

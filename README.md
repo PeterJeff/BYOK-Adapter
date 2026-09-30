@@ -11,7 +11,7 @@ The extension is plain JavaScript with no dependencies and no build step, becaus
 | 0a Environment smoke test (E1–E5) | Passed on the dev machine ([`phase0/smoke-extension`](phase0/smoke-extension/README.md)) |
 | 0b API probes (T0–T22) | Done on the test tenant ([`research/live/FINDINGS.md`](research/live/FINDINGS.md)); T12 is partly run |
 | 1 CC/R skeleton, ledger, spend cap | Built; acceptance passed live on 2026-09-27 |
-| 2 M, caching, pinning, reasoning round-trip | Built, never run live; known blockers in [`DEFECTS.md`](DEFECTS.md) |
+| 2 M, caching, pinning, reasoning round-trip | Built, never run live; known defects in [`DEFECTS.md`](DEFECTS.md) |
 | 3 Budget guards | Partly built, never run live |
 | On-machine health report (PLAN §14) | Designed, not built |
 | 4+ | Not started |

@@ -1,6 +1,6 @@
 # Known defects and problems
 
-Found by a review of branch `claude/phase2-m-and-caching` at commit `c42f711` (2026-09-29). **None of these is fixed yet.** This is the one home for defect detail: `REQUIREMENTS.md` and `TODO.md` point here by ID and do not repeat it. When a defect is fixed, delete its entry in the same commit and note the fix in the commit message; when a fix is only partial, edit the entry.
+Found by a review of branch `claude/phase2-m-and-caching` at commit `c42f711` (2026-09-29). D1, D2, D3, D6 and D7 of that review are fixed and deleted; the IDs of the others are unchanged. This is the one home for defect detail: `REQUIREMENTS.md` and `TODO.md` point here by ID and do not repeat it. When a defect is fixed, delete its entry in the same commit and note the fix in the commit message; when a fix is only partial, edit the entry.
 
 **How each entry was established.**
 - *Reproduced*: shown by running the code in a scratch script against a fake or a recorded fixture.
@@ -8,7 +8,7 @@ Found by a review of branch `claude/phase2-m-and-caching` at commit `c42f711` (2
 - *Suspected*: the code does something questionable, but whether Ask Sage or Copilot actually rejects or mishandles it needs a live run.
 
 **Severity.**
-- *Blocker*: likely stops Phase 2's live acceptance, or basic use of a model family.
+- *Blocker*: likely stops Phase 2's live acceptance, or basic use of a model family. None is open now.
 - *High*: wrong results or money lost silently.
 - *Medium*: wrong or degraded behavior with a workaround.
 - *Low*: cosmetic, rare, or diagnosability only.
@@ -16,31 +16,6 @@ Found by a review of branch `claude/phase2-m-and-caching` at commit `c42f711` (2
 Every piece of code named below is on the Phase 2 branch. `main` has the Phase 1 code only.
 
 ## A. Code defects
-
-### D1 (Blocker, reproduced): Claude requests are rejected on the output cap, and the correction never triggers
-- **Where.** `src/errors.js` `parseOutputCapTooLarge` (`OUTPUT_CAP_RE`). The value comes from `src/extension.js`, where `model.maxOutputTokens` is the catalog's `limits.max_output`.
-- **What.** The extension sends the catalog's `limits.max_output` as `max_tokens` and relies on a rejection to learn the real cap (`src/rates/outputCaps.js`). The rejection parser only knows OpenAI's wording ("supports at most N completion tokens"). Anthropic's wording is "`max_tokens: 136000 > 64000, which is the maximum allowed number of output tokens for claude-haiku-4-5-20251001`". It is recorded in `research/live/manual-run/probe/2026-09-26-0402-c5ced6/T8/061-over-limit.json`, and `parseOutputCapTooLarge` returns `null` for it (reproduced).
-- **Why it bites.** The committed catalog snapshot (`research/live/chat.asksage.ai/catalog/2026-09-25/get-models-full.json`) lists every Claude model with a `max_output` of 135,000 to 990,000. That is far above the real caps of 64k to 128k.
-- **Effect.** Every request to such a Claude model is likely rejected, and the error is shown to the user. Nothing is learned, so the next request fails the same way. This has not been seen live only because M has never run live.
-- **Fix direction.** Parse Anthropic's wording too, and test the parser against the recorded fixture rather than a hand-written string. Consider starting from a conservative per-family default instead of the catalog value.
-
-### D2 (High, reproduced): a stream longer than 180 s is cut off silently, and reported as a success
-- **Where.** `src/transport/httpClient.js` `request`.
-- **What.** The 180 s timer covers the whole request, including the streaming phase, and is never reset as data arrives. When it fires, the stream reader's abort error is swallowed (`if (!ac.signal.aborted) throw e`). The result has `error: null` and `transportError: null`.
-- **Reproduction.** A fake stream that sends one event and then stalls past a 300 ms timeout returns 1 event, no error and no transport error.
-- **Effect.** Long answers are silently truncated. Long reasoning (Opus 5.5, GPT-6 at high effort) and large file edits in agent mode are the likely cases.
-  - Usage arrives at the end of a stream, so there is none. The ledger then records `status: 'ok'` with zero cost, and the spend cap is not charged, although Ask Sage bills the tokens.
-  - The user sees a partial answer with no error.
-- **Fix direction.** Use an idle timeout that is reset on every chunk, plus a separate optional total cap. Report a timeout abort as a transport error, distinct from a user cancel.
-
-### D3 (High, reproduced in the converter; effect through Ask Sage suspected): parallel tool calls on M resend the thinking block once per call
-- **Where.** In `src/transport/anthropicMessages.js`, `onThinking` fires once for each tool call. `src/extension.js` then reports a new `LanguageModelThinkingPart` for each call, all carrying the same signature. `src/convert/messages.js` `toAnthropicMessages` sends every thinking part that has a signature.
-- **What.** An assistant turn with N parallel tool calls comes back in history with N identical thinking parts. It is resent as N identical `thinking` blocks. This was reproduced with two parts: the output was `thinking, thinking, tool_use, tool_use`.
-- **Effect.** Anthropic requires thinking blocks to come back unmodified, so a duplicated block is probably rejected.
-  - If the error wording happens to match `isThinkingBoundRejection`, the request is retried with thinking stripped. The model then loses its reasoning on every parallel round, and a wasted request is sent.
-  - Otherwise the turn fails.
-  - Parallel reads are routine in agent mode, so this would show up on Claude models with thinking on.
-- **Fix direction.** Emit one thinking part per assistant turn, and have the converter deduplicate by signature.
 
 ### D4 (Medium, suspected): an empty thinking text is resent as a single space
 - **Where.** `src/extension.js` `onThinking`: `new LanguageModelThinkingPart(t.value || ' ', ...)`.
@@ -56,22 +31,6 @@ Every piece of code named below is on the Phase 2 branch. `main` has the Phase 1
   - R has no such path.
   - Switching between two Claude models may also fail: signatures are probably bound to the model that made them. That is untested.
 - **Fix direction.** Store the flavor and model with the blob, and resend it only to the same flavor and model.
-
-### D6 (High, read): the budget guard never checks the account's remaining balance, and its warnings are invisible
-- **Where.** `src/budget/preflight.js` `checkPreflight`, and `src/extension.js`. Warnings and alarms use `log.warn`.
-- **What.** PLAN §3.5 designs the hard stop against the *remaining monthly balance* minus a reserve. The pre-flight check compares only against the session and hourly caps. The balance is fetched, but it is only used for the status bar and the forecast.
-- **Defaults.** 50,000 per conversation and 200,000 per rolling hour. The hourly default equals the test account's entire monthly limit (`max_tokens: 200000`, T0).
-- **Warnings.** The pre-flight "warn" level and the cache-health alarm write only to the Ask Sage output channel. Nobody watches that during a chat.
-- **Effect.** A spend like the one that used a large share of the test account's monthly pool on 2026-09-27 is not guarded against (see the cost warning in `research/live/test-tenant/t12/README.md`).
-- **Fix direction.** Add a balance-based stop, and caps derived from the balance by default. Show warnings in the chat response or a notification.
-
-### D7 (High, read): tool pinning, on by default, withholds tools added mid-conversation
-- **Where.** `src/cache/toolPinning.js`, and the `asksage.cache.pinToolList` setting (default `true`).
-- **What.** The first tool list is sent for the conversation's whole life. Tools Copilot adds later are held back until a new chat, and only a log line says so.
-- **Effect.** An MCP server the user enables mid-chat is invisible to the model. So are tools that Copilot's virtual-tool grouping adds when the model opens a group. The model is told a tool exists, or is asked to use it, but cannot call it. On a machine nobody can debug remotely, that is a confusing failure.
-- **The trade-off.** The cost it avoids is one cold turn per change, which is cheap compared with a broken agent loop.
-- **Still unknown.** What Copilot does when the model calls a tool Copilot has since removed (TODO).
-- **Fix direction.** Let additions through: one logged cold turn. Removals could stay pinned. Or default the setting off until live use shows how often churn happens.
 
 ### D8 (Medium, read): failed requests never reach the ledger
 - **Where.** `src/extension.js`. `throw toLanguageModelError(...)` runs before `ledger.append`.
@@ -185,7 +144,7 @@ These are gaps, not bugs. Each is designed in PLAN.md but not built, or only par
   - It costs a few thousand tokens on Haiku.
 - **P2. A large amount of code has never run live.** Phases 2 and 3 added about 1,550 lines under `src/` on 2026-09-28, and none of it has made a live request.
   - Phase 1's first live pass found three bugs its unit tests could not.
-  - This review found D1–D4 by reading and small reproductions, and the existing tests could not catch any of them.
+  - This review found D1–D4 by reading and small reproductions, and the existing tests could not catch any of them (D1–D3 are fixed now, with tests that replay recorded fixtures).
 - **P3. The tests share the code's assumptions.** PLAN §10 says unit tests run against the recorded Phase 0 fixtures. Most `src/` tests use hand-written fakes written by the same session that wrote the code, so they encode its assumptions. Examples: the OpenAI cap wording (D1), a single tool call per turn (D3), a stream that always ends (D2). `test/errors.test.js` is the exception: it reads `research/live` fixtures. Converter and transport tests should replay recorded responses the same way.
 - **P4. Phases 2 and 3 are unmerged.** They sit on `claude/phase2-m-and-caching`, and `main` still describes Phase 1. Cold sessions that trust `main` see a stale state; that is why AGENTS.md §6's "start from the newest branch" rule exists. Several local branches are merged or gone upstream.
 - **P5. The machine can't explain itself.** The owner has run the extension there, but nothing physical comes back, and working out from raw logs or the ledger what went wrong costs more of their time than it is worth. PLAN §14 designs a plain-language health report that the owner can read on the spot and describe aloud.

@@ -127,12 +127,11 @@ async function streamMessages(opts) {
   });
 
   if (!result.error && !result.transportError) {
-    for (const c of calls) {
-      if (opts.onToolCall) opts.onToolCall(c);
-      // The one thinking block in a turn precedes all of that turn's tool_use blocks (Anthropic
-      // emits at most one before parallel tool calls), so it pairs with each of them.
-      if (lastThinking && opts.onThinking) opts.onThinking({ toolCallId: c.callId, value: lastThinking.value, signature: lastThinking.signature });
-    }
+    for (const c of calls) if (opts.onToolCall) opts.onToolCall(c);
+    // One thinking block per turn, reported once and paired with the turn's first tool call (the
+    // id the converter and the reasoning cache look it up by). Reporting it per call put N
+    // identical blocks in history, and they were resent as N thinking blocks.
+    if (calls.length && lastThinking && opts.onThinking) opts.onThinking({ toolCallId: calls[0].callId, value: lastThinking.value, signature: lastThinking.signature });
   }
 
   return { usage, resolvedModel, stopReason, error: result.error, transportError: result.transportError, requestBody: body };

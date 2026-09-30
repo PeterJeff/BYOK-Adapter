@@ -207,9 +207,13 @@ function toAnthropicMessages(messages, ctors, roleEnum, opts = {}) {
       const pairedCallId = toolCalls[0]?.callId;
       if (includeThinking) {
         let attached = false;
+        // A history that already holds one copy per parallel tool call (older builds reported the
+        // block once per call) is sent once: Anthropic wants each block back unmodified, not repeated.
+        const seenSignatures = new Set();
         for (const tp of thinkingParts) {
           const signature = /** @type {any} */ (tp).metadata?.signature;
-          if (!signature) continue;
+          if (!signature || seenSignatures.has(signature)) continue;
+          seenSignatures.add(signature);
           const value = Array.isArray(tp.value) ? tp.value.join('') : tp.value;
           content.push({ type: 'thinking', thinking: value, signature });
           attached = true;

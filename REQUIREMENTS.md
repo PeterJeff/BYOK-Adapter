@@ -75,8 +75,8 @@ Code may not depend on an assumption until its status here is ✅ (or ❌, which
 | 0b | ✅ `research/live/FINDINGS.md` |
 | 0c | — Dropped (no data comes back from the machine) |
 | 1: CC/R skeleton, ledger, spend cap | 🔶 All three acceptance checks passed live on 2026-09-27 (FINDINGS "Extension live checks"). The `force_models` intersection and `restrictedConfigurations` are built and unit-tested, but not yet seen live |
-| 2: M, caching, pinning, reasoning round-trip, Check Cache Health | 🔶 Built and unit-tested; nothing has run live. Blocked before live acceptance by DEFECTS D1–D3. Acceptance also waits on T12's Claude and nano-on-Responses legs (PLAN §9). Gaps: DEFECTS §B |
-| 3: budget guards | 🔶 Partly built, never run live. The pre-flight check uses the session and hourly caps only, not the balance, and warnings go only to the log (D6). The forecast, cache-health alarm and cap bump are built; the budget-mode experiment is not |
+| 2: M, caching, pinning, reasoning round-trip, Check Cache Health | 🔶 Built and unit-tested; nothing has run live. The output-cap, stream-timeout and duplicated-thinking blockers are fixed against recorded fixtures (2026-09-30). Acceptance waits on T12's Claude and nano-on-Responses legs (PLAN §9). Gaps: DEFECTS §B |
+| 3: budget guards | 🔶 Partly built, never run live. The pre-flight check covers the remaining balance (with a reserve, and no block in the last 6 hours before the monthly reset) and the session and hourly caps, which default to shares of the monthly limit. Warnings also reach a notification, at most once per 10 minutes per warning. The forecast, cache-health alarm and cap bump are built; the budget-mode experiment is not |
 | Health report (PLAN §14) | ⛔ H1 (the report) and H2 (the self-test) are not started. H1 is required before the next build goes to the machine |
 | 4: G, flavor settings panel, multi-flavor picker, rate-override editor, workspace policy | ⛔ |
 | 5: search tools | ⛔ Gated on PLAN §8's usage check |

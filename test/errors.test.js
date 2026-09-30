@@ -5,6 +5,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { detectError, isAuthInvalid, parseOutputCapTooLarge, toLanguageModelError } = require('../src/errors');
 
 test('detectError knows every shape seen in research/live fixtures', () => {
@@ -30,6 +32,14 @@ test('parseOutputCapTooLarge extracts the real cap from a rejection (live findin
   assert.equal(parseOutputCapTooLarge(detectError({ error: { message: 'supports at most 4,096 output tokens', type: 'invalid_request_error' } })), 4096, 'handles a comma-grouped number and "output tokens" wording');
   assert.equal(parseOutputCapTooLarge(detectError({ response: 'Token is invalid [1]', status: 400 })), null, 'an unrelated error must not match');
   assert.equal(parseOutputCapTooLarge(null), null);
+});
+
+test('parseOutputCapTooLarge reads Anthropic\'s rejection from the recorded fixture (DEFECTS D1)', () => {
+  const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, '../research/live/manual-run/probe/2026-09-26-0402-c5ced6/T8/061-over-limit.json'), 'utf8'));
+  assert.equal(fixture.request.body.max_tokens, 136000);
+  const detected = detectError(fixture.body);
+  assert.equal(detected?.shape, 'anthropic-error');
+  assert.equal(parseOutputCapTooLarge(detected), 64000);
 });
 
 test('toLanguageModelError uses vscode.LanguageModelError.Blocked when present, else a plain Error', () => {

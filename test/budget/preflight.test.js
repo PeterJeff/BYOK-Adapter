@@ -86,3 +86,45 @@ test('checkPreflight: a cap of 0 disables that check', () => {
   const r = checkPreflight({ estimatedCost: 1000000, spent: { conversation: 1000000, hourly: 1000000 }, limits: { sessionCapTokens: 0, hourlyCapTokens: 0 } });
   assert.equal(r.level, 'ok');
 });
+
+// DEFECTS D6: the balance limit.
+const { hoursUntilMonthlyReset } = require('../../src/budget/preflight');
+const roomy = { spent: { conversation: 0, hourly: 0 }, limits: { sessionCapTokens: 0, hourlyCapTokens: 0 } };
+
+test('checkPreflight: stops when the estimate exceeds the remaining balance', () => {
+  const r = checkPreflight({ ...roomy, estimatedCost: 500, balance: { remaining: 400, monthlyLimit: 10000, hoursToReset: 300 } });
+  assert.equal(r.level, 'stop');
+  assert.equal(r.source, 'balance');
+  assert.match(r.message || '', /only 400 remain/);
+});
+
+test('checkPreflight: the reserve is kept back from the balance', () => {
+  const at = (/** @type {number} */ reserve) => checkPreflight({ ...roomy, estimatedCost: 100, reserve, balance: { remaining: 150, monthlyLimit: 10000, hoursToReset: 300 } }).level;
+  assert.equal(at(0), 'warn', 'covered, but under 20% of the month is left');
+  assert.equal(at(100), 'stop', '150 - 100 < 100');
+});
+
+test('checkPreflight: warns when the request would leave under (1 - warnFraction) of the monthly limit', () => {
+  const r = checkPreflight({ ...roomy, estimatedCost: 100, warnFraction: 0.8, balance: { remaining: 2050, monthlyLimit: 10000, hoursToReset: 300 } });
+  assert.equal(r.level, 'warn');
+  assert.equal(r.source, 'balance');
+  assert.equal(checkPreflight({ ...roomy, estimatedCost: 100, warnFraction: 0.8, balance: { remaining: 2500, monthlyLimit: 10000, hoursToReset: 300 } }).level, 'ok');
+});
+
+test('checkPreflight: in the last hours before the monthly reset a shortfall warns instead of blocking', () => {
+  const r = checkPreflight({ ...roomy, estimatedCost: 500, balance: { remaining: 400, monthlyLimit: 10000, hoursToReset: 3 } });
+  assert.equal(r.level, 'warn');
+  assert.match(r.message || '', /monthly reset is under 3 hours away/);
+});
+
+test('checkPreflight: an unknown balance changes nothing, and a cap stop wins over a balance warning', () => {
+  assert.equal(checkPreflight({ ...roomy, estimatedCost: 500, balance: { remaining: null } }).level, 'ok');
+  const r = checkPreflight({ estimatedCost: 500, spent: { conversation: 900, hourly: 0 }, limits: { sessionCapTokens: 1000, hourlyCapTokens: 0 }, balance: { remaining: 2100, monthlyLimit: 10000, hoursToReset: 300 } });
+  assert.equal(r.level, 'stop');
+  assert.equal(r.source, 'session');
+});
+
+test('hoursUntilMonthlyReset: counts to 00:00 UTC on the 1st', () => {
+  assert.equal(hoursUntilMonthlyReset(Date.UTC(2026, 8, 30, 21, 0, 0)), 3);
+  assert.equal(hoursUntilMonthlyReset(Date.UTC(2026, 11, 31, 0, 0, 0)), 24);
+});

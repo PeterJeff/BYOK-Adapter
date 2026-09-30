@@ -207,7 +207,7 @@ Usage is also reported to Copilot through a `LanguageModelDataPart` with MIME ty
   - the per-conversation **session cap**
   - the per-hour **hourly cap**
 
-  Warn when the projected spend passes a fraction of any of them (`asksage.budget.warnFraction`, default 0.8). Stop when the estimate would cross one. **Warnings must reach the user in the chat UI** (in the response, or as a notification), not only in the output channel.
+  Warn when the projected spend passes a fraction of any of them (`asksage.budget.warnFraction`, default 0.8; for the balance, when the request would leave less than the rest of that fraction, 20%, of the monthly limit). A cap the user has not set defaults to 10% (session) and 25% (hourly) of the monthly limit, never above the declared 50,000 and 200,000. In the last 6 hours before the monthly reset the balance stop only warns, and a stop on the balance is confirmed with a fresh read first. Stop when the estimate would cross one. **Warnings must reach the user in the chat UI** (in the response, or as a notification), not only in the output channel.
 
   The stop is a `LanguageModelError` that names the concrete options:
   - raise the cap setting
@@ -289,7 +289,7 @@ A webview (or exported CSV plus a markdown summary), all from the ledger:
 
 ### 4.3 All flavors
 - **Deterministic prefix.** Sort tools by name, serialize JSON with a stable key order, keep system text byte-stable. Copilot already puts volatile content (date, editor and terminal state) in the current user message, after history.
-- **Tool-set churn.** Copilot's virtual-tool grouping and MCP server toggles change the tool list mid-conversation, and any tool change invalidates the whole cache. Expect one cold turn per change; the ledger's `toolSetHash` makes these visible.
+- **Tool-set churn.** Copilot's virtual-tool grouping and MCP server toggles change the tool list mid-conversation, and any tool change invalidates the whole cache. Expect one cold turn per change; the ledger's `toolSetHash` makes these visible. The tool list is pinned per conversation (`asksage.cache.pinToolList`): tools Copilot adds are sent from then on, and tools it removes stay in the list, so a change costs one cold turn and then the list is stable again. A tool must never be withheld from the model.
 - **Host failover.** Upstream region or host failover makes the cache cold even when `resolvedModel` is unchanged. The cache-health alarm is the detector.
 - **Verification is part of the product.** "Check Cache Health" has two modes:
   1. **Active probe.** Sends the same long prefix twice, then a control request, then a case with many parallel tool results. It reports the cache fields and the budget delta against the formula as PASS/FAIL per model and flavor, and it reports a case it did not run as "not run", never as PASS.
@@ -521,6 +521,7 @@ The reports webview and CSV export; the `.vsix`; a README covering cache-capable
   - Rates come from the API at runtime.
 - **v3.3 (2026-09-25).** 117 measured requests (`research/rate-sources-investigation.md`) settled the rate source, the cache rules per host, and reconciliation through the prompt log (§2.1, §3.1, §3.6).
 - **v3.4 (2026-09-27).** Claude thinking rules per model (§4.1, §5), from Anthropic's API reference and T22.
+- **v3.6 (2026-09-30).** §3.5: the balance limit added to the pre-flight, unset caps derived from the monthly limit, a notification per warning. §4.3: pinned tool lists admit additions.
 - **v3.5 (2026-09-29).**
   - Build status moved out to `REQUIREMENTS.md`, and defects recorded in `DEFECTS.md`.
   - §4.1's 2026-09-28 "correction" (that there is no System role) reverted, because the Phase 0a evidence contradicts it.
@@ -640,7 +641,7 @@ A markdown document opened in VS Code's preview. For example:
 | VS Code support | version and API feature detection | Below 1.122: signed-out chat is not supported. Also reports whether the thinking display, conversation id and system prompt are present |
 | Model list | the catalog plus `force_models` | Counts, what is hidden and why, and whether the organization's restriction matched any model |
 | Chat with Claude / GPT (Responses) / other models (Chat Completions) | ledger and the failure recorder | Any failures: the most common server message, and how many of how many requests |
-| Agent mode tool calls | ledger | Tool steps, the longest loop, parallel calls seen, tools held back by list pinning |
+| Agent mode tool calls | ledger | Tool steps, the longest loop, parallel calls seen, tools added mid-conversation |
 | Caching, per kind of model | ledger | The share of input read from cache from round 2: good at 80% or more, poor below 50%. Cold rounds are counted by cause, in words (§4.3) |
 | Reasoning kept between tool steps | ledger (`reasoningStateLost`) | Lost in N of M steps |
 | Long replies | ledger and the failure recorder | Replies cut off by a timeout, or stopped at the output limit with nothing visible |
@@ -693,5 +694,5 @@ The results appear in the report as plain rows, for example "Self-test, Claude: 
 
 **Accept (H1, on the dev machine):**
 - The report opens within 2 s in each case: no key, a wrong key, a bogus host, and normal use.
-- For each failure provoked on purpose, the summary names the right feature as not working, in a sentence that someone who has not read the code can repeat. The failures: a wrong key, a bogus host, a model not in the catalog, and a Claude request while DEFECTS D1 is still open.
+- For each failure provoked on purpose, the summary names the right feature as not working, in a sentence that someone who has not read the code can repeat. The failures: a wrong key, a bogus host, a model not in the catalog, and a Claude request whose stream stalls.
 - A unit test confirms that the API key and access token never appear in the report, even when a server message echoes them.

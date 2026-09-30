@@ -17,7 +17,8 @@ const { detectError } = require('../errors');
  * @property {unknown} [body]
  * @property {boolean} [stream]
  * @property {(event: { event?: string, data: unknown, raw?: string }) => void} [onEvent]  called as each SSE event arrives
- * @property {number} [timeoutMs]
+ * @property {number} [timeoutMs]  idle timeout, default 180000: no response headers, or no data chunk, for this long aborts the request. Reset on every chunk, so a long stream that keeps flowing is never cut off
+ * @property {number} [totalTimeoutMs]  optional cap on the whole request, streaming included; none by default
  * @property {{ isCancellationRequested: boolean, onCancellationRequested: (cb: () => void) => unknown }} [token]
  * @property {typeof fetch} [fetchImpl]
  */
@@ -43,12 +44,20 @@ async function request(o) {
   if (o.body !== undefined) headers['content-type'] = 'application/json';
   const ac = new AbortController();
   const cancelSub = o.token ? o.token.onCancellationRequested(() => ac.abort(new Error('cancelled'))) : null;
-  const timeoutMs = o.timeoutMs || 180000;
-  const timer = setTimeout(() => ac.abort(new Error('timeout')), timeoutMs);
+  const idleMs = o.timeoutMs || 180000;
+  /** @type {ReturnType<typeof setTimeout> | undefined} */
+  let idleTimer;
+  const arm = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => ac.abort(timeoutError(`Ask Sage sent no data for ${seconds(idleMs)}, so the request was stopped`)), idleMs);
+  };
+  arm();
+  const totalTimer = o.totalTimeoutMs ? setTimeout(() => ac.abort(timeoutError(`the request ran longer than the ${seconds(o.totalTimeoutMs || 0)} limit and was stopped`)), o.totalTimeoutMs) : undefined;
   /** @type {Result} */
   const result = { status: null, contentType: null, error: null, transportError: null };
   try {
     const res = await fetchImpl(o.url, { method, headers, body: o.body === undefined ? undefined : JSON.stringify(o.body), signal: ac.signal });
+    arm();
     result.status = res.status;
     result.contentType = res.headers.get('content-type');
     const ct = result.contentType || '';
@@ -61,12 +70,16 @@ async function request(o) {
         for (;;) {
           const { value, done } = await reader.read();
           if (done) break;
+          arm();
           const evs = parser.feed(dec.decode(value, { stream: true })).map(sseEventJson);
           result.events.push(...evs);
           for (const ev of evs) if (o.onEvent) o.onEvent(ev);
         }
       } catch (e) {
         if (!ac.signal.aborted) throw e;
+        // Aborted mid-stream. A user cancel is not a failure, but a timeout is: report it, so a
+        // truncated answer is never taken for a complete one.
+        if (isTimeout(ac.signal.reason)) result.transportError = ac.signal.reason;
       }
       if (!ac.signal.aborted) {
         const tail = parser.end().map(sseEventJson);
@@ -84,11 +97,28 @@ async function request(o) {
   } catch (e) {
     result.transportError = /** @type {Error} */ (e);
   } finally {
-    clearTimeout(timer);
+    clearTimeout(idleTimer);
+    clearTimeout(totalTimer);
     if (cancelSub && typeof (/** @type {any} */ (cancelSub).dispose) === 'function') /** @type {any} */ (cancelSub).dispose();
   }
   result.error = findError(result);
   return result;
+}
+
+/** @param {number} ms */
+function seconds(ms) {
+  const n = Math.max(1, Math.round(ms / 1000));
+  return `${n} second${n === 1 ? '' : 's'}`;
+}
+
+/** @param {string} message */
+function timeoutError(message) {
+  return Object.assign(new Error(message), { name: 'TimeoutError' });
+}
+
+/** @param {unknown} reason */
+function isTimeout(reason) {
+  return reason instanceof Error && reason.name === 'TimeoutError';
 }
 
 /**

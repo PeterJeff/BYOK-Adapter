@@ -55,22 +55,64 @@ function estimatePreflightCost(chars, rates, cacheRule, recentCacheReadRatio) {
   return Math.round(inputTokens * blendedInputRate * 100) / 100;
 }
 
+/** Hours before the monthly reset (00:00 UTC on the 1st, PLAN.md §3.3) in which the balance stop only warns: a balance about to refill should not block work. */
+const RESET_GRACE_HOURS = 6;
+
 /**
+ * @param {number} [now] epoch ms
+ * @returns {number} hours until the next 00:00 UTC on the 1st of a month
+ */
+function hoursUntilMonthlyReset(now = Date.now()) {
+  const d = new Date(now);
+  const next = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+  return (next - now) / 3600000;
+}
+
+/**
+ * @typedef {'balance' | 'session' | 'hourly'} LimitKind
+ * @typedef {{ level: 'ok' | 'warn' | 'stop', message: string | null, source: LimitKind | null }} PreflightResult
+ */
+
+/**
+ * Checks a request's estimated cost against the three limits of PLAN.md §3.5: the account's
+ * remaining monthly balance minus a reserve, the conversation's session cap and the rolling
+ * hourly cap. A stop from any limit wins over a warning from another.
  * @param {object} o
  * @param {number} o.estimatedCost
  * @param {{ conversation: number, hourly: number }} o.spent
  * @param {{ sessionCapTokens: number, hourlyCapTokens: number }} o.limits
- * @param {number} [o.warnFraction] fraction of the cap at which to warn instead of block (default 0.8)
+ * @param {{ remaining: number | null, monthlyLimit?: number | null, hoursToReset?: number }} [o.balance] the account's remaining monthly balance, when known
+ * @param {number} [o.warnFraction] fraction of a cap at which to warn instead of block (default 0.8)
  * @param {number} [o.reserve] AS tokens of headroom the hard stop keeps back (default 0)
- * @returns {{ level: 'ok' | 'warn' | 'stop', message: string | null }}
+ * @returns {PreflightResult}
  */
 function checkPreflight(o) {
   const warnFraction = o.warnFraction ?? 0.8;
   const reserve = o.reserve ?? 0;
-  const checks = [
+  /** @type {PreflightResult | null} */
+  let warning = null;
+
+  const bal = o.balance;
+  if (bal && typeof bal.remaining === 'number') {
+    const left = Math.round(bal.remaining);
+    const after = bal.remaining - o.estimatedCost;
+    const resetSoon = typeof bal.hoursToReset === 'number' && bal.hoursToReset <= RESET_GRACE_HOURS;
+    if (after < reserve) {
+      const what = `Ask Sage: this request is estimated at ~${o.estimatedCost} AS tokens, but only ${left} remain of this month's tokens${reserve > 0 ? ` (and ${reserve} are kept in reserve)` : ''}.`;
+      if (resetSoon) {
+        warning = { level: 'warn', message: `${what} The monthly reset is under ${Math.ceil(/** @type {number} */ (bal.hoursToReset))} hours away, so the request is not being blocked.`, source: 'balance' };
+      } else {
+        return { level: 'stop', message: `${what} Switch to a cheaper model, ask your organization for more tokens, wait for the monthly reset, or lower "Ask Sage > Budget: Reserve Tokens".`, source: 'balance' };
+      }
+    } else if (bal.monthlyLimit && bal.monthlyLimit > 0 && after < (1 - warnFraction) * bal.monthlyLimit) {
+      warning = { level: 'warn', message: `Ask Sage: this request is estimated at ~${o.estimatedCost} AS tokens and would leave about ${Math.round(after)} of this month's ${bal.monthlyLimit} tokens (${Math.round((after / bal.monthlyLimit) * 100)}%).`, source: 'balance' };
+    }
+  }
+
+  const checks = /** @type {{ label: 'session' | 'hourly', spent: number, cap: number }[]} */ ([
     { label: 'session', spent: o.spent.conversation, cap: o.limits.sessionCapTokens },
     { label: 'hourly', spent: o.spent.hourly, cap: o.limits.hourlyCapTokens },
-  ];
+  ]);
   for (const c of checks) {
     if (!(c.cap > 0)) continue;
     const projected = c.spent + o.estimatedCost;
@@ -78,16 +120,18 @@ function checkPreflight(o) {
       return {
         level: 'stop',
         message: `Ask Sage: this request is estimated at ~${o.estimatedCost} AS tokens and would push the ${c.label} spend to ~${Math.round(projected)} of ${c.cap} AS tokens. Raise "Ask Sage > Budget: ${c.label === 'session' ? 'Session Cap Tokens' : 'Hourly Cap Tokens'}", run "Ask Sage: Request More Tokens", switch to a cheaper model, or start a new conversation.`,
+        source: c.label,
       };
     }
-    if (projected > c.cap * warnFraction) {
-      return {
+    if (!warning && projected > c.cap * warnFraction) {
+      warning = {
         level: 'warn',
         message: `Ask Sage: this request is estimated at ~${o.estimatedCost} AS tokens; the ${c.label} spend would reach ~${Math.round(projected)} of ${c.cap} AS tokens (${Math.round((projected / c.cap) * 100)}%).`,
+        source: c.label,
       };
     }
   }
-  return { level: 'ok', message: null };
+  return warning || { level: 'ok', message: null, source: null };
 }
 
-module.exports = { charsOfRequest, estimatePreflightCost, checkPreflight, CHARS_PER_TOKEN };
+module.exports = { charsOfRequest, estimatePreflightCost, checkPreflight, hoursUntilMonthlyReset, RESET_GRACE_HOURS, CHARS_PER_TOKEN };

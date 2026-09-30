@@ -6,8 +6,6 @@ The open-work list, **in priority order**. Each item is one line and points to w
 
 ## 1. Now: free work
 1. Merge `claude/phase2-m-and-caching` into `main`, labeled "built, not live-verified". Then delete the stale local branches (`claude/e4-multi-round` and the merged ones). DEFECTS P4.
-2. Fix the blockers for Phase 2's live acceptance: DEFECTS D1 (Claude output cap), D2 (stream timeout) and D3 (duplicated thinking blocks). Test each against recorded fixtures (PLAN §10).
-3. Fix D6 (a balance-based stop and visible warnings) and D7 (tool pinning withholds tools) before anyone else uses a build.
 4. Build the health report, H1 (PLAN §14): plain-language chat errors, error records in the ledger (DEFECTS D8) plus the failure recorder, and the Show Health Report command. This is required before the next build goes to the machine.
 5. Fix the remaining Medium defects (D4, D5, D9–D12), then the Low ones.
 6. Free live checks for Phase 1:
@@ -35,7 +33,7 @@ The open-work list, **in priority order**. Each item is one line and points to w
     - the `partners` and `hosts` presets
     - later: Opus 5.5 preserved thinking, and `premium`
 15. 💲 Bisect the Bedrock Gemma tool-schema rejection from a logged request (FINDINGS "Corrected", §2.2 CC row). Then decide per model: strip the keyword, or report `toolCalling: false`.
-16. 💲 Find out what Copilot does when the model calls a tool Copilot has since removed (needed for D7's fix).
+16. 💲 Find out what Copilot does when the model calls a tool Copilot has since removed (a tool Copilot removes stays in the pinned list, so the model can still call it).
 17. 💲 Build the Check Cache Health parallel-tool-results case against a real conversation's tool list (PLAN §4.3).
 18. 💲 The budget-mode experiment (PLAN §3.5).
 19. 💲 Billing still unmeasured:
